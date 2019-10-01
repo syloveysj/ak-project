@@ -1,0 +1,126 @@
+<form class="wrapper" nz-form [formGroup]="form">
+    <!--{{form.value | json}}-->
+    <div class="head">
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzRequired nzFor="clusterName" style="width: 115px;">路由名称</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <input nz-input placeholder="" formControlName="clusterName" id="clusterName"
+                               maxlength="100"/>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="clusterCode" style="width: 115px;">
+                        <label
+                            nz-checkbox
+                            [(ngModel)]="allChecked"
+                            (ngModelChange)="updateAllChecked()"
+                            [nzIndeterminate]="indeterminate"
+                            [ngModelOptions]="{standalone: true}"
+                        >
+                            请求方式
+                        </label>
+                    </nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-checkbox-group formControlName="clusterCode" (ngModelChange)="updateSingleChecked()"></nz-checkbox-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="15">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field1" style="width: 125px;">访问路径</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-input-group nzAddOnBefore="http(https)://">
+                            <input nz-input placeholder="可为空" formControlName="field1"
+                                   id="field1" maxlength="100"/>
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col nzSpan="7" [nzOffset]="1">
+                <nz-form-item nzFlex>
+                    <nz-form-control style="width: 100%;">
+                        <input nz-input placeholder="" formControlName="field7"
+                               id="field7" maxlength="100"/>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field2" style="width: 115px;">后端地址</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-select formControlName="field2"
+                                   nzAllowClear
+                                   nzShowSearch>
+                            <nz-option nzCustomContent *ngFor="let item of clusterList" [nzValue]="item.value"
+                                       [nzLabel]="item.label">
+                                <div class="clearFix">
+                                    <span style="float: left">{{item.label}}</span>
+                                    <span style="float: right; color: #8492a6; font-size: 13px">{{item.servers}}</span>
+                                </div>
+                            </nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field3" style="width: 115px;">连接超时</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-input-group nzAddOnAfter="毫秒">
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="field3"
+                                   id="field3" maxlength="100"/>
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field4" style="width: 115px;">发送超时</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-input-group nzAddOnAfter="毫秒">
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="field4"
+                                   id="field4" maxlength="100"/>
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field5" style="width: 115px;">读取超时</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-input-group nzAddOnAfter="毫秒">
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="field5"
+                                   id="field5" maxlength="100"/>
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field6" style="width: 115px;">仅https</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-switch formControlName="field6" id="field6" nzCheckedChildren="开" nzUnCheckedChildren="关"></nz-switch>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+    </div>
+</form>

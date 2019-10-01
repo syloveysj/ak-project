@@ -1,0 +1,41 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "types": [],
+    "paths": {
+      "@config/*": [
+        "app/config/*"
+      ],
+      "@pipe/*": [
+        "app/pipe/*"
+      ],
+      "@service/*": [
+        "app/service/*"
+      ],
+      "@feature/*": [
+        "app/feature/*"
+      ],
+      "@model/*": [
+        "app/model/*"
+      ],
+      "@shared/*": [
+        "app/shared/*"
+      ],
+      "@core/*": [
+        "app/core/*"
+      ],
+      "@environments/*": [
+        "environments/*"
+      ],
+      "@assets/*": [
+        "assets/*"
+      ]
+    },
+    "baseUrl": "./"
+  },
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts"
+  ]
+}

@@ -1,0 +1,72 @@
+<form class="wrapper" nz-form [formGroup]="form">
+    <!--{{form.value | json}}-->
+    <div class="head">
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzRequired nzFor="clusterName" style="width: 115px;">集群名称</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <input nz-input placeholder="" formControlName="clusterName" id="clusterName"
+                               maxlength="100"/>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="clusterCode" style="width: 115px;">集群编号</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <input nz-input placeholder="选填，只允许输入字母、数字和下划线，为空则由网关自动生成" formControlName="clusterCode"
+                               id="clusterCode" maxlength="100"/>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+    </div>
+    <nz-card [nzBordered]="false" [nzSize]="'small'" nzTitle="服务器列表" [nzExtra]="extraTemplate">
+        <ng-template #extraTemplate>
+            <button nz-button nzType="primary" nzShape="circle" nz-tooltip nzTitle="添加"><i nz-icon
+                                                                                           nzType="file-add"></i>
+            </button>&nbsp;
+            <button nz-button nzType="danger" nzShape="circle" nz-tooltip nzTitle="删除"><i nz-icon nzType="delete"></i>
+            </button>
+        </ng-template>
+        <div class="content">
+            <div class="tabset-wrapper">
+                <nz-table #pT1 nzBordered
+                          [nzData]="serverList"
+                          [nzSize]="'small'"
+                          [nzFrontPagination]="false"
+                          [nzShowPagination]="false">
+                    <thead>
+                    <tr>
+                        <th nzWidth="20px"></th>
+                        <th nzWidth="150px">IP</th>
+                        <th nzWidth="100px">端口</th>
+                        <th nzWidth="100px" nzAlign="right">权重</th>
+                        <th nzWidth="100px" nzAlign="center">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of pT1.data; let i = index">
+                        <td nzShowCheckbox [(nzChecked)]="item.checked"></td>
+                        <td>{{ item?.a }}</td>
+                        <td>{{ item?.msku }}</td>
+                        <td nzAlign="right">{{ item?.quantity }}</td>
+                        <td nzAlign="center">
+                            <button nz-button nzType="primary">
+                                <i nz-icon nzType="form"></i>
+                            </button>&nbsp;
+                            <button nz-button nzType="danger" nz-popconfirm nzTitle="您确认要删除【{{item?.a}}】吗?"
+                                    (nzOnConfirm)="deleteServer(item)">
+                                <i nz-icon nzType="delete"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+        </div>
+    </nz-card>
+</form>

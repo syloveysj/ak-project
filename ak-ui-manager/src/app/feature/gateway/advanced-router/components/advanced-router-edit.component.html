@@ -1,0 +1,189 @@
+<form class="wrapper" nz-form [formGroup]="form">
+    <!--{{form.value | json}}-->
+    <div class="head">
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzRequired nzFor="clusterName" style="width: 115px;">路由名称</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <input nz-input placeholder="" formControlName="clusterName" id="clusterName"
+                               maxlength="100"/>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="clusterCode" style="width: 115px;">
+                        <label
+                            nz-checkbox
+                            [(ngModel)]="allChecked"
+                            (ngModelChange)="updateAllChecked()"
+                            [nzIndeterminate]="indeterminate"
+                            [ngModelOptions]="{standalone: true}"
+                        >
+                            请求方式
+                        </label>
+                    </nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-checkbox-group formControlName="clusterCode" (ngModelChange)="updateSingleChecked()"></nz-checkbox-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label style="width: 115px;">匹配路径</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <input nz-input formControlName="field1" style="display: none"/>
+                        <ng-container *ngFor="let item of controlArray1; let i = index">
+                            <nz-input-group nzAddOnBefore="http(https)://" nzSearch [nzAddOnAfter]="suffixIconButton1">
+                                <input nz-input [placeholder]="i === controlArray1.length-1 ? '可为空': ''" [(ngModel)]="controlValues1[i]" maxlength="100" [ngModelOptions]="{standalone: true}"/>
+                            </nz-input-group>
+                            <ng-template #suffixIconButton1>
+                            <span nzSearch>
+                                <button *ngIf="controlArray1.length !== 1" nz-button nzType="danger" nz-tooltip nzTitle="删除"
+                                        [ngStyle]="{'margin-right': i!==controlArray1.length-1?'0px':'6px'}" (click)="deleteControlArray(i, controlArray1, controlValues1)">
+                                    <i nz-icon type="delete"></i></button>
+                                <button *ngIf="i === controlArray1.length-1" nz-button nzType="dashed" nz-tooltip nzTitle="添加" (click)="addControlArray(i, controlArray1, controlValues1)">
+                                    <i nz-icon type="plus"></i></button>
+                            </span>
+                            </ng-template>
+                        </ng-container>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field1" style="width: 115px;">匹配地址</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <input nz-input formControlName="field7" style="display: none"/>
+                        <ng-container *ngFor="let item of controlArray2; let i = index">
+                            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton2">
+                                <input nz-input [placeholder]="i === controlArray2.length-1 ? '可为空': ''" [(ngModel)]="controlValues2[i]" maxlength="100" [ngModelOptions]="{standalone: true}"/>
+                            </nz-input-group>
+                            <ng-template #suffixIconButton2>
+                            <span nzSearch>
+                                <button *ngIf="controlArray2.length !== 1" nz-button nzType="danger" nz-tooltip nzTitle="删除"
+                                        [ngStyle]="{'margin-right': i!==controlArray2.length-1?'0px':'6px'}" (click)="deleteControlArray(i, controlArray2, controlValues2)">
+                                    <i nz-icon type="delete"></i></button>
+                                <button *ngIf="i === controlArray2.length-1" nz-button nzType="dashed" nz-tooltip nzTitle="添加" (click)="addControlArray(i, controlArray2, controlValues2)">
+                                    <i nz-icon type="plus"></i></button>
+                            </span>
+                            </ng-template>
+                        </ng-container>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="23">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field2" style="width: 115px;">后端地址</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <input nz-input placeholder="" formControlName="field2" id="field2"
+                               maxlength="100"/>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="11">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field3" style="width: 130px;">连接超时</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-input-group nzAddOnAfter="毫秒">
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="field3"
+                                   id="field3" maxlength="100"/>
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col nzSpan="11" nzOffset="1">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field4" style="width: 115px;">发送超时</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-input-group nzAddOnAfter="毫秒">
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="field4"
+                                   id="field4" maxlength="100"/>
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row>
+            <div nz-col nzSpan="11">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field5" style="width: 130px;">读取超时</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-input-group nzAddOnAfter="毫秒">
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="field5"
+                                   id="field5" maxlength="100"/>
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col nzSpan="5" nzOffset="2">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field1" style="width: 138px;">仅https</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-switch formControlName="field1" id="field1" nzCheckedChildren="开" nzUnCheckedChildren="关"></nz-switch>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col nzSpan="5">
+                <nz-form-item nzFlex>
+                    <nz-form-label nzFor="field6" style="width: 138px;">舍弃URI</nz-form-label>
+                    <nz-form-control style="width: 100%;">
+                        <nz-switch formControlName="field6" id="field6" nzCheckedChildren="开" nzUnCheckedChildren="关"></nz-switch>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+    </div>
+    <nz-card [nzBordered]="false" [nzSize]="'small'" nzTitle="路由插件" [nzExtra]="extraTemplate">
+        <ng-template #extraTemplate>
+            <button nz-button nzType="primary" nzShape="circle" nz-tooltip nzTitle="添加" (click)="openPluginsWin(null)">
+                <i nz-icon nzType="file-add"></i>
+            </button>&nbsp;
+        </ng-template>
+        <div class="content">
+            <div class="tabset-wrapper">
+                <nz-table #pT1 nzBordered
+                          [nzData]="serverList"
+                          [nzSize]="'small'"
+                          [nzFrontPagination]="false"
+                          [nzShowPagination]="false">
+                    <thead>
+                    <tr>
+                        <th nzWidth="150px">插件名称</th>
+                        <th nzWidth="100px">创建时间</th>
+                        <th nzWidth="100px">是否启用</th>
+                        <th nzWidth="100px" nzAlign="center">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of pT1.data; let i = index">
+                        <td>{{ item?.a }}</td>
+                        <td>{{ item?.msku }}</td>
+                        <td>{{ item?.msku }}</td>
+                        <td nzAlign="center">
+                            <button nz-button nzType="primary">
+                                <i nz-icon nzType="form"></i>
+                            </button>&nbsp;
+                            <button nz-button nzType="danger" nz-popconfirm nzTitle="您确认要删除【{{item?.a}}】吗?"
+                                    (nzOnConfirm)="deletePlug(item)">
+                                <i nz-icon nzType="delete"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+        </div>
+    </nz-card>
+</form>

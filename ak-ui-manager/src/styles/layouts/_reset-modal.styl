@@ -1,0 +1,110 @@
+/* ==============================
+   由于NZ没有居中弹框样式，所以这里给出了4大类的自定义居中弹框样式：
+   .vertical-center-modal.normal: 宽度为500px; 适用于字段比较少填充展示，如表单等;
+   .vertical-center-modal.large:  宽度为800px; 适用于一般较多的文字展示，如产品弹框[label: value]形式;
+   .vertical-center-modal.table:  宽度为1200px;适用于一般多的文字展示， 如日志小table弹框;
+   .vertical-center-modal.auto:  宽度为自动;定制个性化需求
+   .vertical-center-modal.full:   宽度为1200px; 适用于大量信息展示; 如订单详情, table操作弹框等;
+   .vertical-center-modal.full-plus:   宽度为100%; 适用于大量信息展示; 如订单详情, table操作弹框等;
+   ============================== */
+
+.vertical-center-modal.normal,
+.vertical-center-modal.large,
+.vertical-center-modal.table,
+.vertical-center-modal.auto {
+    min-width: 1300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.vertical-center-modal.full,
+.vertical-center-modal.full-plus {
+    display: flex;
+    flex: 1;
+}
+
+.vertical-center-modal .ant-modal {
+    top: 0;
+    padding: 0;
+}
+
+.vertical-center-modal.normal .ant-modal {
+    width: 500px !important;
+}
+
+.vertical-center-modal.large .ant-modal {
+    width: 800px !important;
+}
+
+.vertical-center-modal.auto .ant-modal {
+    width: auto !important;
+}
+
+.vertical-center-modal.table .ant-modal,
+.vertical-center-modal.full .ant-modal {
+    width: 1200px !important;
+}
+
+.vertical-center-modal.full-plus .ant-modal {
+    width: 100% !important;
+}
+
+vertical-center-modal .ant-modal-content {
+    min-width: 500px;
+    width: 50%;
+}
+
+.vertical-center-modal.full .ant-modal-content {
+    min-width: 1000px;
+    display: flex;
+    padding: 0;
+    flex-direction: column;
+    height: 90%;
+    margin: 45px 25px;
+}
+
+.vertical-center-modal.full-plus .ant-modal-content {
+    min-width: 1000px;
+    display: flex;
+    padding: 0;
+    flex-direction: column;
+    height: 94%;
+    margin: 25px;
+}
+
+.vertical-center-modal.full.full-screen .ant-modal-content {
+    height: 100%;
+    margin: 0;
+}
+
+.vertical-center-modal.full .ant-modal-header,
+.vertical-center-modal.full-plus .ant-modal-header {
+    height: 55px;
+}
+
+.vertical-center-modal.full .ant-modal-body,
+.vertical-center-modal.full-plus .ant-modal-body {
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+}
+
+// 默认给table弹框赋值500px高度
+
+.vertical-center-modal.table .ant-modal-body {
+    height: 500px;
+}
+
+.vertical-center-modal.full .ant-modal {
+    padding: 0;
+    min-width: 600px;
+}
+
+.ant-modal-body {
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}

@@ -1,0 +1,53 @@
+<div class="app-wrapper">
+  <div>
+    <div class="header head-fix" *ngIf="isShowHeadBar">
+      <app-head-bar></app-head-bar>
+    </div>
+    <!--没有内页-->
+    <ng-container *ngIf="isAuthPage">
+      <div class="wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </ng-container>
+
+    <!--内页-->
+    <ng-container *ngIf="!isAuthPage">
+      <div id="tab-nav" class="tab-nav-fix">
+        <nz-tabset [nzType]="'card'" [(nzSelectedIndex)]="selectedIndex" [nzTabBarExtraContent]="extraTemplate">
+          <nz-tab *ngFor="let menu of menuList; let index = index;" [nzTitle]="titleTemplate" (nzSelect)="activeRoute(menu)">
+            <ng-template #titleTemplate>
+              <div>
+                {{ menu.title }}
+                <i nz-icon type="close" *ngIf="index !== 0" (click)="closeTab(menu)"
+                   class="ant-tabs-close-x"></i>
+              </div>
+            </ng-template>
+          </nz-tab>
+        </nz-tabset>
+        <ng-template #extraTemplate>
+          <ng-container *ngIf="menuList.length > 1">
+            <nz-dropdown [nzPlacement]="'bottomRight'" [nzTrigger]="'click'">
+              <span style="cursor: pointer;" nz-dropdown><i nz-icon nzType="caret-down" nzTheme="outline"></i></span>
+              <ul nz-menu>
+                <!--<li nz-menu-item (click)="reloadCurrentPage()">
+                    <a>刷新当前页</a>
+                </li>-->
+                <li nz-menu-item (click)="closeAllPage()">
+                  <a>关闭所有标签</a>
+                </li>
+                <li nz-menu-item (click)="closeOtherPage()">
+                  <a>关闭其它标签</a>
+                </li>
+              </ul>
+            </nz-dropdown>
+          </ng-container>
+        </ng-template>
+      </div>
+      <div class="wrapper">
+        <div class="inner-wrapper inner-wrapper-fix">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

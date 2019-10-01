@@ -1,0 +1,96 @@
+.wrapper {
+    display: flex;
+    width: 100%;
+    min-width: 1200px;
+    background: #001433;
+    height: 40px;
+    line-height: 40px;
+    box-shadow: 2px 4px 20px -4px rgba(0, 0, 0, .1);
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    margin-left: 30px;
+    background-image: url("../../../assets/images/gj-logo.png");
+    background-position: 0;
+    background-repeat: no-repeat;
+    text-decoration: none;
+    margin-right: -30px;
+    background-size: 50px;
+}
+
+.logo .text {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    padding-left: 66px;
+    width: 112px;
+}
+
+a {
+    color: rgba(0, 0, 0, .65);
+}
+
+.mg-r30 {
+    margin-right: 30px;
+}
+
+.mg-r8 {
+    margin-right: 8px;
+}
+
+.user-info {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    line-height: 40px;
+}
+
+.f-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.menu-wrapper {
+    line-height: 40px;
+    background: #001433;
+    /*overflow: hidden;
+    overflow-x: auto;*/
+}
+
+.menu-item a {
+    padding: 0 20px;
+    display: block;
+}
+
+.menu-item a.active {
+    background: #1890ff;
+}
+
+.nav-item {
+    border-radius: 2px;
+    text-align: center;
+    min-width: 50px;
+    transition: background-color .3s;
+    cursor: pointer;
+    outline: 0;
+    padding: 0 10px;
+    color: #fff;
+}
+
+.nav-item:hover {
+    color: rgb(45, 183, 245);
+    background-color: rgba(255, 255, 255, .2) !important;
+}
+
+:host ::ng-deep .ant-avatar {
+    margin-right: 6px;
+}
+
+:host ::ng-deep .menu-wrapper.ant-menu.ant-menu-root.ant-menu-light.ant-menu-horizontal {
+    border-bottom: 0;
+}
