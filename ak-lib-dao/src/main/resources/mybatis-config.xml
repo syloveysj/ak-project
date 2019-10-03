@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!--应用总的myBatis配置-->
+<configuration>
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="false" />
+        <setting name="cacheEnabled" value="false" />
+        <!-- 打印查询语句 -->
+        <!--<setting name="logImpl" value="STDOUT_LOGGING" />-->
+    </settings>
+    <typeAliases>
+        <!--<typeAlias type="org.mybatis.caches.ak.impl.AkDefaultDaoCache" alias="Ak_Default_Dao_Cache" />-->
+    </typeAliases>
+    <mappers>
+        <!--<mapper resource="mybatis/sqlmap/DataSourceMapper.xml"/>-->
+        <!--<mapper resource="mybatis/sqlmap/DataTargetMapper.xml"/>-->
+    </mappers>
+</configuration>

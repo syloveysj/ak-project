@@ -21,13 +21,16 @@
         <commons.collections4.version>4.3</commons.collections4.version>
         <commons.dbcp.version>1.4</commons.dbcp.version>
         <commons.lang.version>2.4</commons.lang.version>
+        <commons.logging.api.version>1.1</commons.logging.api.version>
         <c3p0.version>0.9.1.1</c3p0.version>
         <httpclient.version>4.5.6</httpclient.version>
         <mysql.connector.java.version>5.1.41</mysql.connector.java.version>
         <mybatis.version>3.4.6</mybatis.version>
         <postgresql.version>9.4.1207.jre6</postgresql.version>
         <fastjson.version>1.2.56</fastjson.version>
+        <lombok.version>1.16.16</lombok.version>
         <log4j.over.slf4j.version>1.7.25</log4j.over.slf4j.version>
+        <retrofit2.version>2.3.0</retrofit2.version>
         <springfox.swagger2.version>2.7.0</springfox.swagger2.version>
         <springfox.swagger.ui.version>2.7.0</springfox.swagger.ui.version>
         <jjwt.version>0.9.1</jjwt.version>
@@ -102,6 +105,11 @@
                 <version>${commons.lang.version}</version>
             </dependency>
             <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging-api</artifactId>
+                <version>${commons.logging.api.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>c3p0</groupId>
                 <artifactId>c3p0</artifactId>
                 <version>${c3p0.version}</version>
@@ -133,9 +141,31 @@
                 <version>${fastjson.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
                 <version>${log4j.over.slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.retrofit2</groupId>
+                <artifactId>retrofit</artifactId>
+                <version>${retrofit2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.retrofit2</groupId>
+                <artifactId>converter-gson</artifactId>
+                <version>${retrofit2.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.code.gson</groupId>
+                        <artifactId>gson</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
@@ -290,6 +320,11 @@
 
     <modules>
         <!--组件-->
+        <module>ak-lib-core</module>
+        <module>ak-lib-dao</module>
+        <module>ak-lib-identity</module>
+        <module>ak-lib-runtime</module>
+        <module>ak-lib-kong</module>
         <!--应用-->
     </modules>
 </project>
