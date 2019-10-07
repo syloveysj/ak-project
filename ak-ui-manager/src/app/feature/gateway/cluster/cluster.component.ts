@@ -5,10 +5,11 @@ import {NzMessageService, NzModalService, NzThComponent} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {Option} from '@model/common';
 import {ToolService} from '@core/utils/tool.service';
-import {debounceTime, distinctUntilChanged, map, startWith, switchMap, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap, tap} from 'rxjs/operators';
 import {combineLatest, defer, Subject} from 'rxjs';
 import {defaultDebounceTime} from '@core/utils/constant.util';
 import {ClusterEditComponent} from '@feature/gateway/cluster/components/cluster-edit.component';
+import {GatewayService} from "@service/http/gateway.service";
 
 @Component({
     selector: 'app-gateway-cluster',
@@ -29,6 +30,7 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
                 public nzMessageService: NzMessageService,
                 public cdr: ChangeDetectorRef,
                 public toolService: ToolService,
+                public atewayService: GatewayService,
                 public config: Config) {
         super(baseService, rd, modalService, nzMessageService);
     }
@@ -66,19 +68,19 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
                 this.loading = true;
             }),
             switchMap(val => defer(() => {
-                // return this.operationAnalysisService.getBrandOpAnalysis(val).pipe(
-                //     finalize(() => this.loading = false));
+                return this.atewayService.getUpstreamList(val).pipe(
+                    finalize(() => this.loading = false));
                 console.log(val);
-                const demo = new Subject<string | string[]>();
-                return demo.asObservable().pipe(startWith({
-                    total: 100,
-                    footer: null,
-                    from: 0,
-                    size: 10,
-                    page: 1,
-                    pagesize: 10,
-                    rows: [{a: 'aa'}, {a: 'bb'}, {a: 'cc'}, {a: 'dd'}, {a: 'aa'}, {a: 'bb'}, {a: 'cc'}, {a: 'dd'}]
-                }));
+                // const demo = new Subject<string | string[]>();
+                // return demo.asObservable().pipe(startWith({
+                //     total: 100,
+                //     footer: null,
+                //     from: 0,
+                //     size: 10,
+                //     page: 1,
+                //     pagesize: 10,
+                //     rows: [{a: 'aa'}, {a: 'bb'}, {a: 'cc'}, {a: 'dd'}, {a: 'aa'}, {a: 'bb'}, {a: 'cc'}, {a: 'dd'}]
+                // }));
             }))
         ).subscribe((data: any) => {
             this.loading = false;

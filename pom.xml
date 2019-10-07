@@ -325,6 +325,8 @@
         <module>ak-lib-identity</module>
         <module>ak-lib-runtime</module>
         <module>ak-lib-kong</module>
+        <module>ak-service-gateway</module>
+        <module>ak-lib-service</module>
         <!--应用-->
     </modules>
 </project>

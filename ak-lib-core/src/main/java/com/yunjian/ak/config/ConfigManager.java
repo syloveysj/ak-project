@@ -12,6 +12,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -58,22 +59,22 @@ public class ConfigManager extends PropertySourcesPlaceholderConfigurer {
         this.propertySources = environment.getPropertySources();
 
         try {
-            String profile = environment.getProperty("ak.config.profile");
+            String profile = environment.getProperty("ak.local.config.profile");
             if (StringUtils.isBlank(profile)) {
-                profile = environment.getProperty("ak_config_profile");
+                profile = environment.getProperty("ak_local_config_profile");
             }
 
             if (StringUtils.isNotEmpty(profile)) {
                 try {
-                    this.mainPropertySource = new ResourcePropertySource(new ClassPathResource("ak-config-" + profile + ".properties"));
+                    this.mainPropertySource = new ResourcePropertySource(new ClassPathResource("ak-local-config-" + profile + ".properties"));
                 } catch (FileNotFoundException e) {
-                    LOGGER.error("系统指定了profile：[{}]生效，但是平台在classpath中没有找到ak-config-{}.properties文件，切换到默认配置文件(ak-config.properties)!", profile, profile);
+                    LOGGER.error("系统指定了profile：[{}]生效，但是平台在classpath中没有找到ak-local-config-{}.properties文件，切换到默认配置文件(ak-local-config.properties)!", profile, profile);
                 }
             }
 
             if (this.mainPropertySource == null) {
                 try {
-                    this.mainPropertySource = new ResourcePropertySource(new ClassPathResource("ak-config.properties"));
+                    this.mainPropertySource = new ResourcePropertySource(new ClassPathResource( "conf" + File.separator + "ak-local-config.properties"));
                 } catch (FileNotFoundException ffe) {
                 }
             }

@@ -4,7 +4,7 @@ import {Config} from './config';
  * @description 开发环境转发的地址
  */
 export class ConfigDev extends Config {
-    public apiAddr = '';
+    public apiAddr = 'http://127.0.0.1:8080';
     public menus = [
         {
             iconCls: 'icon-company',

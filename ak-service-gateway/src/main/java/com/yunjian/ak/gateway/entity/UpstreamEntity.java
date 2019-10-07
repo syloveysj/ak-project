@@ -1,0 +1,57 @@
+package com.yunjian.ak.gateway.entity;
+
+import com.yunjian.ak.dao.annotation.Column;
+import com.yunjian.ak.dao.annotation.ColumnType;
+import com.yunjian.ak.dao.annotation.Entity;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @Description:
+ * @Author: yong.sun
+ * @Date: 2019/10/4 0:18
+ * @Version 1.0
+ */
+@Entity(
+        id = "entity:com.yunjian.ak.gateway.entity.Upstream",
+        table = "upstreams",
+        ds = "sys",
+        cache = false
+)
+@Data
+public class UpstreamEntity {
+    @ApiModelProperty(value = "目标网关")
+    private GatewayHost host;
+
+    @Column( id = "id", type = ColumnType.custom )
+    @ApiModelProperty(value = "ID")
+    private String id;
+
+    @Column( id = "name" )
+    @ApiModelProperty(value = "主机名")
+    @NotBlank(message = "主机名不能为空")
+    private String name;
+
+    @Column( id = "algorithm" )
+    @ApiModelProperty(value = "负载均衡算法")
+    private String algorithm;
+
+    @Column( id = "slots" )
+    @ApiModelProperty(value = "负载均衡算法中的权重")
+    private Integer slots;
+
+    @Column( id = "alias" )
+    @ApiModelProperty(value = "别名")
+    private String alias;
+
+    @Column( id = "created_at" )
+    @ApiModelProperty(value = "创建时间")
+    private Date createdAt;
+
+    @ApiModelProperty(value = "标签")
+    private List<String> tags;
+}

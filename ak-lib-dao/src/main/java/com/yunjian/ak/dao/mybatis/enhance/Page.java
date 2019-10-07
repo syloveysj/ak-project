@@ -13,35 +13,35 @@ import java.util.List;
  */
 public class Page<T> implements Serializable {
     private static final long serialVersionUID = 3849600749834631930L;
-    private int pageIndex;
-    private int pageSize;
+    private int page;
+    private int pagesize;
     private int total;
-    private List<T> contents;
+    private List<T> rows;
 
     public Page() {
     }
 
-    public Page(Pageable pageable, List<T> contents) {
+    public Page(Pageable pageable, List<T> rows) {
         Preconditions.checkArgument(pageable != null, "参数pageable不能为null");
-        this.pageIndex = pageable.getPageIndex();
-        this.pageSize = pageable.getPageSize();
+        this.page = pageable.getPageIndex();
+        this.pagesize = pageable.getPageSize();
         this.total = pageable.getTotal();
-        this.contents = contents;
+        this.rows = rows;
     }
 
-    public Page(int pageIndex, int pageSize, int total, List<T> contents) {
-        this.pageIndex = pageIndex;
-        this.pageSize = pageSize;
+    public Page(int page, int pagesize, int total, List<T> rows) {
+        this.page = page;
+        this.pagesize = pagesize;
         this.total = total;
-        this.contents = contents;
+        this.rows = rows;
     }
 
-    public int getPageIndex() {
-        return this.pageIndex;
+    public int getPage() {
+        return this.page;
     }
 
-    public int getPageSize() {
-        return this.pageSize;
+    public int getPagesize() {
+        return this.pagesize;
     }
 
     public int getTotal() {
@@ -52,24 +52,24 @@ public class Page<T> implements Serializable {
         this.total = total;
     }
 
-    public List<T> getContents() {
-        return this.contents;
+    public List<T> getRows() {
+        return this.rows;
     }
 
     public int getTotalPage() {
-        return (this.total + this.pageSize - 1) / this.pageSize;
+        return (this.total + this.pagesize - 1) / this.pagesize;
     }
 
-    public void setPageIndex(int pageIndex) {
-        this.pageIndex = pageIndex;
+    public void setPage(int page) {
+        this.page = page;
     }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
+    public void setPagesize(int pagesize) {
+        this.pagesize = pagesize;
     }
 
-    public void setContents(List<T> contents) {
-        this.contents = contents;
+    public void setRows(List<T> rows) {
+        this.rows = rows;
     }
 }
 

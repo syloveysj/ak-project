@@ -11,7 +11,7 @@ public interface AkBusinessException {
 
     String getErrorNum();
 
-    AkManagedException setErrorNum(String errorNum);
+    AkBusinessException setErrorNum(String errorNum);
 
     String getMessage();
 
