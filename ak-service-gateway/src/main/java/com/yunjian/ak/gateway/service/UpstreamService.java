@@ -40,7 +40,7 @@ public class UpstreamService {
     public Page<UpstreamEntity> getListByPage(int page, int pagesize, String sort, String order, String cond) {
         Pageable pageable = new Pageable(page, pagesize);
         Sortable sortable = SortableUtil.getSortable(sort, order);
-        UpstreamEntity entity = StringUtils.isNotBlank(cond) ? (UpstreamEntity) JSON.parseObject(cond, UpstreamEntity.class) : new UpstreamEntity();
+        UpstreamEntity entity = StringUtils.isNotBlank(cond) ? JSON.parseObject(cond, UpstreamEntity.class) : new UpstreamEntity();
         return DaoFactory.create(UpstreamEntity.class).selectByPage(entity, pageable, sortable, true);
     }
 }

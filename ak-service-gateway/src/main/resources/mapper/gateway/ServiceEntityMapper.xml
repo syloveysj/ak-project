@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunjian.ak.gateway.entity.ServiceEntityMapper">
+    <!-- 数据库中表名为:services的列名 -->
+    <sql id="column_sql">
+        services.id,
+        services.name,
+        services.protocol,
+        services.host,
+        services.port,
+        services.path,
+        services.url,
+        services.retries,
+        services.connect_timeout,
+        services.read_timeout,
+        services.write_timeout,
+        services.alias,
+        services.updated_at,
+        services.created_at
+    </sql>
+
+    <!-- 数据库中表名为:services的非空where条件 -->
+    <sql id="whereClause_sql">
+        <if test="id != null">and services.id::text = #{id}</if>
+        <if test="name != null">and services.name = #{name}</if>
+        <if test="protocol != null">and services.protocol = #{protocol}</if>
+        <if test="host != null">and services.host = #{host}</if>
+        <if test="port != null">and services.port = #{port}</if>
+        <if test="path != null">and services.path = #{path}</if>
+        <if test="url != null">and services.url = #{url}</if>
+        <if test="retries != null">and services.retries = #{retries}</if>
+        <if test="connectTimeout != null">and services.connect_timeout = #{connectTimeout}</if>
+        <if test="readTimeout != null">and services.read_timeout = #{readTimeout}</if>
+        <if test="writeTimeout != null">and services.write_timeout = #{writeTimeout}</if>
+        <if test="alias != null">and services.alias = #{alias}</if>
+        <if test="updatedAt != null">and services.updated_at = #{updatedAt}</if>
+        <if test="createdAt != null">and services.created_at = #{createdAt}</if>
+    </sql>
+
+    <!-- Service的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+    <resultMap id="result_Service_Map" type="com.yunjian.ak.gateway.entity.ServiceEntity">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="protocol" property="protocol" />
+        <result column="host" property="host" />
+        <result column="port" property="port" />
+        <result column="path" property="path" />
+        <result column="url" property="url" />
+        <result column="retries" property="retries" />
+        <result column="connect_timeout" property="connectTimeout" />
+        <result column="read_timeout" property="readTimeout" />
+        <result column="write_timeout" property="writeTimeout" />
+        <result column="alias" property="alias" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="created_at" property="createdAt" />
+    </resultMap>
+
+    <!--获得类名为:Service对应的数据库表满足条件的数据总行数 -->
+    <select id="count" parameterType="com.yunjian.ak.gateway.entity.ServiceEntity" resultType="int">
+        select count(*) from services
+        <where>
+            <include refid="whereClause_sql"/>
+        </where>
+    </select>
+
+    <!-- 通过Service的id将Service中属性值不为null的数据更新到数据库对应的表中 -->
+    <update id="update" parameterType="com.yunjian.ak.gateway.entity.ServiceEntity">
+        update services
+        <set>
+            <trim suffixOverrides=",">
+                <if test="alias != null">alias = #{alias},</if>
+            </trim>
+        </set>
+        <where>
+            <choose>
+                <when test="id != null">and id::text = #{id}</when>
+                <otherwise>and id::text = </otherwise>
+            </choose>
+        </where>
+    </update>
+
+    <!-- 获得一个Service对象,以参数Service对象中不为空的属性作为条件进行查询 -->
+    <select id="select" parameterType="com.yunjian.ak.gateway.entity.ServiceEntity" resultMap="result_Service_Map">
+        select
+        <include refid="column_sql"/>
+        from services
+        <where>
+            <include refid="whereClause_sql"/>
+        </where>
+    </select>
+
+    <!-- 查询数据库中表名为:services的所有数据 -->
+    <select id="selectAll" resultMap="result_Service_Map">
+        select
+        <include refid="column_sql"/>
+        from services
+    </select>
+
+    <!-- 通过Service的id获得对应数据库中表的数据对象 -->
+    <select id="selectByID" parameterType="String" resultMap="result_Service_Map">
+        select
+        <include refid="column_sql"/>
+        from services
+        where services.id::text = #{id}
+    </select>
+
+    <!-- 获得一个Service对象,以参数Service对象中不为空的属性作为条件进行分页查询 -->
+    <select id="selectByPage" parameterType="com.yunjian.ak.gateway.entity.ServiceEntity" resultMap="result_Service_Map">
+        select
+        <include refid="column_sql"/>
+        from services
+        <where>
+            <include refid="whereClause_sql"/>
+        </where>
+    </select>
+
+</mapper>

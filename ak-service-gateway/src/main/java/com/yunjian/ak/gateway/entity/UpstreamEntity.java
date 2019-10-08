@@ -17,7 +17,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Entity(
-        id = "entity:com.yunjian.ak.gateway.entity.Upstream",
+        id = "entity:com.yunjian.ak.gateway.entity.UpstreamEntity",
         table = "upstreams",
         ds = "sys",
         cache = false
@@ -25,7 +25,7 @@ import java.util.List;
 @Data
 public class UpstreamEntity {
     @ApiModelProperty(value = "目标网关")
-    private GatewayHost host;
+    private GatewayHost gatewayHost;
 
     @Column( id = "id", type = ColumnType.custom )
     @ApiModelProperty(value = "ID")
@@ -54,4 +54,7 @@ public class UpstreamEntity {
 
     @ApiModelProperty(value = "标签")
     private List<String> tags;
+
+    @ApiModelProperty(value = "目标地址列表")
+    private List<TargetEntity> targets;
 }

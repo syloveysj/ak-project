@@ -3,13 +3,16 @@ package com.yunjian.ak.gateway.controller;
 import com.yunjian.ak.dao.mybatis.enhance.Page;
 import com.yunjian.ak.exception.ValidationException;
 import com.yunjian.ak.gateway.entity.GatewayHost;
+import com.yunjian.ak.gateway.entity.TargetEntity;
 import com.yunjian.ak.gateway.entity.UpstreamEntity;
 import com.yunjian.ak.gateway.service.UpstreamService;
 import com.yunjian.ak.kong.client.impl.KongClient;
+import com.yunjian.ak.kong.client.model.admin.target.Target;
 import com.yunjian.ak.kong.client.model.admin.upstream.Upstream;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  * @Description:
@@ -43,18 +48,31 @@ public class UpstreamController {
     public UpstreamEntity insert(@Valid @RequestBody UpstreamEntity entity) {
         LOGGER.debug("请求 UpstreamController 的 insert!");
 
-        if(StringUtils.isEmpty(entity.getHost().getUrl())) {
+        if(StringUtils.isEmpty(entity.getGatewayHost().getUrl())) {
             throw new ValidationException("网关地址不能为空");
         }
-        KongClient kongClient = new KongClient(entity.getHost().getUrl());
+
+        // 调用接口添加上游
+        KongClient kongClient = new KongClient(entity.getGatewayHost().getUrl());
         Upstream request = new Upstream();
         BeanUtils.copyProperties(entity, request);
         Upstream result = kongClient.getUpstreamService().createUpstream(request);
+
+        // 调用接口添加目标
+        if(entity.getTargets() != null && entity.getTargets().size() > 0){
+            for (TargetEntity targetEntity : entity.getTargets()) {
+                Target target = new Target();
+                BeanUtils.copyProperties(targetEntity, target);
+                kongClient.getTargetService().createTarget(result.getId(), target);
+            }
+        }
+
+        // 通过数据库更新别名
         UpstreamEntity data = new UpstreamEntity();
         BeanUtils.copyProperties(result, data);
-
         data.setAlias(entity.getAlias());
         this.upstreamService.update(data);
+
         return data;
     }
 
@@ -83,6 +101,8 @@ public class UpstreamController {
         if(StringUtils.isEmpty(entity.getUrl())) {
             throw new ValidationException("网关地址不能为空");
         }
+
+        // 调用接口删除上游
         KongClient kongClient = new KongClient(entity.getUrl());
         kongClient.getUpstreamService().deleteUpstream(id);
     }
