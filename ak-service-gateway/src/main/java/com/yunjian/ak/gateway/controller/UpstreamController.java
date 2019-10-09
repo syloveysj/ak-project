@@ -8,6 +8,7 @@ import com.yunjian.ak.gateway.entity.UpstreamEntity;
 import com.yunjian.ak.gateway.service.UpstreamService;
 import com.yunjian.ak.kong.client.impl.KongClient;
 import com.yunjian.ak.kong.client.model.admin.target.Target;
+import com.yunjian.ak.kong.client.model.admin.target.TargetList;
 import com.yunjian.ak.kong.client.model.admin.upstream.Upstream;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -85,6 +86,19 @@ public class UpstreamController {
     )})
     public UpstreamEntity update(@RequestBody UpstreamEntity entity) {
         LOGGER.debug("请求 UpstreamController 的 update!");
+
+        if(StringUtils.isEmpty(entity.getGatewayHost().getUrl())) {
+            throw new ValidationException("网关地址不能为空");
+        }
+
+        // 调用接口获取所有目标
+        KongClient kongClient = new KongClient(entity.getGatewayHost().getUrl());
+        TargetList targetList = kongClient.getTargetService().listActiveTargets(entity.getId());
+
+        // 调用接口删除所有目标
+        for(Target target : targetList.getData()) {
+            kongClient.getTargetService().deleteTarget(entity.getId(), target.getId());
+        }
 
         return this.upstreamService.update(entity);
     }
