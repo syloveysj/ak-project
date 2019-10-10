@@ -30,7 +30,7 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
                 public nzMessageService: NzMessageService,
                 public cdr: ChangeDetectorRef,
                 public toolService: ToolService,
-                public atewayService: GatewayService,
+                public gatewayService: GatewayService,
                 public config: Config) {
         super(baseService, rd, modalService, nzMessageService);
     }
@@ -68,7 +68,7 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
                 this.loading = true;
             }),
             switchMap(val => defer(() => {
-                return this.atewayService.getUpstreamList(val).pipe(
+                return this.gatewayService.getUpstreamList(val).pipe(
                     finalize(() => this.loading = false));
                 console.log(val);
                 // const demo = new Subject<string | string[]>();
@@ -91,18 +91,36 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
     openWin(bean: any) {
         const modal = this.modalService.create({
             nzWrapClassName: 'vertical-center-modal large',
-            nzTitle: '新建应用服务器集群服务',
+            nzTitle: (bean===null ? '新建' : '维护') + '应用服务器集群服务',
             nzMaskClosable: false,
             nzFooter: [
                 {
-                    label: '新建',
+                    label: '保存',
                     shape: 'primary',
                     disabled: (componentInstance) => {
                         return !componentInstance.form.valid;
                     },
+                    loading: (componentInstance) => {
+                        return componentInstance.loading;
+                    },
                     onClick: (componentInstance) => {
-
-                        modal.destroy();
+                        if(bean === null) {
+                            this.gatewayService.addUpstream(componentInstance.getFromValues()).pipe(
+                                finalize(() => componentInstance.loading = false)
+                            ).subscribe(
+                                (res) => {
+                                    modal.destroy(true);
+                                }
+                            );
+                        } else {
+                            this.gatewayService.updateUpstream(bean.id, componentInstance.getFromValues()).pipe(
+                                finalize(() => componentInstance.loading = false)
+                            ).subscribe(
+                                (res) => {
+                                    modal.destroy(true);
+                                }
+                            );
+                        }
                     }
                 },
                 {
@@ -121,11 +139,17 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
 
         modal.afterClose.subscribe((result) => {
             if (result) {
+                this.resetPage();
             }
         });
     }
 
     deleteCluster(bean: any) {
+        this.gatewayService.removeUpstream(bean.id).subscribe(
+            (res) => {
+                this.selfPage.next(this.selfQueryParams.page);
+            }
+        );
     }
 
     resetFilters() {

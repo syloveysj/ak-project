@@ -5,10 +5,10 @@
     <sql id="column_sql">
         routes.id,
         routes.name,
-        routes.protocols,
-        routes.methods,
-        routes.hosts,
-        routes.paths,
+--         routes.protocols,
+--         routes.methods,
+--         routes.hosts,
+--         routes.paths,
         routes.strip_path,
         routes.preserve_host,
         routes.alias,
@@ -31,10 +31,10 @@
     <resultMap id="result_Route_Map" type="com.yunjian.ak.gateway.entity.RouteEntity">
         <id column="id" property="id" />
         <result column="name" property="name" />
-        <result column="protocols" property="protocols" />
-        <result column="methods" property="methods" />
-        <result column="hosts" property="hosts" />
-        <result column="paths" property="paths" />
+        <!--<result column="protocols" property="protocols" />-->
+        <!--<result column="methods" property="methods" />-->
+        <!--<result column="hosts" property="hosts" />-->
+        <!--<result column="paths" property="paths" />-->
         <result column="strip_path" property="stripPath" />
         <result column="preserve_host" property="preserveHost" />
         <result column="alias" property="alias" />

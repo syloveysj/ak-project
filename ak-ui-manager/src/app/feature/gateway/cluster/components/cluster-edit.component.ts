@@ -3,7 +3,8 @@ import {BaseService} from '@service/http/base.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {Config} from '@config/config';
-import { UUID } from 'angular2-uuid';
+import {UUID} from 'angular2-uuid';
+import {isNotEmpty} from "@core/utils/string.util";
 
 @Component({
     selector: 'app-gateway-cluster-edit',
@@ -27,13 +28,13 @@ export class ClusterEditComponent implements OnInit {
     loading = false;
     editing = false;
 
-    upstreamList: any[] = [{id: 'aa'}, {id: 'bb'}];
+    targets: any[] = [];
     editCache: { [key: string]: any } = {};
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            clusterName: [this.bean == null ? null : this.bean.clusterName, [Validators.required]],
-            clusterCode: [this.bean == null ? null : this.bean.clusterCode]
+            clusterName: [this.bean == null ? null : this.bean.alias, [Validators.required]],
+            clusterCode: [this.bean == null ? null : this.bean.id]
         });
 
         // 编辑时初始化
@@ -43,10 +44,30 @@ export class ClusterEditComponent implements OnInit {
         this.updateEditCache();
     }
 
+    getFromValues(): any {
+        const values = this.form.value;
+        const list = [];
+        this.targets.forEach(item => {
+            list.push({
+                target: item.ip + ':' + (isNotEmpty(item.port) ? item.port : '80'),
+                weight: isNotEmpty(item.weight) ? item.weight : '100'
+            });
+        });
+        const result = {
+            alias: values.clusterName,
+            name: isNotEmpty(values.clusterCode) ? values.clusterCode : UUID.UUID(),
+            targets: list
+        };
+        if(this.bean !== null) {
+            result['id'] = this.bean.id;
+        }
+        return result;
+    }
+
     updateEditCache(): void {
         this.editing = false;
         this.editCache = {};
-        this.upstreamList.forEach(item => {
+        this.targets.forEach(item => {
             this.editCache[item.id] = {
                 edit: false,
                 data: { ...item }
@@ -59,14 +80,14 @@ export class ClusterEditComponent implements OnInit {
     }
 
     cancelEdit(id: string): void {
-        const index = this.upstreamList.findIndex(item => item.id === id);
+        const index = this.targets.findIndex(item => item.id === id);
         if (this.bean != null) {
-            this.upstreamList.splice(index, 1);
+            this.targets.splice(index, 1);
             this.updateEditCache();
-            this.upstreamList = [...this.upstreamList];
+            this.targets = [...this.targets];
         } else {
             this.editCache[id] = {
-                data: { ...this.upstreamList[index] },
+                data: { ...this.targets[index] },
                 edit: false
             };
         }
@@ -74,23 +95,26 @@ export class ClusterEditComponent implements OnInit {
 
     addTarget() {
         const newId = UUID.UUID();
-        this.upstreamList.push({
-            id: newId
+        this.targets.push({
+            id: newId,
+            ip: '',
+            port: '8080',
+            weight: '100'
         });
         this.updateEditCache();
         this.editCache[newId].edit = true;
         this.editing = true;
-        this.upstreamList = [...this.upstreamList];
+        this.targets = [...this.targets];
     }
 
     saveTarget(id: string) {
         if (this.bean != null) {
 
         } else {
-            const index = this.upstreamList.findIndex(item => item.id === id);
-            Object.assign(this.upstreamList[index], this.editCache[id].data);
+            const index = this.targets.findIndex(item => item.id === id);
+            Object.assign(this.targets[index], this.editCache[id].data);
             this.updateEditCache();
-            this.upstreamList = [...this.upstreamList];
+            this.targets = [...this.targets];
         }
     }
 

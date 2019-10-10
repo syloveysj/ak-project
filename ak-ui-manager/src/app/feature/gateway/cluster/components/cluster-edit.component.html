@@ -37,7 +37,7 @@
             <div class="tabset-wrapper">
                 <nz-table #pT1 nzBordered
                           [nzScroll]="{ y: '240px' }"
-                          [nzData]="upstreamList"
+                          [nzData]="targets"
                           [nzSize]="'small'"
                           [nzFrontPagination]="false"
                           [nzShowPagination]="false">
@@ -66,7 +66,7 @@
                                 {{ item?.port }}
                             </ng-container>
                             <ng-template #portInputTpl>
-                                <input type="text" nz-input [(ngModel)]="editCache[item.id].data.port" [ngModelOptions]="{standalone: true}" />
+                                <input type="text" nz-input [(ngModel)]="editCache[item.id].data.port" appNumberOnly [scale]="0" [ngModelOptions]="{standalone: true}" />
                             </ng-template>
                         </td>
                         <td nzAlign="right">
@@ -74,7 +74,7 @@
                                 {{ item?.weight }}
                             </ng-container>
                             <ng-template #weightInputTpl>
-                                <input type="text" nz-input [(ngModel)]="editCache[item.id].data.weight" [ngModelOptions]="{standalone: true}" />
+                                <input type="text" nz-input [(ngModel)]="editCache[item.id].data.weight" appNumberOnly [scale]="0" [ngModelOptions]="{standalone: true}" />
                             </ng-template>
                         </td>
                         <td nzAlign="center">

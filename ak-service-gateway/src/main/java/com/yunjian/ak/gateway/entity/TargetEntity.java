@@ -23,9 +23,6 @@ import java.util.List;
 )
 @Data
 public class TargetEntity {
-    @ApiModelProperty(value = "目标网关")
-    private GatewayHost gatewayHost;
-
     @Column( id = "id", type = ColumnType.custom )
     @ApiModelProperty(value = "ID")
     private String id;
