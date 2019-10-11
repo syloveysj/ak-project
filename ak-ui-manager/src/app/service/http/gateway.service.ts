@@ -4,7 +4,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Config} from '@config/config';
 import {map} from 'rxjs/operators';
 import {CustomResponse, Paging} from '@model/common';
-import {HttpQueryEncoderUtil} from "@service/utils/http-query-encoder.util";
+import {HttpQueryEncoderUtil} from "@core/utils/http-query-encoder.util";
 
 @Injectable({
     providedIn: 'root',

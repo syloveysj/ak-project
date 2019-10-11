@@ -153,6 +153,7 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
     }
 
     resetFilters() {
+        this.selfPage.next(this.selfQueryParams.page);
     }
 
     ngAfterViewInit(): void {
