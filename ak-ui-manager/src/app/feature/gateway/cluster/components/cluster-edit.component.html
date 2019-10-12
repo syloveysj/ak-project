@@ -85,7 +85,7 @@
                                     </button>&nbsp;
                                 </ng-container>
                                 <button nz-button nzType="danger" nz-popconfirm nzTitle="您确认要删除【{{item?.ip + ':' + item?.port}}】吗?"
-                                        (nzOnConfirm)="deleteServer(item)">
+                                        (nzOnConfirm)="deleteTargets(item)">
                                     <i nz-icon nzType="delete"></i>
                                 </button>
                             </ng-container>

@@ -4,7 +4,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {UUID} from 'angular2-uuid';
-import {isNotEmpty} from "@core/utils/string.util";
+import {isEmpty, isNotEmpty} from "@core/utils/string.util";
+import {GatewayService} from "@service/http/gateway.service";
 
 @Component({
     selector: 'app-gateway-cluster-edit',
@@ -20,7 +21,8 @@ export class ClusterEditComponent implements OnInit {
                 public config: Config,
                 private nzMessageService: NzMessageService,
                 public modalService: NzModalService,
-                public baseService: BaseService) {
+                public baseService: BaseService,
+                public gatewayService: GatewayService) {
     }
 
     @Input() bean: any;
@@ -37,11 +39,21 @@ export class ClusterEditComponent implements OnInit {
             clusterCode: [this.bean == null ? null : this.bean.id]
         });
 
+        this.initTaggets();
+    }
+
+    initTaggets() {
         // 编辑时初始化
         if (this.bean != null) {
+            this.gatewayService.getUpstreamTargetList(this.bean.id).subscribe(
+                (res) => {
+                    this.targets = res || [];
+                    this.updateEditCache();
+                }
+            );
+        } else {
+            this.updateEditCache();
         }
-
-        this.updateEditCache();
     }
 
     getFromValues(): any {
@@ -58,7 +70,7 @@ export class ClusterEditComponent implements OnInit {
             name: isNotEmpty(values.clusterCode) ? values.clusterCode : UUID.UUID(),
             targets: list
         };
-        if(this.bean !== null) {
+        if(this.bean != null) {
             result['id'] = this.bean.id;
         }
         return result;
@@ -81,10 +93,11 @@ export class ClusterEditComponent implements OnInit {
 
     cancelEdit(id: string): void {
         const index = this.targets.findIndex(item => item.id === id);
-        if (this.bean != null) {
+        if('flag' in this.targets[index] && this.bean != null) {
+            //编辑状态下 -> 新增目标状态，取消移除
             this.targets.splice(index, 1);
-            this.updateEditCache();
             this.targets = [...this.targets];
+            this.updateEditCache();
         } else {
             this.editCache[id] = {
                 data: { ...this.targets[index] },
@@ -99,30 +112,66 @@ export class ClusterEditComponent implements OnInit {
             id: newId,
             ip: '',
             port: '8080',
-            weight: '100'
+            weight: '100',
+            //标记新增
+            flag: true
         });
-        this.updateEditCache();
         this.editCache[newId].edit = true;
         this.editing = true;
         this.targets = [...this.targets];
+        this.updateEditCache();
     }
 
     saveTarget(id: string) {
-        if (this.bean != null) {
+        const index = this.targets.findIndex(item => item.id === id);
+        Object.assign(this.targets[index], this.editCache[id].data);
 
+        const item = this.targets[index];
+        if (this.bean != null) {
+            this.gatewayService.addTarget(this.bean.id, {target:item.ip + ':' + (isNotEmpty(item.port) ? item.port : '80'), weight: isNotEmpty(item.weight) ? item.weight : '100'}).subscribe(
+                (res) => {
+                    this.initTaggets();
+                }
+            );
         } else {
-            const index = this.targets.findIndex(item => item.id === id);
-            Object.assign(this.targets[index], this.editCache[id].data);
-            this.updateEditCache();
             this.targets = [...this.targets];
+            this.updateEditCache();
         }
     }
 
-    deleteTargets() {
-
-    }
-
-    deleteServer(bean: any) {
+    deleteTargets(obj:any) {
+        if(this.bean != null) {
+            if(obj === null) {
+                let ids = "";
+                this.targets.forEach(item => {
+                    if(item.checked === true) {
+                        ids += isEmpty(ids)? item.id : ',' + item.id;
+                    }
+                });
+                if(isNotEmpty(ids)) {
+                    this.gatewayService.removeTargetList(this.bean.id, ids).subscribe(
+                        (res) => {
+                            this.initTaggets();
+                        }
+                    );
+                }
+            } else {
+                this.gatewayService.removeTarget(this.bean.id, obj.id).subscribe(
+                    (res) => {
+                        this.initTaggets();
+                    }
+                );
+            }
+        } else {
+            if(obj === null) {
+                this.targets = this.targets.filter(item => !item.checked);
+            } else {
+                const index = this.targets.findIndex(item => item.id === obj.id);
+                this.targets.splice(index, 1);
+                this.targets = [...this.targets];
+            }
+            this.updateEditCache();
+        }
     }
 
 }

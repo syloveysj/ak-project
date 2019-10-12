@@ -11,6 +11,7 @@ import com.yunjian.ak.kong.client.model.admin.upstream.Upstream;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description:
@@ -135,7 +137,7 @@ public class UpstreamController {
             message = "添加Target成功",
             response = Target.class
     )})
-    public Target insert(@PathVariable("id") String id, @Valid @RequestBody TargetEntity entity) {
+    public Target insertTargets(@PathVariable("id") String id, @Valid @RequestBody TargetEntity entity) {
         LOGGER.debug("请求 UpstreamController 的 Target insert!");
 
         // 调用接口添加目标
@@ -152,10 +154,27 @@ public class UpstreamController {
             code = 200,
             message = "删除指定id的Target成功"
     )})
-    public void delete(@PathVariable("id") String id, @PathVariable("tid") String tid) {
+    public void deleteTargets(@PathVariable("id") String id, @PathVariable("tid") String tid) {
         LOGGER.debug("请求UpstreamController删除指定id的Target:{}!", tid);
 
         // 调用接口删除上游
         kongClient.getTargetService().deleteTarget(id, tid);
+    }
+
+    @DeleteMapping("/{id}/targets")
+    @ApiOperation("删除指定id的Target")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "删除指定id的Target成功"
+    )})
+    public void deleteTargetsList(@PathVariable("id") String id, @RequestBody Map params) {
+        LOGGER.debug("请求UpstreamController删除指定ids的Target!");
+
+        String idStr = MapUtils.getString(params, "ids", "");
+        String ids[] = idStr.split(",");
+        // 调用接口删除上游
+        for(String tid : ids) {
+            kongClient.getTargetService().deleteTarget(id, tid);
+        }
     }
 }

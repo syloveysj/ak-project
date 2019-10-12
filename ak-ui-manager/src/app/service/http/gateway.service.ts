@@ -59,4 +59,10 @@ export class GatewayService {
         return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/upstreams/${id}/targets/${targetId}`)
             .pipe(map((c: CustomResponse<any>) => c.data));
     }
+
+    // 删除目标s
+    public removeTargetList(id: string, ids: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/upstreams/${id}/targets`, {params: {ids}})
+            .pipe(map((c: CustomResponse<any>) => c.data));
+    }
 }
