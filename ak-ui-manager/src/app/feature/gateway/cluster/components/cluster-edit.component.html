@@ -26,10 +26,13 @@
     </div>
     <nz-card [nzBordered]="false" [nzSize]="'small'" nzTitle="服务器列表" [nzExtra]="extraTemplate">
         <ng-template #extraTemplate>
-            <button nz-button [disabled]="editing" nzType="primary" nzShape="circle" nz-tooltip nzTitle="添加" (click)="addTarget()">
+            <button nz-button [disabled]="editing" nzType="primary" nzShape="circle"
+                    (click)="addTarget()">
                 <i nz-icon nzType="file-add"></i>
             </button>&nbsp;
-            <button nz-button [disabled]="editing" nzType="danger" nzShape="circle" nz-tooltip nzTitle="删除" (click)="deleteTargets()">
+            <button nz-button [disabled]="editing" nzType="danger" nzShape="circle"
+                    nz-popconfirm nzTitle="您确认要删除所选记录吗?"
+                    (nzOnConfirm)="deleteTargets()">
                 <i nz-icon nzType="delete"></i>
             </button>
         </ng-template>

@@ -81,10 +81,12 @@ export class ClusterEditComponent implements OnInit {
         const result = {
             alias: values.clusterName,
             name: isNotEmpty(values.clusterCode) ? values.clusterCode : UUID.UUID(),
+            slots: 10000,
             targets: list
         };
         if(this.bean != null) {
             result['id'] = this.bean.id;
+            result['slots'] = this.bean.slots;
         }
         return result;
     }
