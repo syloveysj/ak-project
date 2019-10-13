@@ -4,6 +4,7 @@ import com.yunjian.ak.dao.mybatis.enhance.Page;
 import com.yunjian.ak.gateway.entity.TargetEntity;
 import com.yunjian.ak.gateway.entity.UpstreamEntity;
 import com.yunjian.ak.gateway.service.UpstreamService;
+import com.yunjian.ak.kong.client.exception.KongClientException;
 import com.yunjian.ak.kong.client.impl.KongClient;
 import com.yunjian.ak.kong.client.model.admin.target.Target;
 import com.yunjian.ak.kong.client.model.admin.target.TargetList;
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -125,9 +127,14 @@ public class UpstreamController {
         LOGGER.debug("请求UpstreamController获取Upstream的Target列表!");
 
         // 调用接口获取所有目标
-        TargetList targetList = kongClient.getTargetService().listActiveTargets(id);
+        try {
+            TargetList targetList = kongClient.getTargetService().listTargets(id, null, null, null, 100L, null);
+            return targetList.getData();
+        } catch (KongClientException e) {
+            e.printStackTrace();
+        }
 
-        return targetList.getData();
+        return null;
     }
 
     @PostMapping("/{id}/targets")
@@ -167,13 +174,14 @@ public class UpstreamController {
             code = 200,
             message = "删除指定id的Target成功"
     )})
-    public void deleteTargetsList(@PathVariable("id") String id, @RequestBody Map params) {
+    public void deleteTargetsList(@PathVariable("id") String id, @RequestParam String ids) {
         LOGGER.debug("请求UpstreamController删除指定ids的Target!");
 
-        String idStr = MapUtils.getString(params, "ids", "");
-        String ids[] = idStr.split(",");
+        if(StringUtils.isEmpty(ids)) return;
+
+        String idList[] = ids.split(",");
         // 调用接口删除上游
-        for(String tid : ids) {
+        for(String tid : idList) {
             kongClient.getTargetService().deleteTarget(id, tid);
         }
     }

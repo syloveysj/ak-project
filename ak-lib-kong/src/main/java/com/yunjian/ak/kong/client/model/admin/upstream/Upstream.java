@@ -19,6 +19,4 @@ public class Upstream {
     private String name;
     @SerializedName("orderlist")
     private List<Integer> orderList;
-    @SerializedName("created_at")
-    private Long createdAt;
 }

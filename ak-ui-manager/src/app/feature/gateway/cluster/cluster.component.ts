@@ -5,8 +5,8 @@ import {NzMessageService, NzModalService, NzThComponent} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {Option} from '@model/common';
 import {ToolService} from '@core/utils/tool.service';
-import {debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap, tap} from 'rxjs/operators';
-import {combineLatest, defer, Subject} from 'rxjs';
+import {debounceTime, distinctUntilChanged, finalize, map, switchMap, tap} from 'rxjs/operators';
+import {combineLatest, defer} from 'rxjs';
 import {defaultDebounceTime} from '@core/utils/constant.util';
 import {ClusterEditComponent} from '@feature/gateway/cluster/components/cluster-edit.component';
 import {GatewayService} from "@service/http/gateway.service";
@@ -21,7 +21,7 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
     scrollXWidth = 0;
 
     dynamicKeys: Option[] = [
-        {id: 'name', text: '名称'}
+        {id: 'alias', text: '名称'}
     ];
 
     constructor(public baseService: BaseService,
@@ -39,11 +39,11 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
         // 初始化页面参数
         this.selfQueryParams = {
             ...this.selfQueryParams,
-            order: null,
-            sort: null,
+            order: 'desc',
+            sort: 'createdAt',
             pagesize: 10,
 
-            dynamicKey: 'name'
+            dynamicKey: 'alias'
         };
 
         const {
@@ -55,11 +55,13 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
         combineLatest([dynamicKey$, keyword$, page$, pageSize$, sort$, order$]).pipe(
             map(([selfDynamicKey, selfKeyword, selfPage, selfPageSize, selfSort, selfOrder]) => {
                 const params: any = {};
-                (selfKeyword) && (params[selfDynamicKey] = selfKeyword);
+                let cond: any = null;
+                (selfKeyword) && ((!cond) && (cond={}) && (cond[selfDynamicKey] = selfKeyword));
                 (selfPage !== null) && (params.page = selfPage);
                 (selfPageSize !== null) && (params.pagesize = selfPageSize);
                 (selfSort) && (params.sort = selfSort);
                 (selfOrder) && (params.order = selfOrder);
+                (cond) && (params.cond = JSON.stringify(cond));
                 return params;
             }),
             debounceTime(defaultDebounceTime),
@@ -84,6 +86,7 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
             }))
         ).subscribe((data: any) => {
             this.loading = false;
+            console.log(data);
             this.data = data;
         });
     }
@@ -98,7 +101,7 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
                     label: '保存',
                     shape: 'primary',
                     disabled: (componentInstance) => {
-                        return !componentInstance.form.valid;
+                        return !componentInstance.form.valid || componentInstance.editing;
                     },
                     loading: (componentInstance) => {
                         return componentInstance.loading;

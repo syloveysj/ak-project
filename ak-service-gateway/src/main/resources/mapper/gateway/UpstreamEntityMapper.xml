@@ -8,16 +8,21 @@
         upstreams.algorithm,
         upstreams.slots,
         upstreams.alias,
-        upstreams.created_at
+        upstreams.created_at,
+        (select string_agg(t.target,', ') from (select distinct on(target)id,created_at,target,weight from targets where upstream_id=upstreams.id order by target,created_at desc) t where t.weight!=0) targets_memo
     </sql>
 
     <!-- 数据库中表名为:upstreams的非空where条件 -->
     <sql id="whereClause_sql">
         <if test="id != null">and upstreams.id::text = #{id}</if>
-        <if test="name != null">and upstreams.name = #{name}</if>
+        <if test="name != null and name != '' ">
+            and upstreams.name like concat('%',#{name},'%')
+        </if>
         <if test="algorithm != null">and upstreams.algorithm = #{algorithm}</if>
         <if test="slots != null">and upstreams.slots = #{slots}</if>
-        <if test="alias != null">and upstreams.alias = #{alias}</if>
+        <if test="alias != null and alias != '' ">
+            and upstreams.alias like concat('%',#{alias},'%')
+        </if>
         <if test="createdAt != null">and upstreams.created_at = #{createdAt}</if>
     </sql>
 
@@ -29,6 +34,7 @@
         <result column="slots" property="slots" />
         <result column="alias" property="alias" />
         <result column="created_at" property="createdAt" />
+        <result column="targets_memo" property="targetsMemo" />
     </resultMap>
 
     <!--获得类名为:Upstream对应的数据库表满足条件的数据总行数 -->

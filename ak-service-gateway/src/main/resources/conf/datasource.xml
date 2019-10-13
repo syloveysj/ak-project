@@ -8,7 +8,7 @@
     <poolAttribute key="maxOpenPreparedStatements" value="${db_maxOpenPreparedStatements}" desc="预编译缓存数"/>
     <poolAttribute key="maxIdle" value="${db_maxIdle}" desc="最大空闲数"/>
     <poolAttribute key="minIdle" value="${db_minIdle}" desc="最小空闲数"/>
-    <poolAttribute key="maxWait" value="-1" desc="从池中取连接的最大等待时间,单位ms"/>
+    <poolAttribute key="maxWait" value="60000" desc="从池中取连接的最大等待时间,单位ms，-1无限制"/>
     <poolAttribute key="validationQueryTimeout" value="1" desc="验证查询超时时间"/>
     <poolAttribute key="testOnBorrow" value="false" desc="获取时验证"/>
     <poolAttribute key="testOnReturn" value="false" desc="返回时验证"/>

@@ -74,6 +74,7 @@
                 <th nzWidth="100px">编号</th>
                 <th nzWidth="120px">名称</th>
                 <th nzWidth="200px">服务器</th>
+                <th nzWidth="80px">创建时间</th>
                 <th nzWidth="60px" nzAlign="center">操作</th>
             </tr>
             </thead>
@@ -81,7 +82,8 @@
             <tr *ngFor="let item of pT.data">
                 <td>{{item?.name}}</td>
                 <td>{{item?.alias}}</td>
-                <td>{{item?.a}}</td>
+                <td>{{item?.targetsMemo}}</td>
+                <td>{{item?.createdAt | time}}</td>
                 <td nzAlign="center">
                     <div>
                         <a #btnDelete nz-popconfirm nzPlacement="left" nzTitle="您确认要删除【{{item?.a}}】吗?"

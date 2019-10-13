@@ -1,5 +1,6 @@
 package com.yunjian.ak.gateway.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yunjian.ak.dao.annotation.Column;
 import com.yunjian.ak.dao.annotation.ColumnType;
 import com.yunjian.ak.dao.annotation.Entity;
@@ -47,6 +48,7 @@ public class UpstreamEntity {
 
     @Column( id = "created_at" )
     @ApiModelProperty(value = "创建时间")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date createdAt;
 
     @ApiModelProperty(value = "标签")
@@ -54,4 +56,7 @@ public class UpstreamEntity {
 
     @ApiModelProperty(value = "目标地址列表")
     private List<TargetEntity> targets;
+
+    @Column( id = "targets_memo" )
+    private String targetsMemo;
 }

@@ -1,11 +1,19 @@
 import {Injectable} from '@angular/core';
-import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse} from '@angular/common/http';
+import {
+    HttpEvent,
+    HttpInterceptor,
+    HttpHandler,
+    HttpRequest,
+    HttpErrorResponse,
+    HttpResponse
+} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd';
 import {ToolService} from '@core/utils/tool.service';
 import {environment} from '@environments/environment';
+import {isNotEmpty} from "@core/utils/string.util";
 
 /**
  * @description 全局http拦截器, 对http请求进行处理。
@@ -21,11 +29,18 @@ export class CredentialInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         request = request.clone({
-            withCredentials: true
+            withCredentials: false
         });
         return next.handle(request).pipe(
             tap(
-                event => event,
+                event => {
+                    if (event instanceof HttpResponse) {
+                        if('message' in event.body && isNotEmpty(event.body.message)) {
+                            this.nzMessageService.error(errHandle(event.body.message));
+                        }
+                    }
+                    return event;
+                }
             ),
             /*mergeMap((event) => {
                 if (event instanceof HttpResponse && (event.status !== 200)) {
@@ -36,6 +51,7 @@ export class CredentialInterceptor implements HttpInterceptor {
             }),*/
             catchError((res: HttpErrorResponse) => {
                 const status = res.status;
+                console.log('CredentialInterceptor => ', res);
                 if (status === 401) {
                     if (res.url.indexOf('/account/current-username') > -1) {
                         this.router.navigate(['/auth/login']);
@@ -71,5 +87,5 @@ export function errHandle(error: HttpErrorResponse) {
         }
     }
 
-    return (error.error && error.error.messages && error.error.messages[0]) || '服务器超时，请稍后再试.';
+    return (error.error && error.error.message) || '服务器超时，请稍后再试.';
 }

@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseBody
-    public Object handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) throws MethodArgumentNotValidException {
+    public Object handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e, HttpServletResponse response) throws MethodArgumentNotValidException {
         ApiResult result = ApiResult.errorOf(ErrorCode.PARAMS_ERROR);
         BindingResult bindingResult = e.getBindingResult();
         String errorMesssage = "无效请求:\n";
@@ -44,6 +44,7 @@ public class GlobalExceptionHandler {
         }
         result.setMessage(errorMesssage);
         logger.info("MethodArgumentNotValidException", e);
+//        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return result;
     }
 
@@ -73,6 +74,7 @@ public class GlobalExceptionHandler {
             //对系统级异常进行日志记录
             logger.error("系统异常:" + e.getMessage(), e);
         }
+//        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return JSONObject.toJSON(result);
     }
 }

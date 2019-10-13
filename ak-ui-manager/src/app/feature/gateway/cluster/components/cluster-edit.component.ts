@@ -36,7 +36,7 @@ export class ClusterEditComponent implements OnInit {
     ngOnInit(): void {
         this.form = this.fb.group({
             clusterName: [this.bean == null ? null : this.bean.alias, [Validators.required]],
-            clusterCode: [this.bean == null ? null : this.bean.id]
+            clusterCode: [{value: this.bean == null ? null : this.bean.id, disabled: this.bean != null}]
         });
 
         this.initTaggets();
@@ -47,7 +47,20 @@ export class ClusterEditComponent implements OnInit {
         if (this.bean != null) {
             this.gatewayService.getUpstreamTargetList(this.bean.id).subscribe(
                 (res) => {
-                    this.targets = res || [];
+                    if(res !== null) {
+                        this.targets = [];
+                        res.forEach(item => {
+                            const strs: string[] = item.target.split(':');
+                            this.targets.push({
+                                id: item.id,
+                                ip: strs[0],
+                                port: strs[1],
+                                weight: item.weight,
+                                //标记新增
+                                flag: false
+                            });
+                        });
+                    }
                     this.updateEditCache();
                 }
             );
@@ -89,6 +102,7 @@ export class ClusterEditComponent implements OnInit {
 
     startEdit(id: string): void {
         this.editCache[id].edit = true;
+        this.editing = true;
     }
 
     cancelEdit(id: string): void {
@@ -103,6 +117,7 @@ export class ClusterEditComponent implements OnInit {
                 data: { ...this.targets[index] },
                 edit: false
             };
+            this.editing = false;
         }
     }
 
@@ -116,10 +131,10 @@ export class ClusterEditComponent implements OnInit {
             //标记新增
             flag: true
         });
+        this.updateEditCache();
         this.editCache[newId].edit = true;
         this.editing = true;
         this.targets = [...this.targets];
-        this.updateEditCache();
     }
 
     saveTarget(id: string) {
@@ -139,7 +154,7 @@ export class ClusterEditComponent implements OnInit {
         }
     }
 
-    deleteTargets(obj:any) {
+    deleteTargets(obj:any = null) {
         if(this.bean != null) {
             if(obj === null) {
                 let ids = "";

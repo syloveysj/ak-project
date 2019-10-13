@@ -389,15 +389,6 @@ public class DefaultMybatisDao<T> extends SqlSessionDaoSupport implements Dao<T>
         }
     }
 
-    public void printLog(String sqlId, Object param) {
-        Configuration configuration = this.getSession().getConfiguration();
-        MappedStatement mappedStatement = configuration.getMappedStatement(sqlId);
-        BoundSql boundSql = mappedStatement.getBoundSql(param);
-        String sql = boundSql.getSql().trim();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println("info-sql: " + sdf.format(new Date()) + "  " + sql);
-    }
-
     public Page<T> selectByPage(Object entity, Pageable pageable, Sortable sortable, boolean isCount) {
         SqlSession sqlSession = null;
 
@@ -486,5 +477,14 @@ public class DefaultMybatisDao<T> extends SqlSessionDaoSupport implements Dao<T>
         } else {
             return (entity = (Entity)entityClass.getAnnotation(Entity.class)) != null ? entity.logicDelete() : false;
         }
+    }
+
+    public void printLog(String sqlId, Object param) {
+        Configuration configuration = this.getSession().getConfiguration();
+        MappedStatement mappedStatement = configuration.getMappedStatement(sqlId);
+        BoundSql boundSql = mappedStatement.getBoundSql(param);
+        String sql = boundSql.getSql().trim();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println("info-sql: " + sdf.format(new Date()) + "  " + sql);
     }
 }
