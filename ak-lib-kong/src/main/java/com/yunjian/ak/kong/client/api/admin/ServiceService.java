@@ -10,7 +10,9 @@ import com.yunjian.ak.kong.client.model.admin.service.Service;
  */
 public interface ServiceService {
 
-    Service addService(Service service);
+    Service createService(Service service);
+
+    Service updateService(String nameOrId, Service service);
 
     void deleteService(String nameOrId);
 }

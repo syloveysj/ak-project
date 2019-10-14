@@ -13,10 +13,16 @@ import retrofit2.http.*;
  */
 public interface RetrofitRouteService {
     @POST("routes/")
-    Call<Route> addRoute(@Body Route route);
+    Call<Route> createRoute(@Body Route route);
 
-    @DELETE("routes/{id}")
-    Call<Void> deleteRoute(@Path("id") String id);
+    @POST("/services/{serviceNameOrId}/routes")
+    Call<Route> createRoute(@Path("serviceNameOrId") String serviceNameOrId, @Body Route route);
+
+    @PUT("routes/{nameOrId}")
+    Call<Route> updateRoute(@Path("nameOrId") String nameOrId, @Body Route route);
+
+    @DELETE("routes/{nameOrId}")
+    Call<Void> deleteRoute(@Path("nameOrId") String nameOrId);
 
     @GET("routes/")
     Call<RouteList> listRoutes(@Query("id") String id, @Query("slots") Integer slots, @Query("name") String name, @Query("size") Long size, @Query("offset") String offset);

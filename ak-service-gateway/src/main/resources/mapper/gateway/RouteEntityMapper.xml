@@ -66,6 +66,17 @@
         </where>
     </update>
 
+    <!-- 批量更新 -->
+    <update id="updateBatch" parameterType="list">
+        <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+            update routes
+            <set>
+                alias = #{item.alias}
+            </set>
+            WHERE id::text = #{item.id}
+        </foreach>
+    </update>
+
     <!-- 获得一个Route对象,以参数Route对象中不为空的属性作为条件进行查询 -->
     <select id="select" parameterType="com.yunjian.ak.gateway.entity.RouteEntity" resultMap="result_Route_Map">
         select

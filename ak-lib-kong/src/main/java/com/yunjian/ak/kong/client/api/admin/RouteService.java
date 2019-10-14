@@ -10,9 +10,13 @@ import com.yunjian.ak.kong.client.model.admin.route.RouteList;
  * @Version 1.0
  */
 public interface RouteService {
-    Route addRoute(Route route);
+    Route createRoute(Route route);
 
-    void deleteRoute(String id);
+    Route createRoute(String serviceNameOrId, Route route);
+
+    Route updateRoute(String nameOrId, Route route);
+
+    void deleteRoute(String nameOrId);
 
     RouteList listRoutes(String id, Integer slots, String name, Long size, String offset);
 

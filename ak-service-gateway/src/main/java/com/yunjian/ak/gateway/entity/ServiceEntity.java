@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description:
@@ -77,4 +78,7 @@ public class ServiceEntity {
     @Column( id = "updated_at" )
     @ApiModelProperty(value = "更新时间")
     private Date updatedAt;
+
+    @ApiModelProperty(value = "路由列表")
+    private List<RouteEntity> routes;
 }

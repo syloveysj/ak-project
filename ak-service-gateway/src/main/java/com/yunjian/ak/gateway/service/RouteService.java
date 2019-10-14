@@ -29,6 +29,10 @@ public class RouteService {
         return entity;
     }
 
+    public int updateBatch(List<RouteEntity> list) {
+        return DaoFactory.create(RouteEntity.class).updateBatch(list);
+    }
+
     public RouteEntity get(String id) {
         return DaoFactory.create(RouteEntity.class).selectByID(id);
     }

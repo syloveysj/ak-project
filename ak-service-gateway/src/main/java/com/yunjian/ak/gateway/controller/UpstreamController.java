@@ -57,7 +57,7 @@ public class UpstreamController {
         Upstream result = kongClient.getUpstreamService().createUpstream(request);
 
         // 调用接口添加目标
-        if(entity.getTargets() != null && entity.getTargets().size() > 0){
+        if(entity.getTargets() != null && !entity.getTargets().isEmpty()){
             for (TargetEntity targetEntity : entity.getTargets()) {
                 Target target = new Target();
                 BeanUtils.copyProperties(targetEntity, target);
