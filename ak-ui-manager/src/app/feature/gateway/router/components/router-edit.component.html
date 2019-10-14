@@ -4,9 +4,9 @@
         <div nz-row>
             <div nz-col nzSpan="23">
                 <nz-form-item nzFlex>
-                    <nz-form-label nzRequired nzFor="clusterName" style="width: 115px;">路由名称</nz-form-label>
+                    <nz-form-label nzRequired nzFor="routeName" style="width: 115px;">路由名称</nz-form-label>
                     <nz-form-control style="width: 100%;">
-                        <input nz-input placeholder="" formControlName="clusterName" id="clusterName"
+                        <input nz-input placeholder="" formControlName="routeName" id="routeName"
                                maxlength="100"/>
                     </nz-form-control>
                 </nz-form-item>
@@ -15,7 +15,7 @@
         <div nz-row>
             <div nz-col nzSpan="23">
                 <nz-form-item nzFlex>
-                    <nz-form-label nzFor="clusterCode" style="width: 115px;">
+                    <nz-form-label nzFor="methods" style="width: 115px;">
                         <label
                             nz-checkbox
                             [(ngModel)]="allChecked"
@@ -27,7 +27,7 @@
                         </label>
                     </nz-form-label>
                     <nz-form-control style="width: 100%;">
-                        <nz-checkbox-group formControlName="clusterCode" (ngModelChange)="updateSingleChecked()"></nz-checkbox-group>
+                        <nz-checkbox-group formControlName="methods" (ngModelChange)="updateSingleChecked()"></nz-checkbox-group>
                     </nz-form-control>
                 </nz-form-item>
             </div>
@@ -35,11 +35,11 @@
         <div nz-row>
             <div nz-col nzSpan="15">
                 <nz-form-item nzFlex>
-                    <nz-form-label nzFor="field1" style="width: 125px;">访问路径</nz-form-label>
+                    <nz-form-label nzFor="hosts" style="width: 125px;">访问路径</nz-form-label>
                     <nz-form-control style="width: 100%;">
                         <nz-input-group nzAddOnBefore="http(https)://">
-                            <input nz-input placeholder="可为空" formControlName="field1"
-                                   id="field1" maxlength="100"/>
+                            <input nz-input placeholder="可为空" formControlName="hosts"
+                                   id="hosts" maxlength="100"/>
                         </nz-input-group>
                     </nz-form-control>
                 </nz-form-item>
@@ -47,8 +47,8 @@
             <div nz-col nzSpan="7" [nzOffset]="1">
                 <nz-form-item nzFlex>
                     <nz-form-control style="width: 100%;">
-                        <input nz-input placeholder="" formControlName="field7"
-                               id="field7" maxlength="100"/>
+                        <input nz-input placeholder="" formControlName="paths"
+                               id="paths" maxlength="100"/>
                     </nz-form-control>
                 </nz-form-item>
             </div>
@@ -56,16 +56,16 @@
         <div nz-row>
             <div nz-col nzSpan="23">
                 <nz-form-item nzFlex>
-                    <nz-form-label nzFor="field2" style="width: 115px;">后端地址</nz-form-label>
+                    <nz-form-label nzFor="host" style="width: 115px;">后端地址</nz-form-label>
                     <nz-form-control style="width: 100%;">
-                        <nz-select formControlName="field2"
+                        <nz-select formControlName="host"
                                    nzAllowClear
                                    nzShowSearch>
                             <nz-option nzCustomContent *ngFor="let item of clusterList" [nzValue]="item.value"
                                        [nzLabel]="item.label">
                                 <div class="clearFix">
                                     <span style="float: left">{{item.label}}</span>
-                                    <span style="float: right; color: #8492a6; font-size: 13px">{{item.servers}}</span>
+                                    <span style="float: right; color: #8492a6; font-size: 13px">{{item.targetsMemo}}</span>
                                 </div>
                             </nz-option>
                         </nz-select>
@@ -76,11 +76,11 @@
         <div nz-row>
             <div nz-col nzSpan="23">
                 <nz-form-item nzFlex>
-                    <nz-form-label nzFor="field3" style="width: 115px;">连接超时</nz-form-label>
+                    <nz-form-label nzFor="connectTimeout" style="width: 115px;">连接超时</nz-form-label>
                     <nz-form-control style="width: 100%;">
                         <nz-input-group nzAddOnAfter="毫秒">
-                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="field3"
-                                   id="field3" maxlength="100"/>
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="connectTimeout"
+                                   id="connectTimeout" maxlength="100"/>
                         </nz-input-group>
                     </nz-form-control>
                 </nz-form-item>
@@ -89,11 +89,11 @@
         <div nz-row>
             <div nz-col nzSpan="23">
                 <nz-form-item nzFlex>
-                    <nz-form-label nzFor="field4" style="width: 115px;">发送超时</nz-form-label>
+                    <nz-form-label nzFor="writeTimeout" style="width: 115px;">发送超时</nz-form-label>
                     <nz-form-control style="width: 100%;">
                         <nz-input-group nzAddOnAfter="毫秒">
-                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="field4"
-                                   id="field4" maxlength="100"/>
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="writeTimeout"
+                                   id="writeTimeout" maxlength="100"/>
                         </nz-input-group>
                     </nz-form-control>
                 </nz-form-item>
@@ -102,11 +102,11 @@
         <div nz-row>
             <div nz-col nzSpan="23">
                 <nz-form-item nzFlex>
-                    <nz-form-label nzFor="field5" style="width: 115px;">读取超时</nz-form-label>
+                    <nz-form-label nzFor="readTimeout" style="width: 115px;">读取超时</nz-form-label>
                     <nz-form-control style="width: 100%;">
                         <nz-input-group nzAddOnAfter="毫秒">
-                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="field5"
-                                   id="field5" maxlength="100"/>
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="readTimeout"
+                                   id="readTimeout" maxlength="100"/>
                         </nz-input-group>
                     </nz-form-control>
                 </nz-form-item>
@@ -115,9 +115,9 @@
         <div nz-row>
             <div nz-col nzSpan="23">
                 <nz-form-item nzFlex>
-                    <nz-form-label nzFor="field6" style="width: 115px;">仅https</nz-form-label>
+                    <nz-form-label nzFor="onlyHttps" style="width: 115px;">仅https</nz-form-label>
                     <nz-form-control style="width: 100%;">
-                        <nz-switch formControlName="field6" id="field6" nzCheckedChildren="开" nzUnCheckedChildren="关"></nz-switch>
+                        <nz-switch formControlName="onlyHttps" id="onlyHttps" nzCheckedChildren="开" nzUnCheckedChildren="关"></nz-switch>
                     </nz-form-control>
                 </nz-form-item>
             </div>

@@ -100,6 +100,20 @@ public class UpstreamController {
         kongClient.getUpstreamService().deleteUpstream(id);
     }
 
+    @GetMapping("/all")
+    @ApiOperation("获取所有Upstream")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "获取所有Upstream成功",
+            response = UpstreamEntity.class,
+            responseContainer = "List"
+    )})
+    public List<UpstreamEntity> getAll() {
+        LOGGER.debug("请求UpstreamController获取所有Upstream!");
+
+        return this.upstreamService.getAll();
+    }
+
     @GetMapping
     @ApiOperation("获取匹配Upstream列表")
     @ApiResponses({@ApiResponse(

@@ -1,8 +1,8 @@
 package com.yunjian.ak.gateway.controller;
 
+import com.yunjian.ak.dao.mybatis.enhance.Page;
 import com.yunjian.ak.gateway.entity.RouteEntity;
 import com.yunjian.ak.gateway.entity.ServiceEntity;
-import com.yunjian.ak.gateway.entity.UpstreamEntity;
 import com.yunjian.ak.gateway.service.RouteService;
 import com.yunjian.ak.gateway.service.ServiceService;
 import com.yunjian.ak.kong.client.impl.KongClient;
@@ -114,16 +114,32 @@ public class RouteController {
         return entity;
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/services/{serviceId}")
     @ApiOperation("删除指定id的Route")
     @ApiResponses({@ApiResponse(
             code = 200,
             message = "删除指定id的Route成功"
     )})
-    public void delete(@PathVariable("id") String id) {
+    public void delete(@PathVariable("id") String id, @PathVariable("serviceId") String serviceId) {
         LOGGER.debug("请求RouteController删除指定id的Route:{}!", id);
 
         // 调用接口删除路由
-        kongClient.getServiceService().deleteService(id);
+        kongClient.getRouteService().deleteRoute(id);
+        kongClient.getServiceService().deleteService(serviceId);
+    }
+
+    @GetMapping
+    @ApiOperation("获取匹配Route列表")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "获取Route列表成功",
+            response = Page.class
+    )})
+    public Page<RouteEntity> getListByPage(@RequestParam("page") int page, @RequestParam("pagesize") int pagesize,
+                                              @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "order", required = false) String order,
+                                              @RequestParam(value = "cond", required = false) String cond) {
+        LOGGER.debug("请求RouteController获取匹配Route列表!");
+
+        return this.routeService.getListByPage(page, pagesize, sort, order, cond);
     }
 }

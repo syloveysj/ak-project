@@ -23,6 +23,13 @@ export class GatewayService {
             .pipe(map((c: CustomResponse<Paging<any>>) => c.data));
     }
 
+    // 获取上游列表
+    public getUpstreamAll(): Observable<any[]> {
+        return this.httpClient.get<CustomResponse<any[]>>
+        (`${this.config.apiAddr}/v1/mgr/gateway/upstreams/all`)
+            .pipe(map((c: CustomResponse<any[]>) => c.data));
+    }
+
     // 添加上游
     public addUpstream(params: any): Observable<any> {
         return this.httpClient.post<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/upstreams`, params)
@@ -63,6 +70,32 @@ export class GatewayService {
     // 删除目标s
     public removeTargetList(id: string, ids: string): Observable<any> {
         return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/upstreams/${id}/targets`, {params: {ids}})
+            .pipe(map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 获取路由列表
+    public getRouteList(params: any): Observable<Paging<any>> {
+        const values: HttpParams = new HttpParams({fromObject: params, encoder: new HttpQueryEncoderUtil()});
+        return this.httpClient.get<CustomResponse<Paging<any>>>
+        (`${this.config.apiAddr}/v1/mgr/gateway/routes`, {params : values})
+            .pipe(map((c: CustomResponse<Paging<any>>) => c.data));
+    }
+
+    // 添加路由
+    public addRoute(params: any): Observable<any> {
+        return this.httpClient.post<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/routes`, params)
+            .pipe(map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 更新路由
+    public updateRoute(id: string, params: any): Observable<any> {
+        return this.httpClient.put<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/routes/${id}`, params)
+            .pipe(map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除路由
+    public removeRoute(id: string, serviceId: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/routes/${id}/services/${serviceId}`)
             .pipe(map((c: CustomResponse<any>) => c.data));
     }
 }

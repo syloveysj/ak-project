@@ -9,7 +9,6 @@
         services.host,
         services.port,
         services.path,
-        services.url,
         services.retries,
         services.connect_timeout,
         services.read_timeout,
@@ -27,7 +26,6 @@
         <if test="host != null">and services.host = #{host}</if>
         <if test="port != null">and services.port = #{port}</if>
         <if test="path != null">and services.path = #{path}</if>
-        <if test="url != null">and services.url = #{url}</if>
         <if test="retries != null">and services.retries = #{retries}</if>
         <if test="connectTimeout != null">and services.connect_timeout = #{connectTimeout}</if>
         <if test="readTimeout != null">and services.read_timeout = #{readTimeout}</if>
@@ -45,7 +43,6 @@
         <result column="host" property="host" />
         <result column="port" property="port" />
         <result column="path" property="path" />
-        <result column="url" property="url" />
         <result column="retries" property="retries" />
         <result column="connect_timeout" property="connectTimeout" />
         <result column="read_timeout" property="readTimeout" />

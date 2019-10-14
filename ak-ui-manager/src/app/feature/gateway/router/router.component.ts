@@ -5,10 +5,12 @@ import {NzMessageService, NzModalService, NzThComponent} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {Option} from '@model/common';
 import {ToolService} from '@core/utils/tool.service';
-import {debounceTime, distinctUntilChanged, map, startWith, switchMap, tap} from 'rxjs/operators';
-import {combineLatest, defer, Subject} from 'rxjs';
+import {debounceTime, distinctUntilChanged, finalize, map, switchMap, tap} from 'rxjs/operators';
+import {combineLatest, defer} from 'rxjs';
 import {defaultDebounceTime} from '@core/utils/constant.util';
 import {RouterEditComponent} from '@feature/gateway/router/components/router-edit.component';
+import {GatewayService} from "@service/http/gateway.service";
+import {isEmpty} from "@core/utils/string.util";
 
 @Component({
     selector: 'app-gateway-router',
@@ -41,6 +43,7 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
                 public nzMessageService: NzMessageService,
                 public cdr: ChangeDetectorRef,
                 public toolService: ToolService,
+                public gatewayService: GatewayService,
                 public config: Config) {
         super(baseService, rd, modalService, nzMessageService);
     }
@@ -49,8 +52,8 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
         // 初始化页面参数
         this.selfQueryParams = {
             ...this.selfQueryParams,
-            order: null,
-            sort: null,
+            order: 'desc',
+            sort: 'createdAt',
             pagesize: 10,
 
             dynamicKey: 'name'
@@ -79,22 +82,13 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
                 this.loading = true;
             }),
             switchMap(val => defer(() => {
-                // return this.operationAnalysisService.getBrandOpAnalysis(val).pipe(
-                //     finalize(() => this.loading = false));
+                return this.gatewayService.getRouteList(val).pipe(
+                    finalize(() => this.loading = false));
                 console.log(val);
-                const demo = new Subject<string | string[]>();
-                return demo.asObservable().pipe(startWith({
-                    total: 100,
-                    footer: null,
-                    from: 0,
-                    size: 10,
-                    page: 1,
-                    pagesize: 10,
-                    rows: [{a: 'aa'}, {a: 'bb'}, {a: 'cc'}, {a: 'dd'}, {a: 'aa'}, {a: 'bb'}, {a: 'cc'}, {a: 'dd'}]
-                }));
             }))
         ).subscribe((data: any) => {
             this.loading = false;
+            console.log(data);
             this.data = data;
         });
     }
@@ -102,7 +96,7 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
     openWin(bean: any) {
         const modal = this.modalService.create({
             nzWrapClassName: 'vertical-center-modal large',
-            nzTitle: '添加动态新路由',
+            nzTitle: (bean===null ? '新建' : '编辑') + '动态新路由',
             nzMaskClosable: false,
             nzFooter: [
                 {
@@ -111,9 +105,27 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
                     disabled: (componentInstance) => {
                         return !componentInstance.form.valid;
                     },
+                    loading: (componentInstance) => {
+                        return componentInstance.loading;
+                    },
                     onClick: (componentInstance) => {
-                        console.log(componentInstance.form.value);
-                        modal.destroy();
+                        if(bean === null) {
+                            this.gatewayService.addRoute(componentInstance.getFromValues()).pipe(
+                                finalize(() => componentInstance.loading = false)
+                            ).subscribe(
+                                (res) => {
+                                    modal.destroy(true);
+                                }
+                            );
+                        } else {
+                            this.gatewayService.updateRoute(bean.id, componentInstance.getFromValues()).pipe(
+                                finalize(() => componentInstance.loading = false)
+                            ).subscribe(
+                                (res) => {
+                                    modal.destroy(true);
+                                }
+                            );
+                        }
                     }
                 },
                 {
@@ -132,14 +144,30 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
 
         modal.afterClose.subscribe((result) => {
             if (result) {
+                this.resetPage();
             }
         });
     }
 
-    deleteCluster(bean: any) {
+    deleteRoute(bean: any = null) {
+        if(bean == null) {
+
+        } else {
+            this.gatewayService.removeRoute(bean.id, bean.serviceId).subscribe(
+                (res) => {
+                    this.selfPage.next(this.selfQueryParams.page);
+                }
+            );
+        }
     }
 
     resetFilters() {
+        this.selfPage.next(this.selfQueryParams.page);
+    }
+
+    clearString(str: string) {
+        if(isEmpty(str)) return '';
+        return str.replace('{', '').replace('}', '');
     }
 
     ngAfterViewInit(): void {

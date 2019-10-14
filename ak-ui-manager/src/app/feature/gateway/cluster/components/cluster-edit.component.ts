@@ -36,7 +36,7 @@ export class ClusterEditComponent implements OnInit {
     ngOnInit(): void {
         this.form = this.fb.group({
             clusterName: [this.bean == null ? null : this.bean.alias, [Validators.required]],
-            clusterCode: [{value: this.bean == null ? null : this.bean.id, disabled: this.bean != null}]
+            clusterCode: [{value: this.bean == null ? null : this.bean.name, disabled: this.bean != null}]
         });
 
         this.initTaggets();

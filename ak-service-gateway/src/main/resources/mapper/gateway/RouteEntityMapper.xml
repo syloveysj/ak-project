@@ -4,11 +4,12 @@
     <!-- 数据库中表名为:routes的列名 -->
     <sql id="column_sql">
         routes.id,
+        routes.service_id,
         routes.name,
---         routes.protocols,
---         routes.methods,
---         routes.hosts,
---         routes.paths,
+        routes.protocols,
+        routes.methods,
+        routes.hosts,
+        routes.paths,
         routes.strip_path,
         routes.preserve_host,
         routes.alias,
@@ -19,6 +20,7 @@
     <!-- 数据库中表名为:routes的非空where条件 -->
     <sql id="whereClause_sql">
         <if test="id != null">and routes.id::text = #{id}</if>
+        <if test="serviceId != null">and routes.service_id::text = #{serviceId}</if>
         <if test="name != null">and routes.name = #{name}</if>
         <if test="stripPath != null">and routes.strip_path = #{stripPath}</if>
         <if test="preserveHost != null">and routes.slots = #{preserveHost}</if>
@@ -30,11 +32,12 @@
     <!-- Route的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
     <resultMap id="result_Route_Map" type="com.yunjian.ak.gateway.entity.RouteEntity">
         <id column="id" property="id" />
+        <result column="service_id" property="serviceId" />
         <result column="name" property="name" />
-        <!--<result column="protocols" property="protocols" />-->
-        <!--<result column="methods" property="methods" />-->
-        <!--<result column="hosts" property="hosts" />-->
-        <!--<result column="paths" property="paths" />-->
+        <result column="protocols" property="protocolsMemo" />
+        <result column="methods" property="methodsMemo" />
+        <result column="hosts" property="hostsMemo" />
+        <result column="paths" property="pathsMemo" />
         <result column="strip_path" property="stripPath" />
         <result column="preserve_host" property="preserveHost" />
         <result column="alias" property="alias" />

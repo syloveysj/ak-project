@@ -30,7 +30,7 @@
     <div class="update-times fr">
         <app-reset-filters (resetFilters)="resetFilters()"></app-reset-filters>&nbsp;
         <button (click)="openWin(null)" nzType="primary" nz-button><span>添加</span></button>&nbsp;
-        <button (click)="openWin(null)" nzType="danger" nz-button><span>批量删除</span></button>
+        <button (click)="deleteRoute()" nzType="danger" nz-button><span>批量删除</span></button>
     </div>
 </div>
 
@@ -112,17 +112,17 @@
             <tbody>
             <tr *ngFor="let item of pT.data">
                 <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshStatus()"></td>
-                <td>{{item?.a}}</td>
-                <td>{{item?.a}}</td>
-                <td>{{item?.a}}</td>
-                <td>{{item?.a}}</td>
+                <td>{{item?.alias}}</td>
+                <td>{{clearString(item?.hostsMemo)}}</td>
+                <td>{{clearString(item?.pathsMemo)}}</td>
+                <td>{{clearString(item?.methodsMemo)}}</td>
                 <td>{{item?.a}}</td>
                 <td>{{item?.a}}</td>
                 <td>{{item?.a}}</td>
                 <td nzAlign="center">
                     <div>
                         <a #btnDelete nz-popconfirm nzPlacement="left" nzTitle="您确认要删除【{{item?.a}}】吗?"
-                           (nzOnConfirm)="deleteCluster(item)"></a>
+                           (nzOnConfirm)="deleteRoute(item)"></a>
                         <nz-dropdown-button (nzClick)="openWin(item)" nzTrigger="click">
                             <i nz-icon nzType="form" nz-tooltip nzTitle="编辑"></i>
                             <ul nz-menu>

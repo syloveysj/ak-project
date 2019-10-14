@@ -27,25 +27,37 @@ public class RouteEntity {
     @ApiModelProperty(value = "ID")
     private String id;
 
+    @Column( id = "service_id" )
+    @ApiModelProperty(value = "服务ID")
+    private String serviceId;
+
     @Column( id = "name" )
     @ApiModelProperty(value = "路由名称")
     private String name;
 
-    @Column( id = "protocols" )
     @ApiModelProperty(value = "允许的协议列表")
     private List<String> protocols;
 
-    @Column( id = "methods" )
+    @Column( id = "protocols" )
+    private String protocolsMemo;
+
     @ApiModelProperty(value = "匹配的HTTP方法的列表")
     private List<String> methods;
 
-    @Column( id = "hosts" )
+    @Column( id = "methods" )
+    private String methodsMemo;
+
     @ApiModelProperty(value = "匹配的域名列表")
     private List<String> hosts;
 
-    @Column( id = "paths" )
+    @Column( id = "hosts" )
+    private String hostsMemo;
+
     @ApiModelProperty(value = "匹配的路径列表")
     private List<String> paths;
+
+    @Column( id = "paths" )
+    private String pathsMemo;
 
     @Column( id = "strip_path" )
     @ApiModelProperty(value = "请求网址中删除匹配的前缀")
