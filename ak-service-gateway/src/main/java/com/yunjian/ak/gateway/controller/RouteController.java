@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Description:
@@ -46,39 +44,29 @@ public class RouteController {
     @ApiResponses({@ApiResponse(
             code = 200,
             message = "添加Route成功",
-            response = ServiceEntity.class
+            response = RouteEntity.class
     )})
-    public ServiceEntity insert(@Valid @RequestBody ServiceEntity entity) {
+    public RouteEntity insert(@Valid @RequestBody RouteEntity entity) {
         LOGGER.debug("请求 RouteController 的 insert!");
 
         // 调用接口添加服务
-        Service request = new Service();
-        BeanUtils.copyProperties(entity, request);
-        Service result = kongClient.getServiceService().createService(request);
+        Service service = new Service();
+        BeanUtils.copyProperties(entity.getService(), service);
+        service = kongClient.getServiceService().createService(service);
 
-        List<RouteEntity> routeList = new ArrayList<>();
         // 调用接口添加路由
-        if(entity.getRoutes() != null && !entity.getRoutes().isEmpty()){
-            for (RouteEntity routeEntity : entity.getRoutes()) {
-                Route route = new Route();
-                BeanUtils.copyProperties(routeEntity, route);
-                route.setService(new Service());
-                route.getService().setId(result.getId());
-                Route ret = kongClient.getRouteService().createRoute(route);
-
-                routeEntity.setId(ret.getId());
-                routeList.add(routeEntity);
-            }
-        }
+        Route route = new Route();
+        BeanUtils.copyProperties(entity, route);
+        route.setService(service);
+        route = kongClient.getRouteService().createRoute(route);
 
         // 通过数据库更新别名
-        ServiceEntity service = new ServiceEntity();
-        service.setId(result.getId());
-        service.setAlias(entity.getAlias());
-        this.serviceService.update(service);
-        this.routeService.updateBatch(routeList);
+        entity.getService().setId(service.getId());
+        this.serviceService.update(entity.getService());
+        entity.setId(route.getId());
+        this.routeService.update(entity);
 
-        return service;
+        return entity;
     }
 
     @PutMapping("/{id}")
@@ -86,30 +74,25 @@ public class RouteController {
     @ApiResponses({@ApiResponse(
             code = 200,
             message = "更新Route成功",
-            response = ServiceEntity.class
+            response = RouteEntity.class
     )})
-    public ServiceEntity update(@Valid @RequestBody ServiceEntity entity) {
+    public RouteEntity update(@Valid @RequestBody RouteEntity entity) {
         LOGGER.debug("请求 RouteController 的 update!");
 
-        // 调用接口添加服务
-        Service request = new Service();
-        BeanUtils.copyProperties(entity, request);
-        Service result = kongClient.getServiceService().updateService(entity.getId(), request);
+        // 调用接口更新服务
+        Service service = new Service();
+        BeanUtils.copyProperties(entity.getService(), service);
+        service = kongClient.getServiceService().updateService(entity.getService().getId(), service);
 
-        // 调用接口添加路由
-        if(entity.getRoutes() != null && !entity.getRoutes().isEmpty()){
-            for (RouteEntity routeEntity : entity.getRoutes()) {
-                Route route = new Route();
-                BeanUtils.copyProperties(routeEntity, route);
-                route.setService(new Service());
-                route.getService().setId(result.getId());
-                kongClient.getRouteService().updateRoute(routeEntity.getId(), route);
-            }
-        }
+        // 调用接口更新路由
+        Route route = new Route();
+        BeanUtils.copyProperties(entity, route);
+        route.setService(service);
+        route = kongClient.getRouteService().updateRoute(entity.getId(), route);
 
         // 通过数据库更新别名
-        this.serviceService.update(entity);
-        this.routeService.updateBatch(entity.getRoutes());
+        this.serviceService.update(entity.getService());
+        this.routeService.update(entity);
 
         return entity;
     }

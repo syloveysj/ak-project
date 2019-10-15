@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {GatewayService} from "@service/http/gateway.service";
-import {isNotEmpty} from "@core/utils/string.util";
+import {isEmpty, isNotEmpty} from "@core/utils/string.util";
 import {UUID} from "angular2-uuid";
 import {finalize} from "rxjs/operators";
 
@@ -45,11 +45,24 @@ export class RouterEditComponent implements OnInit {
     indeterminate = false;
 
     ngOnInit(): void {
+        if(this.bean != null) {
+            // 编辑的回选
+            const methods = this.clearString(this.bean.methodsMemo);
+            const list = methods.split(',');
+            list.forEach(item => {
+                this.typesOptions.forEach(type => {
+                    if(type.value === item) {
+                        type.checked = true;
+                    }
+                })
+            })
+        }
+
         this.form = this.fb.group({
-            routeName: [this.bean == null ? null : this.bean.name, [Validators.required]],
+            routeName: [this.bean == null ? null : this.bean.alias, [Validators.required]],
             methods: [this.typesOptions],
-            hosts: [this.bean == null ? null : this.bean.hosts],
-            paths: [this.bean == null ? null : this.bean.paths],
+            hosts: [this.bean == null ? null : this.clearString(this.bean.hostsMemo)],
+            paths: [this.bean == null ? null : this.bean.this.clearString(this.bean.pathsMemo)],
             host: [this.bean == null ? null : this.bean.host],
             connectTimeout: [this.bean == null ? 60000 : this.bean.connectTimeout],
             writeTimeout: [this.bean == null ? 60000 : this.bean.writeTimeout],
@@ -87,24 +100,25 @@ export class RouterEditComponent implements OnInit {
         const values = this.form.value;
         const name = UUID.UUID();
         const result = {
-            name: this.bean != null ? this.bean.name : name,
-            alias: this.bean != null ? this.bean.alias : name,
-            host: values.host,
-            connectTimeout: values.connectTimeout,
-            writeTimeout: values.writeTimeout,
-            readTimeout: values.readTimeout,
-            routes: [{
                 name: UUID.UUID(),
                 alias: values.routeName,
                 methods: this.getSelectMethods(),
                 hosts: [values.hosts],
                 paths: [values.paths],
-                protocols: values.onlyHttps ? ['https'] : ['http', 'https']
-            }]
-        };
+                protocols: values.onlyHttps ? ['https'] : ['http', 'https'],
+                service: {
+                    name: this.bean != null ? this.bean.name : name,
+                    alias: this.bean != null ? this.bean.alias : name,
+                    host: values.host,
+                    connectTimeout: values.connectTimeout,
+                    writeTimeout: values.writeTimeout,
+                    readTimeout: values.readTimeout
+                }
+            };
+
         if(this.bean != null) {
             result['id'] = this.bean.id;
-            result.routes['id'] = this.bean.routeId;
+            result.service['id'] = this.bean.serviceId;
         }
         return result;
     }
@@ -118,6 +132,11 @@ export class RouterEditComponent implements OnInit {
             }
         });
         return result;
+    }
+
+    clearString(str: string) {
+        if(isEmpty(str)) return '';
+        return str.replace('{', '').replace('}', '');
     }
 
     updateAllChecked(): void {

@@ -1,6 +1,6 @@
 package com.yunjian.ak.gateway.controller;
 
-import com.yunjian.ak.gateway.service.RouteService;
+import com.yunjian.ak.gateway.entity.ServiceEntity;
 import com.yunjian.ak.gateway.service.ServiceService;
 import com.yunjian.ak.kong.client.impl.KongClient;
 import io.swagger.annotations.ApiOperation;
@@ -9,10 +9,7 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Description:
@@ -42,5 +39,18 @@ public class ServiceController {
 
         // 调用接口删除服务
         kongClient.getServiceService().deleteService(id);
+    }
+
+    @GetMapping("/{id}")
+    @ApiOperation("获取指定id的Service")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "获取指定id的Service成功",
+            response = ServiceEntity.class
+    )})
+    public ServiceEntity get(@PathVariable("id") String id) {
+        LOGGER.debug("请求UpstreamController获取指定id的Service!");
+
+        return this.serviceService.get(id);
     }
 }
