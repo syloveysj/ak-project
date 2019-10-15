@@ -14,7 +14,8 @@
         routes.preserve_host,
         routes.alias,
         routes.updated_at,
-        routes.created_at
+        routes.created_at,
+        (select host from services where id=routes.service_id) host
     </sql>
 
     <!-- 数据库中表名为:routes的非空where条件 -->
@@ -24,7 +25,18 @@
         <if test="name != null">and routes.name = #{name}</if>
         <if test="stripPath != null">and routes.strip_path = #{stripPath}</if>
         <if test="preserveHost != null">and routes.slots = #{preserveHost}</if>
-        <if test="alias != null">and routes.alias = #{alias}</if>
+        <if test="alias != null and alias != '' ">
+            and routes.alias like concat('%',#{alias},'%')
+        </if>
+        <if test="hostsMemo != null and hostsMemo != '' ">
+            and routes.hosts::text like concat('%',#{hostsMemo},'%')
+        </if>
+        <if test="pathsMemo != null and pathsMemo != '' ">
+            and routes.paths::text like concat('%',#{pathsMemo},'%')
+        </if>
+        <if test="methodsMemo != null and methodsMemo != '' ">
+            and routes.methods::text like concat('%',#{methodsMemo},'%')
+        </if>
         <if test="updatedAt != null">and routes.updated_at = #{updatedAt}</if>
         <if test="createdAt != null">and routes.created_at = #{createdAt}</if>
     </sql>
@@ -43,6 +55,7 @@
         <result column="alias" property="alias" />
         <result column="updated_at" property="updatedAt" />
         <result column="created_at" property="createdAt" />
+        <result column="host" property="service.host" />
     </resultMap>
 
     <!--获得类名为:Route对应的数据库表满足条件的数据总行数 -->

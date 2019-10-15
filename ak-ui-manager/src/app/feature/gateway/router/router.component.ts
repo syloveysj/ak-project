@@ -22,19 +22,19 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
     scrollXWidth = 0;
 
     dynamicKeys: Option[] = [
-        {id: 'name', text: '主机名'},
-        {id: 'uri', text: '服务路径'},
-        {id: 'path', text: '请求地址'}
+        {id: 'alias', text: '路由名称'},
+        {id: 'hostsMemo', text: '匹配主机名'},
+        {id: 'pathsMemo', text: '匹配路径'}
     ];
     types: Option[] = [
-        {id: 'get', text: 'GET'},
-        {id: 'post', text: 'POST'},
-        {id: 'delete', text: 'DELETE'},
-        {id: 'put', text: 'PUT'},
-        {id: 'head', text: 'HEAD'},
-        {id: 'patch', text: 'PATCH'},
-        {id: 'options', text: 'OPTIONS'},
-        {id: 'trace', text: 'TRACE'}
+        {id: 'GET', text: 'GET'},
+        {id: 'POST', text: 'POST'},
+        {id: 'DELETE', text: 'DELETE'},
+        {id: 'PUT', text: 'PUT'},
+        {id: 'HEAD', text: 'HEAD'},
+        {id: 'PATCH', text: 'PATCH'},
+        {id: 'OPTIONS', text: 'OPTIONS'},
+        {id: 'TRACE', text: 'TRACE'}
     ];
 
     constructor(public baseService: BaseService,
@@ -56,7 +56,7 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
             sort: 'createdAt',
             pagesize: 10,
 
-            dynamicKey: 'name'
+            dynamicKey: 'alias'
         };
 
         const {
@@ -68,12 +68,14 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
         combineLatest([dynamicKey$, keyword$, typeId$, page$, pageSize$, sort$, order$]).pipe(
             map(([selfDynamicKey, selfKeyword, selfTypeId, selfPage, selfPageSize, selfSort, selfOrder]) => {
                 const params: any = {};
-                (selfKeyword) && (params[selfDynamicKey] = selfKeyword);
-                (selfTypeId !== null) && (params.typeId = selfTypeId);
+                let cond: any = null;
+                (selfKeyword) && ((!cond) && (cond={}) && (cond[selfDynamicKey] = selfKeyword));
+                (selfTypeId !== null) && (((!cond) && (cond={}) || cond) && (cond['methodsMemo'] = selfTypeId));
                 (selfPage !== null) && (params.page = selfPage);
                 (selfPageSize !== null) && (params.pagesize = selfPageSize);
                 (selfSort) && (params.sort = selfSort);
                 (selfOrder) && (params.order = selfOrder);
+                (cond) && (params.cond = JSON.stringify(cond));
                 return params;
             }),
             debounceTime(defaultDebounceTime),
@@ -151,7 +153,20 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
 
     deleteRoute(bean: any = null) {
         if(bean == null) {
-
+            const ids = [];
+            this.data.rows.forEach(item => {
+                if(item.checked) {
+                    ids.push({
+                        routeId: item.id,
+                        serviceId: item.serviceId
+                    });
+                }
+            })
+            this.gatewayService.removeRouteList(ids).subscribe(
+                (res) => {
+                    this.selfPage.next(this.selfQueryParams.page);
+                }
+            )
         } else {
             this.gatewayService.removeRoute(bean.id, bean.serviceId).subscribe(
                 (res) => {

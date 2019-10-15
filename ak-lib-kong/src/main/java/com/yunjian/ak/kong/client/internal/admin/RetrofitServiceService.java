@@ -16,7 +16,7 @@ public interface RetrofitServiceService {
     Call<Service> createService(@Body Service request);
 
     @PUT("services/{nameOrId}")
-    Call<Service> updateRoute(@Path("nameOrId") String nameOrId, @Body Service service);
+    Call<Service> updateService(@Path("nameOrId") String nameOrId, @Body Service service);
 
     @DELETE("services/{nameOrId}")
     Call<Void> deleteService(@Path("nameOrId") String nameOrId);

@@ -62,12 +62,12 @@ export class RouterEditComponent implements OnInit {
             routeName: [this.bean == null ? null : this.bean.alias, [Validators.required]],
             methods: [this.typesOptions],
             hosts: [this.bean == null ? null : this.clearString(this.bean.hostsMemo)],
-            paths: [this.bean == null ? null : this.bean.this.clearString(this.bean.pathsMemo)],
-            host: [this.bean == null ? null : this.bean.host],
-            connectTimeout: [this.bean == null ? 60000 : this.bean.connectTimeout],
-            writeTimeout: [this.bean == null ? 60000 : this.bean.writeTimeout],
-            readTimeout: [this.bean == null ? 60000 : this.bean.readTimeout],
-            onlyHttps: [this.bean == null ? null : this.bean.onlyHttps]
+            paths: [this.bean == null ? null : this.clearString(this.bean.pathsMemo)],
+            host: [null],
+            connectTimeout: [this.bean == null ? 60000 : null],
+            writeTimeout: [this.bean == null ? 60000 : null],
+            readTimeout: [this.bean == null ? 60000 : null],
+            onlyHttps: [this.bean == null ? false : this.clearString(this.bean.protocolsMemo).split(',').length==1]
         });
 
         this.initTaggets();
@@ -91,6 +91,14 @@ export class RouterEditComponent implements OnInit {
 
         // 编辑时初始化
         if (this.bean != null) {
+            this.gatewayService.getService(this.bean.serviceId).subscribe(res => {
+               this.bean.service = res;
+
+               this.form.get('host').setValue(res.host);
+               this.form.get('connectTimeout').setValue(res.connectTimeout);
+               this.form.get('writeTimeout').setValue(res.writeTimeout);
+               this.form.get('readTimeout').setValue(res.readTimeout);
+            });
         }
 
         this.updateSingleChecked();
@@ -107,8 +115,9 @@ export class RouterEditComponent implements OnInit {
                 paths: [values.paths],
                 protocols: values.onlyHttps ? ['https'] : ['http', 'https'],
                 service: {
-                    name: this.bean != null ? this.bean.name : name,
-                    alias: this.bean != null ? this.bean.alias : name,
+                    name: this.bean != null ? this.bean.service.name : name,
+                    alias: this.bean != null ? this.bean.service.alias : name,
+                    protocol: this.bean != null ? this.bean.service.protocol : 'http',
                     host: values.host,
                     connectTimeout: values.connectTimeout,
                     writeTimeout: values.writeTimeout,

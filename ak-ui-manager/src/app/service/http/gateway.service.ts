@@ -18,15 +18,13 @@ export class GatewayService {
     // 获取上游列表
     public getUpstreamList(params: any): Observable<Paging<any>> {
         const values: HttpParams = new HttpParams({fromObject: params, encoder: new HttpQueryEncoderUtil()});
-        return this.httpClient.get<CustomResponse<Paging<any>>>
-        (`${this.config.apiAddr}/v1/mgr/gateway/upstreams`, {params : values})
+        return this.httpClient.get<CustomResponse<Paging<any>>>(`${this.config.apiAddr}/v1/mgr/gateway/upstreams`, {params : values})
             .pipe(map((c: CustomResponse<Paging<any>>) => c.data));
     }
 
     // 获取上游列表
     public getUpstreamAll(): Observable<any[]> {
-        return this.httpClient.get<CustomResponse<any[]>>
-        (`${this.config.apiAddr}/v1/mgr/gateway/upstreams/all`)
+        return this.httpClient.get<CustomResponse<any[]>>(`${this.config.apiAddr}/v1/mgr/gateway/upstreams/all`)
             .pipe(map((c: CustomResponse<any[]>) => c.data));
     }
 
@@ -50,8 +48,7 @@ export class GatewayService {
 
     // 获取上游目标
     public getUpstreamTargetList(id: string): Observable<any[]> {
-        return this.httpClient.get<CustomResponse<any[]>>
-        (`${this.config.apiAddr}/v1/mgr/gateway/upstreams/${id}/targets`)
+        return this.httpClient.get<CustomResponse<any[]>>(`${this.config.apiAddr}/v1/mgr/gateway/upstreams/${id}/targets`)
             .pipe(map((c: CustomResponse<any[]>) => c.data));
     }
 
@@ -76,8 +73,7 @@ export class GatewayService {
     // 获取路由列表
     public getRouteList(params: any): Observable<Paging<any>> {
         const values: HttpParams = new HttpParams({fromObject: params, encoder: new HttpQueryEncoderUtil()});
-        return this.httpClient.get<CustomResponse<Paging<any>>>
-        (`${this.config.apiAddr}/v1/mgr/gateway/routes`, {params : values})
+        return this.httpClient.get<CustomResponse<Paging<any>>>(`${this.config.apiAddr}/v1/mgr/gateway/routes`, {params : values})
             .pipe(map((c: CustomResponse<Paging<any>>) => c.data));
     }
 
@@ -96,6 +92,18 @@ export class GatewayService {
     // 删除路由
     public removeRoute(id: string, serviceId: string): Observable<any> {
         return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/routes/${id}/services/${serviceId}`)
+            .pipe(map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除路由s
+    public removeRouteList(ids: {routeId:string, serviceId:string}[]): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/routes`, {params: {ids: JSON.stringify(ids)}})
+            .pipe(map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 获取服务
+    public getService(id: string): Observable<any> {
+        return this.httpClient.get<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/services/${id}`)
             .pipe(map((c: CustomResponse<any>) => c.data));
     }
 }
