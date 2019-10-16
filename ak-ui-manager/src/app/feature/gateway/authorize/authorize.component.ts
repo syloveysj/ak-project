@@ -46,7 +46,6 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, AfterVi
 
         const {
             dynamicKey$, keyword$, page$, pageSize$, sort$, order$
-
         } = this.getGeneralObservables();
 
         // 绑定查询

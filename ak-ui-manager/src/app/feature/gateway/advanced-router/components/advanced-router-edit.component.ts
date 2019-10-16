@@ -4,6 +4,10 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {RouterPluginsEditComponent} from "@feature/gateway/advanced-router/components/router-plugins-edit.component";
+import {isEmpty} from "@core/utils/string.util";
+import {finalize} from "rxjs/operators";
+import {GatewayService} from "@service/http/gateway.service";
+import {UUID} from "angular2-uuid";
 
 @Component({
     selector: 'app-gateway-advanced-router-edit',
@@ -19,52 +23,121 @@ export class AdvancedRouterEditComponent implements OnInit {
                 public config: Config,
                 private nzMessageService: NzMessageService,
                 public modalService: NzModalService,
-                public baseService: BaseService) {
+                public baseService: BaseService,
+                public gatewayService: GatewayService) {
     }
 
     @Input() bean: any;
     form: FormGroup;
 
     typesOptions = [
-        {label: 'GET', value: 'get', checked: false},
-        {label: 'POST', value: 'post', checked: false},
-        {label: 'DELETE', value: 'delete', checked: false},
-        {label: 'PUT', value: 'put', checked: false},
-        {label: 'HEAD', value: 'head', checked: false},
-        {label: 'PATCH', value: 'patch', checked: false},
-        {label: 'OPTIONS', value: 'options', checked: false},
-        {label: 'TRACE', value: 'trace', checked: false}
+        {label: 'GET', value: 'GET', checked: false},
+        {label: 'POST', value: 'POST', checked: false},
+        {label: 'DELETE', value: 'DELETE', checked: false},
+        {label: 'PUT', value: 'PUT', checked: false},
+        {label: 'HEAD', value: 'HEAD', checked: false},
+        {label: 'PATCH', value: 'PATCH', checked: false},
+        {label: 'OPTIONS', value: 'OPTIONS', checked: false},
+        {label: 'TRACE', value: 'TRACE', checked: false}
     ];
+    clusterList = [];
     loading = false;
     allChecked = false;
     indeterminate = false;
 
-    controlArray1 = [''];
-    controlValues1 = [''];
-    controlArray2 = [''];
-    controlValues2 = [''];
+    hostsArray = [''];
+    hostsValues = [''];
+    pathsArray = [''];
+    pathsValues = [''];
 
-    serverList: any[] = [{a: 'aa'}, {a: 'bb'}];
+    pluginsList: any[] = [{name:'key-auth', enabled: true, config: ''}];
 
     ngOnInit(): void {
+        if(this.bean != null) {
+            // 编辑的回选
+            const methods = this.clearString(this.bean.methodsMemo);
+            const list = methods.split(',');
+            list.forEach(item => {
+                this.typesOptions.forEach(type => {
+                    if(type.value === item) {
+                        type.checked = true;
+                    }
+                })
+            })
+        }
+
         this.form = this.fb.group({
-            clusterName: [this.bean == null ? null : this.bean.clusterName, [Validators.required]],
-            clusterCode: [this.typesOptions],
-            field1: [this.bean == null ? null : this.bean.field1],
-            field2: [this.bean == null ? null : this.bean.field2],
-            // field2: [{value: this.bean == null ? null : this.bean.field2, disabled: true}],
-            field3: [this.bean == null ? null : this.bean.field3],
-            field4: [this.bean == null ? null : this.bean.field4],
-            field5: [this.bean == null ? null : this.bean.field5],
-            field6: [this.bean == null ? null : this.bean.field6],
-            field7: [this.bean == null ? null : this.bean.field7]
+            routeName: [this.bean == null ? null : this.bean.alias, [Validators.required]],
+            methods: [this.typesOptions],
+            host: [null],
+            connectTimeout: [this.bean == null ? 60000 : null],
+            writeTimeout: [this.bean == null ? 60000 : null],
+            readTimeout: [this.bean == null ? 60000 : null],
+            onlyHttps: [this.bean == null ? false : this.clearString(this.bean.protocolsMemo).split(',').length==1],
+            stripPath: [this.bean == null ? false : this.bean.stripPath]
         });
+
+        this.initTaggets();
+    }
+
+    initTaggets() {
+        this.loading = true;
+        this.gatewayService.getUpstreamAll().pipe(
+            finalize(() => this.loading = false)
+        ).subscribe(
+            (res: any[]) => {
+                if(res != null) {
+                    res.forEach(item => {
+                        item.label = item.alias;
+                        item.value = item.name;
+                    })
+                    this.clusterList = res;
+                }
+            }
+        );
 
         // 编辑时初始化
         if (this.bean != null) {
+            this.gatewayService.getService(this.bean.serviceId).subscribe(res => {
+                this.bean.service = res;
+
+                this.form.get('host').setValue(res.host);
+                this.form.get('connectTimeout').setValue(res.connectTimeout);
+                this.form.get('writeTimeout').setValue(res.writeTimeout);
+                this.form.get('readTimeout').setValue(res.readTimeout);
+            });
         }
 
         this.updateSingleChecked();
+    }
+
+    getFromValues(): any {
+        const values = this.form.value;
+        const name = UUID.UUID();
+        const result = {
+            name: this.bean != null ? this.bean.service.name : UUID.UUID(),
+            alias: values.routeName,
+            methods: this.getSelectMethods(),
+            hosts: this.hostsValues,
+            paths: this.pathsValues,
+            protocols: values.onlyHttps ? ['https'] : ['http', 'https'],
+            stripPath: values.stripPath,
+            service: {
+                name: this.bean != null ? this.bean.service.name : name,
+                alias: this.bean != null ? this.bean.service.alias : name,
+                protocol: this.bean != null ? this.bean.service.protocol : 'http',
+                host: values.host,
+                connectTimeout: values.connectTimeout,
+                writeTimeout: values.writeTimeout,
+                readTimeout: values.readTimeout
+            }
+        };
+
+        if(this.bean != null) {
+            result['id'] = this.bean.id;
+            result.service['id'] = this.bean.serviceId;
+        }
+        return result;
     }
 
     openPluginsWin(bean: any) {
@@ -107,17 +180,33 @@ export class AdvancedRouterEditComponent implements OnInit {
     deletePlug(bean: any) {
     }
 
+    getSelectMethods() {
+        const list: any[] = this.form.get('methods').value;
+        const result = [];
+        list.forEach(item => {
+            if(item.checked) {
+                result.push(item.value);
+            }
+        });
+        return result;
+    }
+
+    clearString(str: string) {
+        if(isEmpty(str)) return '';
+        return str.replace('{', '').replace('}', '');
+    }
+
     updateAllChecked(): void {
         this.indeterminate = false;
         if (this.allChecked) {
-            this.form.get('clusterCode').setValue(this.form.get('clusterCode').value.map(item => {
+            this.form.get('methods').setValue(this.form.get('methods').value.map(item => {
                 return {
                     ...item,
                     checked: true
                 };
             }));
         } else {
-            this.form.get('clusterCode').setValue(this.form.get('clusterCode').value.map(item => {
+            this.form.get('methods').setValue(this.form.get('methods').value.map(item => {
                 return {
                     ...item,
                     checked: false
@@ -127,10 +216,10 @@ export class AdvancedRouterEditComponent implements OnInit {
     }
 
     updateSingleChecked(): void {
-        if (this.form.get('clusterCode').value.every(item => item.checked === false)) {
+        if (this.form.get('methods').value.every(item => item.checked === false)) {
             this.allChecked = false;
             this.indeterminate = false;
-        } else if (this.form.get('clusterCode').value.every(item => item.checked === true)) {
+        } else if (this.form.get('methods').value.every(item => item.checked === true)) {
             this.allChecked = true;
             this.indeterminate = false;
         } else {

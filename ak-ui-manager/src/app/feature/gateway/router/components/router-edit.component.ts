@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {GatewayService} from "@service/http/gateway.service";
-import {isEmpty, isNotEmpty} from "@core/utils/string.util";
+import {isEmpty} from "@core/utils/string.util";
 import {UUID} from "angular2-uuid";
 import {finalize} from "rxjs/operators";
 
@@ -108,7 +108,7 @@ export class RouterEditComponent implements OnInit {
         const values = this.form.value;
         const name = UUID.UUID();
         const result = {
-                name: UUID.UUID(),
+                name: this.bean != null ? this.bean.service.name : UUID.UUID(),
                 alias: values.routeName,
                 methods: this.getSelectMethods(),
                 hosts: [values.hosts],

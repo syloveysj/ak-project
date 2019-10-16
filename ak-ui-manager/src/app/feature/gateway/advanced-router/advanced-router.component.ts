@@ -5,10 +5,12 @@ import {NzMessageService, NzModalService, NzThComponent} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {Option} from '@model/common';
 import {ToolService} from '@core/utils/tool.service';
-import {debounceTime, distinctUntilChanged, map, startWith, switchMap, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap, tap} from 'rxjs/operators';
 import {combineLatest, defer, Subject} from 'rxjs';
 import {defaultDebounceTime} from '@core/utils/constant.util';
 import {AdvancedRouterEditComponent} from '@feature/gateway/advanced-router/components/advanced-router-edit.component';
+import {GatewayService} from "@service/http/gateway.service";
+import {isEmpty} from "@core/utils/string.util";
 
 @Component({
     selector: 'app-gateway-advanced-router',
@@ -20,19 +22,19 @@ export class AdvancedRouterComponent extends BaseComponent implements OnInit, Af
     scrollXWidth = 0;
 
     dynamicKeys: Option[] = [
-        {id: 'name', text: '主机名'},
-        {id: 'uri', text: '服务路径'},
-        {id: 'path', text: '请求地址'}
+        {id: 'alias', text: '路由名称'},
+        {id: 'hostsMemo', text: '匹配主机名'},
+        {id: 'pathsMemo', text: '匹配路径'}
     ];
     types: Option[] = [
-        {id: 'get', text: 'GET'},
-        {id: 'post', text: 'POST'},
-        {id: 'delete', text: 'DELETE'},
-        {id: 'put', text: 'PUT'},
-        {id: 'head', text: 'HEAD'},
-        {id: 'patch', text: 'PATCH'},
-        {id: 'options', text: 'OPTIONS'},
-        {id: 'trace', text: 'TRACE'}
+        {id: 'GET', text: 'GET'},
+        {id: 'POST', text: 'POST'},
+        {id: 'DELETE', text: 'DELETE'},
+        {id: 'PUT', text: 'PUT'},
+        {id: 'HEAD', text: 'HEAD'},
+        {id: 'PATCH', text: 'PATCH'},
+        {id: 'OPTIONS', text: 'OPTIONS'},
+        {id: 'TRACE', text: 'TRACE'}
     ];
 
     constructor(public baseService: BaseService,
@@ -41,6 +43,7 @@ export class AdvancedRouterComponent extends BaseComponent implements OnInit, Af
                 public nzMessageService: NzMessageService,
                 public cdr: ChangeDetectorRef,
                 public toolService: ToolService,
+                public gatewayService: GatewayService,
                 public config: Config) {
         super(baseService, rd, modalService, nzMessageService);
     }
@@ -49,28 +52,29 @@ export class AdvancedRouterComponent extends BaseComponent implements OnInit, Af
         // 初始化页面参数
         this.selfQueryParams = {
             ...this.selfQueryParams,
-            order: null,
-            sort: null,
+            order: 'desc',
+            sort: 'updatedAt',
             pagesize: 10,
 
-            dynamicKey: 'name'
+            dynamicKey: 'alias'
         };
 
         const {
             dynamicKey$, keyword$, typeId$, page$, pageSize$, sort$, order$
-
         } = this.getGeneralObservables();
 
         // 绑定查询
         combineLatest([dynamicKey$, keyword$, typeId$, page$, pageSize$, sort$, order$]).pipe(
             map(([selfDynamicKey, selfKeyword, selfTypeId, selfPage, selfPageSize, selfSort, selfOrder]) => {
                 const params: any = {};
-                (selfKeyword) && (params[selfDynamicKey] = selfKeyword);
-                (selfTypeId !== null) && (params.typeId = selfTypeId);
+                let cond: any = null;
+                (selfKeyword) && ((!cond) && (cond={}) && (cond[selfDynamicKey] = selfKeyword));
+                (selfTypeId !== null) && (((!cond) && (cond={}) || cond) && (cond['methodsMemo'] = selfTypeId));
                 (selfPage !== null) && (params.page = selfPage);
                 (selfPageSize !== null) && (params.pagesize = selfPageSize);
                 (selfSort) && (params.sort = selfSort);
                 (selfOrder) && (params.order = selfOrder);
+                (cond) && (params.cond = JSON.stringify(cond));
                 return params;
             }),
             debounceTime(defaultDebounceTime),
@@ -79,22 +83,13 @@ export class AdvancedRouterComponent extends BaseComponent implements OnInit, Af
                 this.loading = true;
             }),
             switchMap(val => defer(() => {
-                // return this.operationAnalysisService.getBrandOpAnalysis(val).pipe(
-                //     finalize(() => this.loading = false));
+                return this.gatewayService.getRouteList(val).pipe(
+                    finalize(() => this.loading = false));
                 console.log(val);
-                const demo = new Subject<string | string[]>();
-                return demo.asObservable().pipe(startWith({
-                    total: 100,
-                    footer: null,
-                    from: 0,
-                    size: 10,
-                    page: 1,
-                    pagesize: 10,
-                    rows: [{a: 'aa'}, {a: 'bb'}, {a: 'cc'}, {a: 'dd'}, {a: 'aa'}, {a: 'bb'}, {a: 'cc'}, {a: 'dd'}]
-                }));
             }))
         ).subscribe((data: any) => {
             this.loading = false;
+            console.log(data);
             this.data = data;
         });
     }
@@ -102,7 +97,7 @@ export class AdvancedRouterComponent extends BaseComponent implements OnInit, Af
     openWin(bean: any) {
         const modal = this.modalService.create({
             nzWrapClassName: 'vertical-center-modal full',
-            nzTitle: '添加动态新路由',
+            nzTitle: (bean===null ? '新建' : '编辑') + '动态路由',
             nzMaskClosable: false,
             nzFooter: [
                 {
@@ -111,9 +106,27 @@ export class AdvancedRouterComponent extends BaseComponent implements OnInit, Af
                     disabled: (componentInstance) => {
                         return !componentInstance.form.valid;
                     },
+                    loading: (componentInstance) => {
+                        return componentInstance.loading;
+                    },
                     onClick: (componentInstance) => {
-                        console.log(componentInstance.form.value);
-                        modal.destroy();
+                        if(bean === null) {
+                            this.gatewayService.addRoute(componentInstance.getFromValues()).pipe(
+                                finalize(() => componentInstance.loading = false)
+                            ).subscribe(
+                                (res) => {
+                                    modal.destroy(true);
+                                }
+                            );
+                        } else {
+                            this.gatewayService.updateRoute(bean.id, componentInstance.getFromValues()).pipe(
+                                finalize(() => componentInstance.loading = false)
+                            ).subscribe(
+                                (res) => {
+                                    modal.destroy(true);
+                                }
+                            );
+                        }
                     }
                 },
                 {
@@ -132,14 +145,43 @@ export class AdvancedRouterComponent extends BaseComponent implements OnInit, Af
 
         modal.afterClose.subscribe((result) => {
             if (result) {
+                this.resetPage();
             }
         });
     }
 
-    deleteCluster(bean: any) {
+    deleteRoute(bean: any = null) {
+        if(bean == null) {
+            const ids = [];
+            this.data.rows.forEach(item => {
+                if(item.checked) {
+                    ids.push({
+                        routeId: item.id,
+                        serviceId: item.serviceId
+                    });
+                }
+            })
+            this.gatewayService.removeRouteList(ids).subscribe(
+                (res) => {
+                    this.selfPage.next(this.selfQueryParams.page);
+                }
+            )
+        } else {
+            this.gatewayService.removeRoute(bean.id, bean.serviceId).subscribe(
+                (res) => {
+                    this.selfPage.next(this.selfQueryParams.page);
+                }
+            );
+        }
     }
 
     resetFilters() {
+        this.selfPage.next(this.selfQueryParams.page);
+    }
+
+    clearString(str: string) {
+        if(isEmpty(str)) return '';
+        return str.replace('{', '').replace('}', '');
     }
 
     ngAfterViewInit(): void {

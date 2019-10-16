@@ -61,7 +61,6 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
 
         const {
             dynamicKey$, keyword$, typeId$, page$, pageSize$, sort$, order$
-
         } = this.getGeneralObservables();
 
         // 绑定查询
@@ -98,7 +97,7 @@ export class RouterComponent extends BaseComponent implements OnInit, AfterViewI
     openWin(bean: any) {
         const modal = this.modalService.create({
             nzWrapClassName: 'vertical-center-modal large',
-            nzTitle: (bean===null ? '新建' : '编辑') + '动态新路由',
+            nzTitle: (bean===null ? '新建' : '编辑') + '动态路由',
             nzMaskClosable: false,
             nzFooter: [
                 {
