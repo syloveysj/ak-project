@@ -19,7 +19,7 @@ export class ConfigDev extends Config {
             iconCls: 'icon-company',
             text: '接口管理',
             children: [
-                {iconCls: 'icon-company', text: 'API管理', uri: '/gateway/cluster'}]
+                {iconCls: 'icon-company', text: 'APIs管理', uri: '/interfaces/apis'}]
         }
     ];
 }
