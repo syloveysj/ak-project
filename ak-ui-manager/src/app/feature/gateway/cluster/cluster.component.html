@@ -32,6 +32,7 @@
             <div nz-col class="gutter-row search-group font12">
                 <nz-input-group nzCompact>
                     <nz-select [(ngModel)]="selfQueryParams.dynamicKey" style="width: 30%;"
+                               (ngModelChange)="dynamicKeyChange()"
                                nzDropdownClassName="font12">
                         <nz-option *ngFor="let item of dynamicKeys" [nzValue]="item.id"
                                    [nzLabel]="item.text"></nz-option>
@@ -71,8 +72,8 @@
             (nzCurrentPageDataChange)="currentPageDataChange($event)">
             <thead (nzSortChange)="sortChange($event)" nzSingleSort>
             <tr>
-                <th nzWidth="100px">编号</th>
-                <th nzWidth="120px">名称</th>
+                <th nzWidth="100px">集群编号</th>
+                <th nzWidth="120px">集群名称</th>
                 <th nzWidth="200px">服务器</th>
                 <th nzWidth="80px">创建时间</th>
                 <th nzWidth="60px" nzAlign="center">操作</th>

@@ -80,7 +80,7 @@ export class ClusterEditComponent implements OnInit {
         });
         const result = {
             alias: values.clusterName,
-            name: isNotEmpty(values.clusterCode) ? values.clusterCode : UUID.UUID(),
+            name: isNotEmpty(values.clusterCode) ? values.clusterCode : UUID.UUID().replace(/-/g, ''),
             slots: 10000,
             targets: list
         };

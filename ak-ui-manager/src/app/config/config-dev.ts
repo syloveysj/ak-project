@@ -14,6 +14,12 @@ export class ConfigDev extends Config {
                 {iconCls: 'icon-company', text: '路由管理', uri: '/gateway/router'},
                 {iconCls: 'icon-company', text: '高级路由管理', uri: '/gateway/advRouter'},
                 {iconCls: 'icon-company', text: '服务授权管理', uri: '/gateway/authorize'}]
+        },
+        {
+            iconCls: 'icon-company',
+            text: '接口管理',
+            children: [
+                {iconCls: 'icon-company', text: 'API管理', uri: '/gateway/cluster'}]
         }
     ];
 }

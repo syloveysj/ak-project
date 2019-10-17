@@ -21,7 +21,8 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
     scrollXWidth = 0;
 
     dynamicKeys: Option[] = [
-        {id: 'alias', text: '名称'}
+        {id: 'alias', text: '集群名称'},
+        {id: 'name', text: '集群编号'}
     ];
 
     constructor(public baseService: BaseService,

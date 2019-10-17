@@ -106,19 +106,22 @@ export class RouterEditComponent implements OnInit {
 
     getFromValues(): any {
         const values = this.form.value;
-        const name = UUID.UUID();
+        const name = UUID.UUID().replace(/-/g, '');
         const result = {
-                name: this.bean != null ? this.bean.service.name : UUID.UUID(),
+                name: this.bean != null ? this.bean.name : UUID.UUID().replace(/-/g, ''),
                 alias: values.routeName,
                 methods: this.getSelectMethods(),
-                hosts: [values.hosts],
-                paths: [values.paths],
+                hosts: isEmpty(values.hosts) ? [] : [values.hosts],
+                paths: isEmpty(values.paths) ? [] : [values.paths],
                 protocols: values.onlyHttps ? ['https'] : ['http', 'https'],
+                stripPath: this.bean != null ? this.bean.stripPath : true,
+                preserveHost: this.bean != null ? this.bean.preserveHost : false,
                 service: {
                     name: this.bean != null ? this.bean.service.name : name,
                     alias: this.bean != null ? this.bean.service.alias : name,
                     protocol: this.bean != null ? this.bean.service.protocol : 'http',
                     host: values.host,
+                    port: 80,
                     connectTimeout: values.connectTimeout,
                     writeTimeout: values.writeTimeout,
                     readTimeout: values.readTimeout
