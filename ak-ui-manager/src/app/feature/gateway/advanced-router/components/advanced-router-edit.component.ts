@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {RouterPluginsEditComponent} from "@feature/gateway/advanced-router/components/router-plugins-edit.component";
-import {isEmpty} from "@core/utils/string.util";
+import {isEmpty, isNotEmpty} from "@core/utils/string.util";
 import {finalize} from "rxjs/operators";
 import {GatewayService} from "@service/http/gateway.service";
 import {UUID} from "angular2-uuid";
@@ -63,7 +63,25 @@ export class AdvancedRouterEditComponent implements OnInit {
                         type.checked = true;
                     }
                 })
-            })
+            });
+
+            this.hostsValues = this.clearString(this.bean.hostsMemo).split(',');
+            this.pathsValues = this.clearString(this.bean.pathsMemo).split(',');
+            if(this.hostsValues.length > 0) {
+                for(let i=0; i<this.hostsValues.length-1; i ++) {
+                    this.hostsArray.push('');
+                }
+            } else {
+                this.hostsValues.push('');
+            }
+
+            if(this.pathsValues.length > 1) {
+                for(let i=0; i<this.pathsValues.length-1; i ++) {
+                    this.pathsArray.push('');
+                }
+            } else {
+                this.pathsValues.push('');
+            }
         }
 
         this.form = this.fb.group({
@@ -118,15 +136,17 @@ export class AdvancedRouterEditComponent implements OnInit {
             name: this.bean != null ? this.bean.service.name : UUID.UUID(),
             alias: values.routeName,
             methods: this.getSelectMethods(),
-            hosts: this.hostsValues,
-            paths: this.pathsValues,
+            hosts: this.getValuesArray(this.hostsValues),
+            paths: this.getValuesArray(this.pathsValues),
             protocols: values.onlyHttps ? ['https'] : ['http', 'https'],
             stripPath: values.stripPath,
+            preserveHost: this.bean != null ? this.bean.preserveHost : false,
             service: {
                 name: this.bean != null ? this.bean.service.name : name,
                 alias: this.bean != null ? this.bean.service.alias : name,
                 protocol: this.bean != null ? this.bean.service.protocol : 'http',
                 host: values.host,
+                port: 80,
                 connectTimeout: values.connectTimeout,
                 writeTimeout: values.writeTimeout,
                 readTimeout: values.readTimeout
@@ -178,6 +198,16 @@ export class AdvancedRouterEditComponent implements OnInit {
     }
 
     deletePlug(bean: any) {
+    }
+
+    getValuesArray(list: string[]) {
+        const result = [];
+        list.forEach(item => {
+            if(isNotEmpty(item)) {
+                result.push(item);
+            }
+        })
+        return result;
     }
 
     getSelectMethods() {
