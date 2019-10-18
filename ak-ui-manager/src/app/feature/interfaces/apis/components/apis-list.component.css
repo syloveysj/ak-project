@@ -1,0 +1,118 @@
+.ant-layout-header {
+    background: #ffffff;
+    padding: 0 10px;
+    height: 40px;
+    line-height: normal;
+}
+
+.card-container ::ng-deep .ant-tabs-card .ant-tabs-content .ant-tabs-tabpane {
+    background: #fff;
+    /*padding: 16px;*/
+}
+
+.card-container ::ng-deep .ant-tabs-card .ant-tabs-bar {
+    border-color: #e3e3e3;
+}
+
+.card-container ::ng-deep .ant-tabs-card .ant-tabs-bar .ant-tabs-tab {
+    border-color: transparent;
+    background: transparent;
+}
+
+/* 选择的标签样式 */
+.card-container ::ng-deep .ant-tabs-card .ant-tabs-bar .ant-tabs-tab-active {
+    border-bottom-color: #e3e3e3;
+    background: #fff;
+}
+
+.icon-help {
+    font-size: 13px;
+    margin-left: 2px;
+}
+
+.app .list-page-wrapper .list-page-pagination-wrapper {
+    padding-left: 9px;
+    position: inherit;
+}
+
+.bottom-pagination.fr {
+    margin-top: 5px;
+}
+
+app-height-search input {
+    width: 120px;
+}
+
+.search-container {
+    display: grid;
+    grid-gap: 8px;
+    grid-template-columns: repeat(auto-fit, 280px);
+    /*grid-template-rows: repeat(2, 50px);*/
+}
+
+input.gap-left {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+input.gap-right {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-gap-text {
+    width: 30px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background: #f7f8fa;
+    height: 32px;
+    border-top: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.manuel {}
+
+:host ::ng-deep .manuel .ant-badge-status-text {
+    color: #5986fb;
+}
+
+.auto {}
+
+:host ::ng-deep .auto .ant-badge-status-text {
+    color: #34bfa3;
+}
+
+:host ::ng-deep .ant-table-header.ng-star-inserted::-webkit-scrollbar-track {
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+:host ::ng-deep #footerTb thead.ant-table-thead {
+    display: none;
+}
+
+:host ::ng-deep #footerTb .ant-table-body table {
+    border-top: 1px solid #e3e3e3 !important;
+}
+
+:host ::ng-deep #footerTb td {
+    background-color: #fff !important;
+}
+
+:host ::ng-deep span.ant-calendar-picker-icon {
+    z-index: 0 !important;
+}
+
+.ads-status {
+    display: inline-table;
+    width: 42px;
+    height: 16px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    text-align: center;
+    cursor: initial;
+    color: #fff;
+}
+

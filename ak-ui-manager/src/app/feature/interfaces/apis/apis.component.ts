@@ -25,7 +25,7 @@ export class ApisComponent extends BaseComponent implements OnInit, AfterViewIni
         {id: 'alias', text: '集群名称'},
         {id: 'name', text: '集群编号'}
     ];
-    tabIndex1 = 1;
+    tabIndex1 = 0;
     tabIndex2 = 1;
 
     constructor(public baseService: BaseService,

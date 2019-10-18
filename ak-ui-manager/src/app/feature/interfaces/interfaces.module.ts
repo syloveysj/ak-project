@@ -4,10 +4,12 @@ import {InterfacesRoutingModule} from "@feature/interfaces/interfaces-routing.mo
 import {InterfacesComponent} from "@feature/interfaces/interfaces.component";
 import {ApisComponent} from "@feature/interfaces/apis/apis.component";
 import {ApisManagerSiderComponent} from "@feature/interfaces/apis/components/apis-manager-sider.component";
+import {ApisListComponent} from "@feature/interfaces/apis/components/apis-list.component";
 
 @NgModule({
     entryComponents: [
         ApisManagerSiderComponent,
+        ApisListComponent,
     ],
     imports: [
         SharedModule,
@@ -18,6 +20,7 @@ import {ApisManagerSiderComponent} from "@feature/interfaces/apis/components/api
 
         ApisComponent,
         ApisManagerSiderComponent,
+        ApisListComponent,
     ],
     providers: [],
     exports: []
