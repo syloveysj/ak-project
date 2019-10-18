@@ -199,3 +199,17 @@ export interface SelfColumn {
     disabled?: boolean;
     type?: any;
 }
+
+export interface Menu {
+    id: number | string;
+    level?: number;
+    title?: string;
+    icon?: string;
+    desc?: string;
+    open?: boolean;
+    selected: boolean;
+    disabled?: boolean;
+    parenMenuId?: number | string;
+    children?: Menu[];
+    data?: any;
+}

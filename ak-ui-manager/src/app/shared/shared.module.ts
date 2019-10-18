@@ -12,6 +12,8 @@ import {HeightSearchLabelsComponent} from '@shared/components/height-search-labe
 import {TablePaginationInfoComponent} from '@shared/components/table-pagination-info.component';
 import {InputGroupWrapperComponent} from '@shared/components/input-group-wrapper.component';
 import {NumberOnlyDirective} from '@shared/directive/number-only.directive';
+import {ApplicationTreeSelectComponent} from "@feature/interfaces/apis/components/application-tree-select.component";
+import {CalcTableScrollyDirective} from "@shared/directive/calc-table-scrolly.directive";
 
 // 在这里注入模块
 const MODULES = [
@@ -31,6 +33,8 @@ const DECLARATIONS = [
     TablePaginationInfoComponent,
     InputGroupWrapperComponent,
     NumberOnlyDirective,
+    CalcTableScrollyDirective,
+    ApplicationTreeSelectComponent,
 ];
 
 // 在这里注入组件，指令，管道
@@ -41,6 +45,8 @@ const EXPORT_COMPONENTS = [
     TablePaginationInfoComponent,
     InputGroupWrapperComponent,
     NumberOnlyDirective,
+    CalcTableScrollyDirective,
+    ApplicationTreeSelectComponent,
 ];
 
 @NgModule({

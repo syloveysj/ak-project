@@ -1,10 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div class="clearFix breadcrumb-wrapper shadow">
+    <div class="breadcrumb fl">
+        <nz-breadcrumb>
+            <span class="font">当前位置：</span>
+            <nz-breadcrumb-item>
+                <span class="font">接口管理</span>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                APIs管理
+            </nz-breadcrumb-item>
+        </nz-breadcrumb>
+    </div>
+    <div class="filter-tags fl">
+        <app-tag-close
+            mode="groupSearch"
+            [dynamicKey]="selfQueryParams?.dynamicKey"
+            [keyword]="selfQueryParams?.keyword"
+            [data]="dynamicKeys"
+            (tagClose)="onKeywordTagClose()">
+        </app-tag-close>
+    </div>
+    <div class="update-times fr">
+        <app-reset-filters (resetFilters)="resetFilters()"></app-reset-filters>&nbsp;
+        <button (click)="openWin(null)" nzType="primary" nz-button><span>添加</span></button>
+    </div>
+</div>
 
-</body>
-</html>
+<div class="list-page-wrapper" style="padding-bottom: 0;">
+    <nz-layout style="background-color: transparent; margin-top: 10px">
+        <nz-sider [nzWidth]="fold ? '30px' : '273px'"
+                  style="border-right: 1px solid #e3e3e3; background-color: transparent; margin-right: 10px;">
+            <app-apis-manager-sider
+                #sider
+                [initServerId]="1"
+                [initMarketId]="2"
+                [initCampaignId]="3"
+                [initGroupId]="4"
+                (changeFold)="changeFold($event)"
+            ></app-apis-manager-sider>
+        </nz-sider>
+        <!-- *****************右侧tab***************** -->
+        <nz-layout>
+            <nz-content class="card-container">
+                <ng-container [ngSwitch]="1">
+                    <!-- 所有的广告活动 -->
+                    <nz-tabset *ngSwitchCase="1"
+                               [nzTabBarStyle]="{'padding': '0'}"
+                               [nzTabPosition]="'top'"
+                               [nzType]="'card'"
+                               [(nzSelectedIndex)]="tabIndex1">
+                        <!-- 广告活动列表 -->
+                        <nz-tab [nzTitle]="'面板1'">
+                            <div>abc1</div>
+                        </nz-tab>
+                        <nz-tab [nzTitle]="'面板2'">
+                            <div>abc2</div>
+                        </nz-tab>
+                        <nz-tab [nzTitle]="'面板3'" >
+                            <div>abc3</div>
+                        </nz-tab>
+                    </nz-tabset>
+                    <!-- 广告活动详情 -->
+                    <nz-tabset *ngSwitchCase="2"
+                               [nzTabBarStyle]="{'padding': '0'}"
+                               [nzTabPosition]="'top'"
+                               [nzType]="'card'"
+                               [(nzSelectedIndex)]="tabIndex2">
+                        <nz-tab [nzTitle]="'标题1'">
+                            <div>aaa1</div>
+                        </nz-tab>
+                        <nz-tab [nzTitle]="'标题2'">
+                            <div>aaa2</div>
+                        </nz-tab>
+                        <nz-tab [nzTitle]="'标题3'">
+                            <div>aaa3</div>
+                        </nz-tab>
+                        <nz-tab [nzTitle]="'标题4'">
+                            <div>aaa4</div>
+                        </nz-tab>
+                    </nz-tabset>
+                </ng-container>
+            </nz-content>
+        </nz-layout>
+    </nz-layout>
+</div>

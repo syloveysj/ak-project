@@ -1,0 +1,96 @@
+.ant-layout-header {
+    background: #ffffff;
+    padding: 0 10px;
+    height: 40px;
+    line-height: normal;
+}
+
+.app .list-page-wrapper .list-page-pagination-wrapper {
+    padding-left: 9px;
+    position: inherit;
+}
+
+.bottom-pagination.fr {
+    margin-top: 5px;
+}
+
+.menu-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.fold-button {
+    width: 40px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: #fff;
+}
+
+nz-layout,
+nz-sider,
+nz-header,
+nz-content,
+nz-footer {
+    background-color: #fff;
+}
+
+.layout-sider-label {
+    width: 100%;
+    background-color: #f5f5f5;
+    border-radius: 10px 0 0 10px;
+    padding: 20px 10px;
+    writing-mode: vertical-lr;
+    -ms-writing-mode: lr-tb;
+    -webkit-writing-mode: vertical-lr;
+    cursor: pointer;
+}
+
+.layout-sider-label.active {
+    background-color: #0045f0;
+}
+
+.layout-sider-label .title {
+    font-size: 13px;
+    color: #777777;
+    letter-spacing: 2px;
+}
+
+.layout-sider-label .number {
+    position: relative;
+    top: -3px;
+    left: 2px;
+    color: #777777;
+    letter-spacing: 0;
+}
+
+.layout-sider-label.active .title,
+.layout-sider-label.active .number {
+    color: #fff;
+}
+
+:host ::ng-deep nz-tree-select .ant-select-selection.ant-select-selection--single {
+    background-color: #f5f5f5;
+    border: none;
+    border-bottom: 1px solid #e3e3e3;
+    border-radius: 0;
+    box-shadow: none !important;
+}
+
+:host ::ng-deep nz-tree-select input.ant-input {
+    box-shadow: none !important;
+}
+
+:host ::ng-deep nz-tree-select input.ant-input:focus {
+    box-shadow: none !important;
+}
+
+:host ::ng-deep nz-tree-select .ant-select-selection-selected-value {
+    color: #333333;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+:host ::ng-deep nz-tree-select i.anticon.ant-select-arrow-icon.anticon-down {
+    font-weight: bold;
+    color: #333333;
+}

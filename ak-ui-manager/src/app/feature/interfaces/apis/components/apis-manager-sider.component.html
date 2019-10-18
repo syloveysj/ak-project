@@ -1,0 +1,122 @@
+<nz-layout style="background-color: transparent;">
+    <nz-sider style="background-color: transparent;" [nzWidth]="'40px'">
+        <div class="layout-sider-label" [ngClass]="{'active': 0 === 0}" (click)="adsTypeChange(0)">
+            <span class="title">
+                服务分类
+                <span *ngIf="!isBlank(productAdsNum)" class="number">
+                    ({{  productAdsNum | numPlus:999 }})
+                </span>
+            </span>
+        </div>
+        <div style="height: 8px;"></div>
+        <button nz-button class="fold-button"
+                (click)="triggerFold()"
+        >
+            <i *ngIf="!fold; else unfoldTpl" nz-icon nzType="menu-fold" nzTheme="outline"></i>
+            <ng-template #unfoldTpl>
+                <i nz-icon nzType="menu-unfold" nzTheme="outline"></i>
+            </ng-template>
+        </button>
+    </nz-sider>
+    <nz-layout style="border-radius: 0 4px 4px 4px; overflow: hidden;">
+        <nz-header
+            style="border-bottom: 1px solid #e3e3e3; padding: 0;"
+            nz-row
+            [nzType]="'flex'"
+            [nzJustify]="'space-between'"
+            [nzAlign]="'middle'">
+            <nz-spin [nzSpinning]="serverMarketsLoading">
+                <div style="width: 232px;">
+                    <app-application-tree-select
+                        [initServerId]="1"
+                        [initMarketId]="2"
+                        [nodes]="[]"
+                        [allowClear]="false"
+                        [onlyMarket]="true"
+                        [size]="'large'"
+                        [style]="{width: '232px', height: '40px', 'background-color': '#f5f5f5'}"
+                        (serverMarketIdChange)="serverMarketIdChange($event)"
+                    ></app-application-tree-select>
+                </div>
+            </nz-spin>
+        </nz-header>
+        <nz-content>
+            <div class="ant-menu-submenu-title" style="margin: 26px 0 16px; padding-left: 19px;"
+                 [style.color]="menuId_value === null ? '#0046f0' : 'inherit'"
+                 (click)="menuHomeClicked()"
+            >
+                <i nz-icon nzType="home" nzTheme="outline" class="anticon" style="font-size: 16px;"></i>
+                <span style="font-size: 13px;">分类列表</span>
+            </div>
+            <nz-spin [nzSpinning]="portfolioLoading">
+                <div appCalcTableScrolly [offsetTop]="280" [showShadow]="false"
+                     (scrollY)="scrollY = $event" [style.height]="scrollY"
+                     class="menu-container"
+                >
+                    <ul *ngIf="menus && menus.length > 0; else noMenuTpl"
+                        nz-menu [nzMode]="'inline'" style="border-right: none;">
+                        <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menus }"></ng-container>
+                        <ng-template #menuTpl let-menus>
+                            <ng-container *ngFor="let menu of menus">
+                                <li *ngIf="menu.children && menu.children.length > 0; else menuItem" nz-submenu
+                                    [nzPaddingLeft]="menu.level * 24 - 5"
+                                    [(nzOpen)]="menu.open"
+                                    (click)="menuClicked(menu, menu.children); $event.stopPropagation();"
+                                >
+                                    <span title style="font-size: 13px" [style.color]="menu.selected ? '#0046f0' : 'inherit'">
+                                        <i *ngIf="menu.level === 1; else level2IconTpl" nz-icon [iconfont]="'icon-guanggaozu'" style="font-size: 16px;"></i>
+                                        <ng-template #level2IconTpl>
+                                            <i nz-icon nzType="bars" nzTheme="outline" style="font-size: 16px;"></i>
+                                        </ng-template>
+                                        <span nz-tooltip [nzTitle]="menu.title"
+                                              nzPlacement="topLeft" nzMouseEnterDelay="1.3"
+                                        >{{ menu.title }}</span>
+                                    </span>
+                                    <ul>
+                                        <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menu.children }"></ng-container>
+                                    </ul>
+                                </li>
+                                <ng-template #menuItem>
+                                    <li nz-menu-item
+                                        [nzPaddingLeft]="menu.level * 24 - 5"
+                                        [nzSelected]="menu.selected"
+                                        (click)="menuClicked(menu, null); $event.stopPropagation();"
+                                    >
+                                        <span title style="font-size: 13px">
+                                            <i *ngIf="menu.level === 1; else level2IconTpl" nz-icon [iconfont]="'icon-guanggaozu'" style="font-size: 16px;"></i>
+                                            <ng-template #level2IconTpl>
+                                                <i *ngIf="menu.level === 2" nz-icon nzType="bars" nzTheme="outline" style="font-size: 16px;"></i>
+                                            </ng-template>
+                                            <span nz-tooltip [nzTitle]="menu.title"
+                                                  nzPlacement="topLeft" nzMouseEnterDelay="1.3"
+                                            >{{ menu.title }}</span>
+                                        </span>
+                                    </li>
+                                </ng-template>
+                            </ng-container>
+                        </ng-template>
+                    </ul>
+                    <ng-template #noMenuTpl>
+
+                    </ng-template>
+                </div>
+            </nz-spin>
+        </nz-content>
+        <nz-footer style="padding: 0;">
+            <div nz-row nzType="flex" nzJustify="space-between" nzAlign="middle"
+                 style="height: 44px; border-top: 1px solid #d9d9d9; font-size: 12px;">
+                <nz-divider nzType="vertical" style="margin: 0; width: 0;"></nz-divider>
+                <span style="color: #5d78ff; cursor: pointer;" (click)="addAdsPortfolio()">
+                    <i nz-icon iconfont="icon-add" style="padding-right: 10px; font-size: 16px;"></i>
+                    添加服务
+                </span>
+                <nz-divider nzType="vertical" style="top: 0; margin: 0;"></nz-divider>
+                <span style="color: #34bfa3; cursor: pointer;" (click)="addAdsCampaigns()">
+                    <i nz-icon iconfont="icon-add" style="padding-right: 10px; font-size: 16px;"></i>
+                    添加目录
+                </span>
+                <nz-divider nzType="vertical" style="margin: 0; width: 0;"></nz-divider>
+            </div>
+        </nz-footer>
+    </nz-layout>
+</nz-layout>
