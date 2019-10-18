@@ -2,8 +2,7 @@ import {
     AfterViewInit,
     ChangeDetectorRef,
     Component,
-    Input, NgZone,
-    OnDestroy,
+    Input,
     OnInit,
     QueryList,
     Renderer2,
@@ -32,13 +31,12 @@ import {Config} from "@config/config";
     templateUrl: './apis-list.component.html',
     styleUrls: ['./apis-list.component.css'],
 })
-export class ApisListComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ApisListComponent extends BaseComponent implements OnInit, AfterViewInit {
+    @ViewChildren(NzThComponent, {read: false}) private nzThComponents: QueryList<NzThComponent>;
+    scrollXWidth = 0;
+
     @Input() portfolioId$: Observable<number>;
     @Input() chooseMenu: (id: number, level: number) => void;
-
-    // 用于控制table高度
-    @ViewChildren(NzThComponent, {read: false}) private nzThComponents: QueryList<NzThComponent>;
-    scrollXWidth = 10000;
 
     dynamicKeys: Option[] = [
         {id: 'alias', text: '路由名称'},
@@ -123,6 +121,18 @@ export class ApisListComponent extends BaseComponent implements OnInit, OnDestro
         });
     }
 
+    openWin(bean: any = null) {
+
+    }
+
+    deleteRoute(bean: any = null) {
+
+    }
+
+    resetFilters() {
+        this.selfPage.next(this.selfQueryParams.page);
+    }
+
     ngAfterViewInit(): void {
         // 监听th的宽度变化
         this.nzThComponents.changes.pipe(
@@ -146,8 +156,5 @@ export class ApisListComponent extends BaseComponent implements OnInit, OnDestro
                 this.cdr.detectChanges(); // 解决变更检测报错
             }
         );
-    }
-
-    ngOnDestroy(): void {
     }
 }

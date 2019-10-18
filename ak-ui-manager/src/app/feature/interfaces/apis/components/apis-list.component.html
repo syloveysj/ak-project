@@ -34,6 +34,7 @@
                 </nz-select>
             </div>
             <div class="filter-search-buttons" style="position: unset" >
+                <app-reset-filters (resetFilters)="resetFilters()"></app-reset-filters>
                 <app-height-search-labels
                     question questionHref="https://docs.konghq.com/1.3.x/admin-api/"
                 >
@@ -45,7 +46,7 @@
          (scrollY)="scrollY = $event" scrollYUnit="" [style.height]="scrollY + 102 + 'px'"
          (tabWidthChange)="tabWidthChange($event)">
         <nz-table
-            #pT
+            #contentTb nzBordered
             [nzScroll]="{x: scrollXWidth + 'px', y: scrollY}"
             [nzFrontPagination]="false"
             [nzShowPagination]="false"
@@ -58,21 +59,53 @@
             (nzCurrentPageDataChange)="currentPageDataChange($event)">
             <thead (nzSortChange)="sortChange($event)" nzSingleSort>
             <tr>
-                <th nzWidth="150px" nzLeft="0px">品牌</th>
-                <th nzWidth="100px" nzAlign="right" nzLeft="150px" nzShowSort nzSortKey="parentAsin">小计</th>
+                <th nzWidth="40px" nzShowCheckbox
+                    [(nzChecked)]="allChecked"
+                    [nzIndeterminate]="indeterminate"
+                    [nzDisabled]="!displayData.length"
+                    (nzCheckedChange)="checkAll($event)">
+                </th>
+                <th nzWidth="120px">名称</th>
+                <th nzWidth="80px" nzAlign="center">方法</th>
+                <th nzWidth="200px">路径</th>
+                <th nzWidth="90px" nzAlign="center">操作</th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let item of pT.data">
-                <td nzLeft="0px">{{item?.a}}</td>
-                <td nzLeft="150px" nzAlign="right">{{item?.subtotal}}{{item?.subtotal}}</td>
+            <tr *ngFor="let item of contentTb.data">
+                <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshStatus()"></td>
+                <td>{{item?.alias}}</td>
+                <td nzAlign="center">{{item?.hostsMemo}}</td>
+                <td>{{item?.pathsMemo}}</td>
+                <td nzAlign="center">
+                    <div>
+                        <a #btnDelete nz-popconfirm nzPlacement="left" nzTitle="您确认要删除【{{item?.alias}}】吗?"
+                           (nzOnConfirm)="deleteRoute(item)"></a>
+                        <nz-dropdown-button (nzClick)="openWin(item)" nzTrigger="click">
+                            <i nz-icon nzType="form" nz-tooltip nzTitle="编辑"></i>
+                            <ul nz-menu>
+                                <li nz-menu-item (click)="btnDelete.click()">
+                                    删除
+                                </li>
+                            </ul>
+                        </nz-dropdown-button>
+                    </div>
+                </td>
             </tr>
             </tbody>
         </nz-table>
-        <div class="list-page-pagination-wrapper clearFix" *ngIf="pT.data.length"
+        <div class="list-page-pagination-wrapper clearFix" *ngIf="contentTb.data.length"
              style="position: absolute; padding: 5px 33px 4px 24px; height: 44px; border-top: 1px solid #d9d9d9;">
             <div class="list-page-buttons fl">
-                <button nz-button nzType="primary">测试</button>
+                <label class="check-box"
+                       nz-checkbox
+                       [(ngModel)]="allChecked"
+                       [nzIndeterminate]="indeterminate"
+                       [(nzChecked)]="allChecked"
+                       [nzDisabled]="!displayData.length"
+                       (nzCheckedChange)="checkAll($event)">
+                </label>
+                <button nz-button nzType="primary">删除</button>
             </div>
             <div class="bottom-pagination fr">
                 <nz-pagination

@@ -88,31 +88,19 @@ input.gap-right {
     border-bottom: 1px solid #e8e8e8;
 }
 
-:host ::ng-deep #footerTb thead.ant-table-thead {
+:host ::ng-deep #contentTb thead.ant-table-thead {
     display: none;
 }
 
-:host ::ng-deep #footerTb .ant-table-body table {
+:host ::ng-deep #contentTb .ant-table-body table {
     border-top: 1px solid #e3e3e3 !important;
 }
 
-:host ::ng-deep #footerTb td {
+:host ::ng-deep #contentTb td {
     background-color: #fff !important;
 }
 
 :host ::ng-deep span.ant-calendar-picker-icon {
     z-index: 0 !important;
-}
-
-.ads-status {
-    display: inline-table;
-    width: 42px;
-    height: 16px;
-    border-radius: 8px;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    text-align: center;
-    cursor: initial;
-    color: #fff;
 }
 

@@ -20,8 +20,7 @@
         </app-tag-close>
     </div>
     <div class="update-times fr">
-        <app-reset-filters (resetFilters)="resetFilters()"></app-reset-filters>&nbsp;
-        <button (click)="openWin(null)" nzType="primary" nz-button><span>添加</span></button>
+        <button (click)="openWin(null)" nzType="primary" nz-button><span>服务导入</span></button>
     </div>
 </div>
 
@@ -41,49 +40,22 @@
         <!-- *****************右侧tab***************** -->
         <nz-layout>
             <nz-content class="card-container">
-                <ng-container [ngSwitch]="1">
-                    <!-- 所有的广告活动 -->
-                    <nz-tabset *ngSwitchCase="1"
-                               [nzTabBarStyle]="{'padding': '0'}"
-                               [nzTabPosition]="'top'"
-                               [nzType]="'card'"
-                               [(nzSelectedIndex)]="tabIndex1">
-                        <!-- 广告活动列表 -->
-                        <nz-tab [nzTitle]="'面板1'">
-                            <!--<app-apis-list-->
-                                <!--[portfolioId$]="sider.menuId$"-->
-                                <!--[chooseMenu]="sider.chooseMenu"-->
-                                <!--[table]="true"-->
-                            <!--&gt;</app-apis-list>-->
-                            <app-apis-list></app-apis-list>
-                        </nz-tab>
-                        <nz-tab [nzTitle]="'面板2'">
-                            <div>abc2</div>
-                        </nz-tab>
-                        <nz-tab [nzTitle]="'面板3'" >
-                            <div>abc3</div>
-                        </nz-tab>
-                    </nz-tabset>
-                    <!-- 广告活动详情 -->
-                    <nz-tabset *ngSwitchCase="2"
-                               [nzTabBarStyle]="{'padding': '0'}"
-                               [nzTabPosition]="'top'"
-                               [nzType]="'card'"
-                               [(nzSelectedIndex)]="tabIndex2">
-                        <nz-tab [nzTitle]="'标题1'">
-                            <div>aaa1</div>
-                        </nz-tab>
-                        <nz-tab [nzTitle]="'标题2'">
-                            <div>aaa2</div>
-                        </nz-tab>
-                        <nz-tab [nzTitle]="'标题3'">
-                            <div>aaa3</div>
-                        </nz-tab>
-                        <nz-tab [nzTitle]="'标题4'">
-                            <div>aaa4</div>
-                        </nz-tab>
-                    </nz-tabset>
-                </ng-container>
+                <nz-tabset [nzTabBarStyle]="{'padding': '0'}"
+                           [nzTabPosition]="'top'"
+                           [nzType]="'card'"
+                           nzSelectedIndex="0">
+                    <nz-tab nzTitle="服务列表">
+                        <!--<app-apis-list-->
+                            <!--[portfolioId$]="sider.menuId$"-->
+                            <!--[chooseMenu]="sider.chooseMenu"-->
+                            <!--[table]="true"-->
+                        <!--&gt;</app-apis-list>-->
+                        <app-apis-list></app-apis-list>
+                    </nz-tab>
+                    <nz-tab nzTitle="当前应用配置">
+                        <div></div>
+                    </nz-tab>
+                </nz-tabset>
             </nz-content>
         </nz-layout>
     </nz-layout>

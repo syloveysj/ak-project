@@ -5,10 +5,7 @@ import {NzMessageService, NzModalService, NzThComponent} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {Option} from '@model/common';
 import {ToolService} from '@core/utils/tool.service';
-import {debounceTime, distinctUntilChanged, finalize, map, switchMap, tap} from 'rxjs/operators';
-import {combineLatest, defer} from 'rxjs';
-import {defaultDebounceTime} from '@core/utils/constant.util';
-import {ClusterEditComponent} from '@feature/gateway/cluster/components/cluster-edit.component';
+import {map} from 'rxjs/operators';
 import {GatewayService} from "@service/http/gateway.service";
 
 @Component({
@@ -25,8 +22,6 @@ export class ApisComponent extends BaseComponent implements OnInit, AfterViewIni
         {id: 'alias', text: '集群名称'},
         {id: 'name', text: '集群编号'}
     ];
-    tabIndex1 = 0;
-    tabIndex2 = 1;
 
     constructor(public baseService: BaseService,
                 public rd: Renderer2,

@@ -87,7 +87,7 @@
                 <td>{{item?.createdAt | time}}</td>
                 <td nzAlign="center">
                     <div>
-                        <a #btnDelete nz-popconfirm nzPlacement="left" nzTitle="您确认要删除【{{item?.a}}】吗?"
+                        <a #btnDelete nz-popconfirm nzPlacement="left" nzTitle="您确认要删除【{{item?.alias}}】吗?"
                            (nzOnConfirm)="deleteCluster(item)"></a>
                         <nz-dropdown-button (nzClick)="openWin(item)" nzTrigger="click">
                             <i nz-icon nzType="form" nz-tooltip nzTitle="编辑"></i>
