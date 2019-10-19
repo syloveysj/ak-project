@@ -121,7 +121,7 @@ export class ApisListComponent extends BaseComponent implements OnInit, AfterVie
     }
 
     openWin(bean: any = null) {
-
+        console.log(this.scrollY);
     }
 
     deleteRoute(bean: any = null) {

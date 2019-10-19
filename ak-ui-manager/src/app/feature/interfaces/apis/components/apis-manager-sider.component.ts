@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Renderer2} from '@angular/core';
-import {NzIconService, NzMessageService, NzModalService} from 'ng-zorro-antd';
+import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {Menu} from '@model/common';
 import {Subject} from 'rxjs';
 import {BaseComponent} from "@shared/base-class/base.component";
@@ -121,8 +121,7 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
                 public rd: Renderer2,
                 public cdr: ChangeDetectorRef,
                 public modalService: NzModalService,
-                public nzMessageService: NzMessageService,
-                private nzIconService: NzIconService) {
+                public nzMessageService: NzMessageService) {
         super(baseService, rd, modalService, nzMessageService);
     }
 

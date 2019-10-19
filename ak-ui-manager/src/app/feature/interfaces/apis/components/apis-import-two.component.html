@@ -1,0 +1,67 @@
+<div nz-row style="margin-bottom: 4px;">
+    <div nz-col nzSpan="6" style="text-align: left; padding-top: 4px">
+        <nz-radio-group [(ngModel)]="size">
+            <label nz-radio-button nzValue="small"><span>全部</span></label>
+            <label nz-radio-button nzValue="default"><span>可更新</span></label>
+            <label nz-radio-button nzValue="large"><span>可导入</span></label>
+        </nz-radio-group>
+    </div>
+    <div nz-col nzSpan="3" style="text-align: right; padding-top: 8px">
+        搜索：
+    </div>
+    <div nz-col nzSpan="6" style="padding-top: 4px">
+        <input nz-input placeholder="请输入" [(ngModel)]="value" />
+    </div>
+    <div nz-col nzSpan="8" nzOffset="1" style="padding-bottom: 2px;">
+        <nz-alert nzType="info" [nzMessage]="selectInfo"></nz-alert>
+        <ng-template #selectInfo>
+            总共 <span style="font-weight: bold; color: blue;">{{listOfData.length}}</span> 项, 已选择 <span style="font-weight: bold; color: blue;">{{checkedNumber}}</span> 项.
+            <nz-divider nzType="vertical"></nz-divider>
+            <a nz-popconfirm nzPlacement="left" nzTitle="您确认要清空吗?" (nzOnConfirm)="deleteRoute(null)">
+                清空选择
+            </a>
+        </ng-template>
+    </div>
+</div>
+<div class="tab" appCalcTableScrolly offsetTop="362" [showShadow]="false"
+     (scrollY)="scrollY = $event" scrollYUnit="" [style.height]="scrollY + 'px'"
+     (tabWidthChange)="tabWidthChange($event)">
+    <nz-table
+        #contentTb nzBordered
+        [nzScroll]="{y: scrollY + 'px'}"
+        [nzFrontPagination]="true"
+        [nzShowPagination]="true"
+        [nzData]="listOfData || []"
+        [nzPageSize]="20"
+        nzSize="small"
+        (nzCurrentPageDataChange)="currentPageDataChange($event)">
+        <thead (nzSortChange)="sortChange($event)" nzSingleSort>
+        <tr>
+            <th nzWidth="40px" nzShowCheckbox
+                [(nzChecked)]="allChecked"
+                [nzIndeterminate]="indeterminate"
+                [nzDisabled]="!displayData.length"
+                (nzCheckedChange)="checkAll($event)">
+            </th>
+            <th nzWidth="120px">服务名称</th>
+            <th nzWidth="80px" nzAlign="center">方法</th>
+            <th nzWidth="200px">路径</th>
+            <th nzWidth="80px" nzAlign="center">状态</th>
+            <th nzWidth="90px" nzAlign="center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of contentTb.data">
+            <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshStatus()"></td>
+            <td>{{item?.name}}</td>
+            <td nzAlign="center">{{item?.hostsMemo}}</td>
+            <td>{{item?.alias}}</td>
+            <td nzAlign="center">{{item?.pathsMemo}}</td>
+            <td nzAlign="center">
+                <button nz-button nzType="link" nz-popconfirm nzPlacement="left" nzTitle="您确认要删除吗?"
+                        (nzOnConfirm)="deleteRoute(item)">删除</button>
+            </td>
+        </tr>
+        </tbody>
+    </nz-table>
+</div>

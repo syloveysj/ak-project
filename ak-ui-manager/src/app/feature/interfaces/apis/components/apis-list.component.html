@@ -47,7 +47,7 @@
          (tabWidthChange)="tabWidthChange($event)">
         <nz-table
             #contentTb nzBordered
-            [nzScroll]="{x: scrollXWidth + 'px', y: scrollY}"
+            [nzScroll]="{x: scrollXWidth + 'px', y: scrollY + 'px'}"
             [nzFrontPagination]="false"
             [nzShowPagination]="false"
             [nzData]="data?.rows || []"
@@ -75,7 +75,7 @@
             <tbody>
             <tr *ngFor="let item of contentTb.data">
                 <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshStatus()"></td>
-                <td>{{item?.alias}}</td>
+                <td>{{item?.type}}</td>
                 <td>{{item?.alias}}</td>
                 <td nzAlign="center">{{item?.hostsMemo}}</td>
                 <td>{{item?.pathsMemo}}</td>

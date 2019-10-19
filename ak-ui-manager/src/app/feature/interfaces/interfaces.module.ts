@@ -11,6 +11,9 @@ import {ApisPortfolioNodeComponent} from "@feature/interfaces/apis/components/ap
 import {ApisServerSettingComponent} from "@feature/interfaces/apis/components/apis-server-setting.component";
 import {RouterPluginsEditComponent} from "@feature/gateway/advanced-router/components/router-plugins-edit.component";
 import {ApisImportComponent} from "@feature/interfaces/apis/components/apis-import.component";
+import {ApisImportOneComponent} from "@feature/interfaces/apis/components/apis-import-one.component";
+import {ApisImportTwoComponent} from "@feature/interfaces/apis/components/apis-import-two.component";
+import {ApisImportThreeComponent} from "@feature/interfaces/apis/components/apis-import-three.component";
 
 @NgModule({
     entryComponents: [
@@ -22,6 +25,9 @@ import {ApisImportComponent} from "@feature/interfaces/apis/components/apis-impo
         ApisServerSettingComponent,
         RouterPluginsEditComponent,
         ApisImportComponent,
+        ApisImportOneComponent,
+        ApisImportTwoComponent,
+        ApisImportThreeComponent,
     ],
     imports: [
         SharedModule,
@@ -38,6 +44,9 @@ import {ApisImportComponent} from "@feature/interfaces/apis/components/apis-impo
         ApisPortfolioNodeComponent,
         ApisServerSettingComponent,
         ApisImportComponent,
+        ApisImportOneComponent,
+        ApisImportTwoComponent,
+        ApisImportThreeComponent,
     ],
     providers: [],
     exports: []

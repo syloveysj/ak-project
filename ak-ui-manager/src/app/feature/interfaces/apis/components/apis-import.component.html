@@ -1,7 +1,5 @@
-<nz-steps [nzCurrent]="current">
-    <nz-step nzTitle="服务录入"></nz-step>
-    <nz-step nzTitle="服务预览"></nz-step>
-    <nz-step nzTitle="完成"></nz-step>
-</nz-steps>
-
-<div class="steps-content">{{ index }}</div>
+<ng-container [ngSwitch]="current">
+    <app-apis-import-one *ngSwitchCase="0"></app-apis-import-one>
+    <app-apis-import-two *ngSwitchCase="1"></app-apis-import-two>
+    <app-apis-import-three *ngSwitchCase="2"></app-apis-import-three>
+</ng-container>

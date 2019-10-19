@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, Renderer2} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, Renderer2, TemplateRef, ViewChild} from '@angular/core';
 import {BaseComponent} from '@shared/base-class/base.component';
 import {BaseService} from '@service/http/base.service';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
@@ -15,6 +15,10 @@ import {ApisImportComponent} from "@feature/interfaces/apis/components/apis-impo
 export class ApisComponent extends BaseComponent implements OnInit {
     fold: boolean = false;
 
+    current = 0;
+    @ViewChild('importSteps')
+    importSteps: TemplateRef<any>;
+
     constructor(public baseService: BaseService,
                 public rd: Renderer2,
                 public modalService: NzModalService,
@@ -30,53 +34,51 @@ export class ApisComponent extends BaseComponent implements OnInit {
     }
 
     openWin() {
+        this.current = 0;
         const modal = this.modalService.create({
             nzWrapClassName: 'vertical-center-modal full',
-            nzTitle: '服务导入',
+            nzTitle: this.importSteps,
             nzMaskClosable: false,
+            nzClosable: false,
             nzFooter: [
                 {
                     label: '上一步',
-                    shape: 'default',
-                    show: (componentInstance) => {
-                        return componentInstance.current > 0 && componentInstance.current < 2;
+                    shape: 'primary',
+                    show: () => {
+                        return this.current === 1;
                     },
                     onClick: (componentInstance) => {
-                        componentInstance.pre();
+                        componentInstance.current = this.current -= 1;
                     }
                 },
                 {
                     label: '下一步',
-                    shape: 'default',
-                    show: (componentInstance) => {
-                        return componentInstance.current < 2;
+                    shape: 'primary',
+                    show: () => {
+                        return this.current < 2;
                     },
                     onClick: (componentInstance) => {
-                        componentInstance.next();
+                        componentInstance.current = this.current += 1;
                     }
                 },
                 {
                     label: '完成',
                     shape: 'primary',
-                    disabled: (componentInstance) => {
-                        return !componentInstance.form.valid;
-                    },
                     loading: (componentInstance) => {
                         return componentInstance.loading;
                     },
-                    show: (componentInstance) => {
-                        return componentInstance.current === 2;
+                    show: () => {
+                        return this.current === 2;
                     },
                     onClick: (componentInstance) => {
-                        componentInstance.done();
                         modal.destroy();
                     }
                 },
                 {
                     label: '取消',
                     shape: 'default',
-                    show: (componentInstance) => {
-                        return componentInstance.current !== 2;
+                    show: () => {
+                        return this.current !== 2;
                     },
                     onClick: () => {
                         modal.destroy();
