@@ -1,0 +1,149 @@
+<div style="padding: 2px 15px;">
+    <div class="tab" appCalcTableScrolly offsetTop="345" [showShadow]="false"
+         (scrollY)="scrollY = $event" scrollYUnit="" [style.height]="scrollY + 152 + 'px'"
+         (tabWidthChange)="tabWidthChange($event)">
+        <nz-descriptions nzTitle="基本信息" [nzColumn]="3">
+            <nz-descriptions-item nzTitle="应用分类">Zhou Maomao</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="应用名称">18100000000</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="备&emsp;&emsp;注">Hangzhou, Zhejiang</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="连接超时">Zhou Maomao</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="发送超时">18100000000</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="读取超时">Hangzhou, Zhejiang</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="协&emsp;&emsp;议">Zhou Maomao</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="路&emsp;&emsp;径">18100000000</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="端&emsp;&emsp;口">Hangzhou, Zhejiang</nz-descriptions-item>
+        </nz-descriptions>
+
+        <div nz-row>
+            <div nz-col nzSpan="12">
+                <nz-card [nzBordered]="false" [nzSize]="'small'" nzTitle="服务器" [nzExtra]="targetsExtraTemplate">
+                    <ng-template #targetsExtraTemplate>
+                        <button nz-button [disabled]="editing" nzType="primary" nzShape="circle"
+                                (click)="addTarget()">
+                            <i nz-icon nzType="file-add"></i>
+                        </button>&nbsp;
+                        <button nz-button [disabled]="editing" nzType="danger" nzShape="circle"
+                                nz-popconfirm nzTitle="您确认要删除所选记录吗?"
+                                (nzOnConfirm)="deleteTargets()">
+                            <i nz-icon nzType="delete"></i>
+                        </button>
+                    </ng-template>
+                    <nz-table #pT1 nzBordered
+                              [nzScroll]="{ y: '240px' }"
+                              [nzData]="targets"
+                              [nzSize]="'small'"
+                              [nzFrontPagination]="false"
+                              [nzShowPagination]="false">
+                        <thead>
+                        <tr>
+                            <th nzWidth="40px">&nbsp;</th>
+                            <th nzWidth="150px">IP</th>
+                            <th nzWidth="100px">端口</th>
+                            <th nzWidth="100px" nzAlign="right">权重</th>
+                            <th nzWidth="100px" nzAlign="center">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of pT1.data; let i = index">
+                            <td nzShowCheckbox [(nzChecked)]="item.checked"></td>
+                            <td>
+                                <ng-container *ngIf="!editCache[item.id].edit; else ipInputTpl">
+                                    {{ item?.ip }}
+                                </ng-container>
+                                <ng-template #ipInputTpl>
+                                    <input type="text" nz-input [(ngModel)]="editCache[item.id].data.ip" [ngModelOptions]="{standalone: true}" />
+                                </ng-template>
+                            </td>
+                            <td>
+                                <ng-container *ngIf="!editCache[item.id].edit; else portInputTpl">
+                                    {{ item?.port }}
+                                </ng-container>
+                                <ng-template #portInputTpl>
+                                    <input type="text" nz-input [(ngModel)]="editCache[item.id].data.port" appNumberOnly [scale]="0" [ngModelOptions]="{standalone: true}" />
+                                </ng-template>
+                            </td>
+                            <td nzAlign="right">
+                                <ng-container *ngIf="!editCache[item.id].edit; else weightInputTpl">
+                                    {{ item?.weight }}
+                                </ng-container>
+                                <ng-template #weightInputTpl>
+                                    <input type="text" nz-input [(ngModel)]="editCache[item.id].data.weight" appNumberOnly [scale]="0" [ngModelOptions]="{standalone: true}" />
+                                </ng-template>
+                            </td>
+                            <td nzAlign="center">
+                                <ng-container *ngIf="!editCache[item.id].edit; else saveTpl">
+                                    <ng-container *ngIf="bean == null">
+                                        <button nz-button nzType="primary" (click)="startEdit(item.id)">
+                                            <i nz-icon nzType="form"></i>
+                                        </button>&nbsp;
+                                    </ng-container>
+                                    <button nz-button nzType="danger" nz-popconfirm nzTitle="您确认要删除【{{item?.ip + ':' + item?.port}}】吗?"
+                                            (nzOnConfirm)="deleteTargets(item)">
+                                        <i nz-icon nzType="delete"></i>
+                                    </button>
+                                </ng-container>
+                                <ng-template #saveTpl>
+                                    <button nz-button nzType="primary" (click)="saveTarget(item.id)">
+                                        <i nz-icon nzType="save"></i>
+                                    </button>&nbsp;
+                                    <button nz-button nzType="danger" (click)="cancelEdit(item.id)">
+                                        <i nz-icon nzType="stop"></i>
+                                    </button>
+                                </ng-template>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-card>
+            </div>
+            <div nz-col nzSpan="11" nzOffset="1">
+                <nz-card [nzBordered]="false" [nzSize]="'small'" nzTitle="插件" [nzExtra]="pluginsExtraTemplate">
+                    <ng-template #pluginsExtraTemplate>
+                        <button nz-button nzType="primary" nzShape="circle" nz-tooltip nzTitle="添加" (click)="openPluginsWin(null)">
+                            <i nz-icon nzType="file-add"></i>
+                        </button>
+                    </ng-template>
+                    <nz-table #pT2 nzBordered
+                              [nzData]="pluginsList"
+                              [nzSize]="'small'"
+                              [nzFrontPagination]="false"
+                              [nzShowPagination]="false">
+                        <thead>
+                        <tr>
+                            <th nzWidth="120px">插件名称</th>
+                            <th nzWidth="100px">是否启用</th>
+                            <th nzWidth="150px">创建时间</th>
+                            <th nzWidth="100px" nzAlign="center">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of pT2.data; let i = index">
+                            <td>{{ item?.name }}</td>
+                            <td>{{ item?.enabled }}</td>
+                            <td>{{ item?.createdAt }}</td>
+                            <td nzAlign="center">
+                                <button nz-button nzType="primary">
+                                    <i nz-icon nzType="form"></i>
+                                </button>&nbsp;
+                                <button nz-button nzType="danger" nz-popconfirm nzTitle="您确认要删除【{{item?.name}}】吗?"
+                                        (nzOnConfirm)="deletePlug(item)">
+                                    <i nz-icon nzType="delete"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-card>
+            </div>
+        </div>
+
+        <div class="list-page-pagination-wrapper clearFix"
+             style="position: absolute; padding: 5px 33px 4px 24px; height: 44px; border-top: 1px solid #d9d9d9;">
+            <div class="list-page-buttons fl">
+            </div>
+            <div class="bottom-pagination fr">
+                <button nz-button nzType="primary">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>

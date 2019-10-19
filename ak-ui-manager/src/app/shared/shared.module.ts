@@ -14,6 +14,7 @@ import {InputGroupWrapperComponent} from '@shared/components/input-group-wrapper
 import {NumberOnlyDirective} from '@shared/directive/number-only.directive';
 import {ApplicationTreeSelectComponent} from "@feature/interfaces/apis/components/application-tree-select.component";
 import {CalcTableScrollyDirective} from "@shared/directive/calc-table-scrolly.directive";
+import {RouterPluginsEditComponent} from "@feature/gateway/advanced-router/components/router-plugins-edit.component";
 
 // 在这里注入模块
 const MODULES = [
@@ -35,6 +36,7 @@ const DECLARATIONS = [
     NumberOnlyDirective,
     CalcTableScrollyDirective,
     ApplicationTreeSelectComponent,
+    RouterPluginsEditComponent,
 ];
 
 // 在这里注入组件，指令，管道
@@ -47,6 +49,7 @@ const EXPORT_COMPONENTS = [
     NumberOnlyDirective,
     CalcTableScrollyDirective,
     ApplicationTreeSelectComponent,
+    RouterPluginsEditComponent,
 ];
 
 @NgModule({

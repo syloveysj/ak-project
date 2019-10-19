@@ -25,7 +25,7 @@
                     nz-col
                     class="gutter-row server font12"
                     [(ngModel)]="selfQueryParams.typeId"
-                    nzPlaceHolder="请求方式"
+                    nzPlaceHolder="方法"
                     nzAllowClear
                     nzShowSearch
                     (ngModelChange)="typeChange()">
@@ -65,6 +65,7 @@
                     [nzDisabled]="!displayData.length"
                     (nzCheckedChange)="checkAll($event)">
                 </th>
+                <th nzWidth="100px">分类</th>
                 <th nzWidth="120px">名称</th>
                 <th nzWidth="80px" nzAlign="center">方法</th>
                 <th nzWidth="200px">路径</th>
@@ -75,6 +76,7 @@
             <tr *ngFor="let item of contentTb.data">
                 <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshStatus()"></td>
                 <td>{{item?.alias}}</td>
+                <td>{{item?.alias}}</td>
                 <td nzAlign="center">{{item?.hostsMemo}}</td>
                 <td>{{item?.pathsMemo}}</td>
                 <td nzAlign="center">
@@ -82,7 +84,7 @@
                         <a #btnDelete nz-popconfirm nzPlacement="left" nzTitle="您确认要删除【{{item?.alias}}】吗?"
                            (nzOnConfirm)="deleteRoute(item)"></a>
                         <nz-dropdown-button (nzClick)="openWin(item)" nzTrigger="click">
-                            <i nz-icon nzType="form" nz-tooltip nzTitle="编辑"></i>
+                            <i nz-icon nzType="play-circle" nz-tooltip nzTitle="试运行"></i>
                             <ul nz-menu>
                                 <li nz-menu-item (click)="btnDelete.click()">
                                     删除
@@ -106,6 +108,7 @@
                        (nzCheckedChange)="checkAll($event)">
                 </label>
                 <button nz-button nzType="primary">删除</button>
+                <button nz-button nzType="primary">转移分类</button>
             </div>
             <div class="bottom-pagination fr">
                 <nz-pagination

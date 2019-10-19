@@ -9,16 +9,16 @@ import {AuthorizeComponent} from '@feature/gateway/authorize/authorize.component
 import {ClusterEditComponent} from '@feature/gateway/cluster/components/cluster-edit.component';
 import {RouterEditComponent} from '@feature/gateway/router/components/router-edit.component';
 import {AdvancedRouterEditComponent} from '@feature/gateway/advanced-router/components/advanced-router-edit.component';
-import {RouterPluginsEditComponent} from "@feature/gateway/advanced-router/components/router-plugins-edit.component";
 import {CertificateEditComponent} from "@feature/gateway/authorize/components/certificate-edit.component";
+import {RouterPluginsEditComponent} from "@feature/gateway/advanced-router/components/router-plugins-edit.component";
 
 @NgModule({
     entryComponents: [
         ClusterEditComponent,
         RouterEditComponent,
         AdvancedRouterEditComponent,
-        RouterPluginsEditComponent,
         CertificateEditComponent,
+        RouterPluginsEditComponent,
     ],
     imports: [
         SharedModule,
@@ -35,7 +35,6 @@ import {CertificateEditComponent} from "@feature/gateway/authorize/components/ce
 
         AdvancedRouterComponent,
         AdvancedRouterEditComponent,
-        RouterPluginsEditComponent,
 
         AuthorizeComponent,
         CertificateEditComponent

@@ -3,46 +3,31 @@
         <nz-breadcrumb>
             <span class="font">当前位置：</span>
             <nz-breadcrumb-item>
-                <span class="font">接口管理</span>
+                <span class="font">APIs管理</span>
             </nz-breadcrumb-item>
             <nz-breadcrumb-item>
-                APIs管理
+                APIs服务
             </nz-breadcrumb-item>
         </nz-breadcrumb>
     </div>
     <div class="filter-tags fl">
-        <app-tag-close
-            mode="groupSearch"
-            [dynamicKey]="selfQueryParams?.dynamicKey"
-            [keyword]="selfQueryParams?.keyword"
-            [data]="dynamicKeys"
-            (tagClose)="onKeywordTagClose()">
-        </app-tag-close>
     </div>
     <div class="update-times fr">
-        <button (click)="openWin(null)" nzType="primary" nz-button><span>服务导入</span></button>
+        <button (click)="openWin()" nzType="primary" nz-button><span>服务导入</span></button>
     </div>
 </div>
 
 <div class="list-page-wrapper" style="padding-bottom: 0;">
     <nz-layout style="background-color: transparent; margin-top: 10px">
-        <nz-sider [nzWidth]="fold ? '30px' : '273px'"
-                  style="border-right: 1px solid #e3e3e3; background-color: transparent; margin-right: 10px;">
-            <app-apis-manager-sider
-                #sider
-                [initServerId]="1"
-                [initMarketId]="2"
-                [initCampaignId]="3"
-                [initGroupId]="4"
-                (changeFold)="changeFold($event)"
-            ></app-apis-manager-sider>
+        <nz-sider [nzWidth]="fold ? '30px' : '273px'" style="border-right: 1px solid #e3e3e3; background-color: transparent; margin-right: 10px;">
+            <app-apis-manager-sider #sider (changeFold)="changeFold($event)"></app-apis-manager-sider>
         </nz-sider>
         <!-- *****************右侧tab***************** -->
         <nz-layout>
             <nz-content class="card-container">
                 <nz-tabset [nzTabBarStyle]="{'padding': '0'}"
-                           [nzTabPosition]="'top'"
-                           [nzType]="'card'"
+                           nzTabPosition="top"
+                           nzType="card"
                            nzSelectedIndex="0">
                     <nz-tab nzTitle="服务列表">
                         <!--<app-apis-list-->
@@ -52,8 +37,11 @@
                         <!--&gt;</app-apis-list>-->
                         <app-apis-list></app-apis-list>
                     </nz-tab>
-                    <nz-tab nzTitle="当前应用配置">
-                        <div></div>
+                    <nz-tab nzTitle="节点信息">
+                        <app-apis-portfolio-node></app-apis-portfolio-node>
+                    </nz-tab>
+                    <nz-tab nzTitle="应用配置">
+                        <app-apis-server-setting></app-apis-server-setting>
                     </nz-tab>
                 </nz-tabset>
             </nz-content>

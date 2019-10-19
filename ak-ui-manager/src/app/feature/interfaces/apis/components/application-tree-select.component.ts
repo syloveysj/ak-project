@@ -24,7 +24,7 @@ import {isNotEmpty} from "@core/utils/string.util";
             [nzSize]="size"
             nzShowSearch
             [nzAllowClear]="allowClear"
-            [nzPlaceHolder]="'请选择'"
+            [nzPlaceHolder]="'请选择应用'"
             (ngModelChange)="getKey($event)"
             [(ngModel)]="value"
             (nzOpenChange)="openChange($event)"
@@ -58,14 +58,12 @@ export class ApplicationTreeSelectComponent implements OnChanges, ControlValueAc
     value = null;
     prevValue = this.value;
     @Input() initServerId = null;
-    @Input() initMarketId = null;
     @Input() nodes: NzTreeNodeOptions[];
     @Input() size = 'default';
     @Input() style: any = { 'width': '250px' };
     @Input() loading: boolean;
-    @Input() @InputBoolean() onlyMarket = false;
-    @Input() @InputBoolean() allowClear = true; // 是否允许清空，如果允许则表示可以选择所有店铺。不能则自动定位到第一个店铺或第一个店铺的第一个站点。
-    @Output() serverMarketIdChange = new EventEmitter<{ serverId: string, marketId: string }>();
+    @Input() @InputBoolean() allowClear = true; // 是否允许清空，如果允许则表示可以选择所有。不能则自动定位到第一个分类或第一个分类的第一个服务。
+    @Output() serverIdChange = new EventEmitter<{ serverId: string }>();
 
     onChange: (_: any) => void = () => null;
     onTouched: () => void = () => null;
@@ -78,7 +76,7 @@ export class ApplicationTreeSelectComponent implements OnChanges, ControlValueAc
     }
 
     openChange(open: boolean) {
-        if (open && this.onlyMarket) {
+        if (open) {
             setTimeout(() => {
                 this.document.querySelectorAll('nz-tree > ul > nz-tree-node > li').forEach(node => {
                     node.addEventListener('click', (event) => {
@@ -109,12 +107,14 @@ export class ApplicationTreeSelectComponent implements OnChanges, ControlValueAc
 
     private translateNodes(nodes: NzTreeNodeOptions[]) {
         if (!this.allowClear) {
-            if (isNotEmpty(this.initServerId) && isNotEmpty(this.initMarketId)) {
-                this.prevValue = this.value = this.initServerId + '-' + this.initMarketId;
-            } else if (this.onlyMarket) {
-                this.prevValue = this.value = nodes[0].children[0].key;
+            if (isNotEmpty(this.initServerId)) {
+                this.prevValue = this.value = this.initServerId;
             } else {
-                this.prevValue = this.value = nodes[0].key;
+                if('children' in nodes[0] && nodes[0].children.length>0) {
+                    this.prevValue = this.value = nodes[0].children[0].key;
+                } else {
+                    this.prevValue = this.value = null;
+                }
             }
         }
         this.getKey(this.value);
@@ -132,12 +132,8 @@ export class ApplicationTreeSelectComponent implements OnChanges, ControlValueAc
             }
         }
 
-        const groupIds = key && key.split('-') || [null, null];
-        const value = {serverId: groupIds[0] || null, marketId: groupIds[1] || null};
-        this.serverMarketIdChange.emit(value);
-        if (this.onlyMarket) {
-            this.onChange(value.marketId);
-        }
+        const value = {serverId: key || null};
+        this.serverIdChange.emit(value);
     }
 
     registerOnChange(fn: any): void {

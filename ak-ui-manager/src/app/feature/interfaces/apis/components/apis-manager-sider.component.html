@@ -1,10 +1,10 @@
 <nz-layout style="background-color: transparent;">
     <nz-sider style="background-color: transparent;" [nzWidth]="'40px'">
-        <div class="layout-sider-label" [ngClass]="{'active': 0 === 0}" (click)="adsTypeChange(0)">
+        <div class="layout-sider-label" [ngClass]="{'active': 1 === 1}" (click)="typeChange(0)">
             <span class="title">
                 服务分类
-                <span *ngIf="!isBlank(productAdsNum)" class="number">
-                    ({{  productAdsNum | numPlus:999 }})
+                <span *ngIf="!isBlank(apisNum)" class="number">
+                    ({{  apisNum | numPlus:999 }})
                 </span>
             </span>
         </div>
@@ -25,24 +25,22 @@
             [nzType]="'flex'"
             [nzJustify]="'space-between'"
             [nzAlign]="'middle'">
-            <nz-spin [nzSpinning]="serverMarketsLoading">
+            <nz-spin [nzSpinning]="serversLoading">
                 <div style="width: 232px;">
                     <app-application-tree-select
-                        [initServerId]="1"
-                        [initMarketId]="2"
-                        [nodes]="[]"
+                        [initServerId]="initServerId"
+                        [nodes]="serverNodes"
                         [allowClear]="false"
-                        [onlyMarket]="true"
                         [size]="'large'"
                         [style]="{width: '232px', height: '40px', 'background-color': '#f5f5f5'}"
-                        (serverMarketIdChange)="serverMarketIdChange($event)"
+                        (serverIdChange)="serverIdChange($event)"
                     ></app-application-tree-select>
                 </div>
             </nz-spin>
         </nz-header>
         <nz-content>
             <div class="ant-menu-submenu-title" style="margin: 26px 0 16px; padding-left: 19px;"
-                 [style.color]="menuId_value === null ? '#0046f0' : 'inherit'"
+                 [style.color]="serverId === null ? '#0046f0' : 'inherit'"
                  (click)="menuHomeClicked()"
             >
                 <i nz-icon nzType="home" nzTheme="outline" class="anticon" style="font-size: 16px;"></i>
@@ -106,14 +104,14 @@
             <div nz-row nzType="flex" nzJustify="space-between" nzAlign="middle"
                  style="height: 44px; border-top: 1px solid #d9d9d9; font-size: 12px;">
                 <nz-divider nzType="vertical" style="margin: 0; width: 0;"></nz-divider>
-                <span style="color: #5d78ff; cursor: pointer;" (click)="addAdsPortfolio()">
-                    <i nz-icon iconfont="icon-add" style="padding-right: 10px; font-size: 16px;"></i>
-                    添加服务
+                <span style="color: #5d78ff; cursor: pointer;" (click)="refresh()">
+                    <i nz-icon nzType="plus-circle" nzTheme="outline" nzTheme="twotone" style="padding-right: 10px;"></i>
+                    添加应用
                 </span>
-                <nz-divider nzType="vertical" style="top: 0; margin: 0;"></nz-divider>
-                <span style="color: #34bfa3; cursor: pointer;" (click)="addAdsCampaigns()">
-                    <i nz-icon iconfont="icon-add" style="padding-right: 10px; font-size: 16px;"></i>
-                    添加目录
+                <nz-divider nzType="vertical" style="margin: 0; width: 0;"></nz-divider>
+                <span style="color: #52c41a; cursor: pointer;" (click)="refresh()">
+                    <i nz-icon nzType="plus-square" nzTheme="outline" nzTheme="twotone" [nzTwotoneColor]="'#52c41a'" style="padding-right: 10px;"></i>
+                    添加分类
                 </span>
                 <nz-divider nzType="vertical" style="margin: 0; width: 0;"></nz-divider>
             </div>

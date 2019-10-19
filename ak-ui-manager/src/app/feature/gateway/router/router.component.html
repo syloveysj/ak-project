@@ -94,7 +94,7 @@
             (nzCurrentPageDataChange)="currentPageDataChange($event)">
             <thead (nzSortChange)="sortChange($event)" nzSingleSort>
             <tr>
-                <th nzWidth="20px" nzShowCheckbox
+                <th nzWidth="40px" nzShowCheckbox
                     [(nzChecked)]="allChecked"
                     [nzIndeterminate]="indeterminate"
                     [nzDisabled]="!displayData.length"
@@ -103,11 +103,11 @@
                 <th nzWidth="120px">路由名称</th>
                 <th nzWidth="120px">匹配主机名</th>
                 <th nzWidth="80px">匹配路径</th>
-                <th nzWidth="120px">请求方式</th>
-                <th nzWidth="120px">应用服务器集群</th>
+                <th nzWidth="140px">请求方式</th>
+                <th nzWidth="140px">应用服务器集群</th>
                 <th nzWidth="100px">启用身份认证</th>
                 <th nzWidth="100px">启用访问权限控制</th>
-                <th nzWidth="60px" nzAlign="center">操作</th>
+                <th nzWidth="90px" nzAlign="center">操作</th>
             </tr>
             </thead>
             <tbody>

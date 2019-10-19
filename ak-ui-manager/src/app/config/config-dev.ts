@@ -17,9 +17,22 @@ export class ConfigDev extends Config {
         },
         {
             iconCls: 'icon-company',
-            text: '接口管理',
+            text: 'APIs管理',
             children: [
-                {iconCls: 'icon-company', text: 'APIs管理', uri: '/interfaces/apis'}]
+                {iconCls: 'icon-company', text: 'APIs服务', uri: '/interfaces/apis'},
+                {iconCls: 'icon-company', text: 'APIs客户', uri: '/gateway/authorize'}]
+        },
+        {
+            iconCls: 'icon-company',
+            text: '租户管理',
+            children: [
+                {iconCls: 'icon-company', text: '租户信息', uri: '/gateway/authorize'}]
+        },
+        {
+            iconCls: 'icon-company',
+            text: '监控中心',
+            children: [
+                {iconCls: 'icon-company', text: '异常监控', uri: '/gateway/authorize'}]
         }
     ];
 }

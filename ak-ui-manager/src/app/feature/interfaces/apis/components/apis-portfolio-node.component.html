@@ -1,0 +1,20 @@
+<div style="padding: 2px 15px;">
+    <div class="tab" appCalcTableScrolly offsetTop="345" [showShadow]="false"
+         (scrollY)="scrollY = $event" scrollYUnit="" [style.height]="scrollY + 152 + 'px'"
+         (tabWidthChange)="tabWidthChange($event)">
+        <nz-descriptions nzTitle="基本信息" [nzColumn]="1">
+            <nz-descriptions-item nzTitle="上级节点">Zhou Maomao</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="节点名称">18100000000</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="备&emsp;&emsp;注">Hangzhou, Zhejiang</nz-descriptions-item>
+        </nz-descriptions>
+
+        <div class="list-page-pagination-wrapper clearFix"
+             style="position: absolute; padding: 5px 33px 4px 24px; height: 44px; border-top: 1px solid #d9d9d9;">
+            <div class="list-page-buttons fl">
+            </div>
+            <div class="bottom-pagination fr">
+                <button nz-button nzType="primary">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -39,9 +39,8 @@ export class ApisListComponent extends BaseComponent implements OnInit, AfterVie
     @Input() chooseMenu: (id: number, level: number) => void;
 
     dynamicKeys: Option[] = [
-        {id: 'alias', text: '路由名称'},
-        {id: 'hostsMemo', text: '匹配主机名'},
-        {id: 'pathsMemo', text: '匹配路径'}
+        {id: 'alias', text: '名称'},
+        {id: 'pathsMemo', text: '路径'}
     ];
     types: Option[] = [
         {id: 'GET', text: 'GET'},

@@ -70,7 +70,7 @@
             (nzCurrentPageDataChange)="currentPageDataChange($event)">
             <thead (nzSortChange)="sortChange($event)" nzSingleSort>
             <tr>
-                <th nzWidth="20px" nzShowCheckbox
+                <th nzWidth="40px" nzShowCheckbox
                     [(nzChecked)]="allChecked"
                     [nzIndeterminate]="indeterminate"
                     [nzDisabled]="!displayData.length"
@@ -84,7 +84,7 @@
                 <th nzWidth="80px">owner</th>
                 <th nzWidth="100px">已授权服务数</th>
                 <th nzWidth="120px">创建时间</th>
-                <th nzWidth="60px" nzAlign="center">操作</th>
+                <th nzWidth="90px" nzAlign="center">操作</th>
             </tr>
             </thead>
             <tbody>
