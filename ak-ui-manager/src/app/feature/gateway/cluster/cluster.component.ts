@@ -107,6 +107,7 @@ export class ClusterComponent extends BaseComponent implements OnInit, AfterView
                         return componentInstance.loading;
                     },
                     onClick: (componentInstance) => {
+                        componentInstance.loading = true;
                         if(bean === null) {
                             this.gatewayService.addUpstream(componentInstance.getFromValues()).pipe(
                                 finalize(() => componentInstance.loading = false)

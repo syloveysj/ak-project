@@ -13,8 +13,8 @@ import {FormBuilder} from "@angular/forms";
                 <div nz-col nzSpan="4" class="label">
                     选择应用：
                 </div>
-                <div nz-col nzSpan="19" class="value">
-                    <nz-select [(ngModel)]="selectedValue" nzAllowClear nzPlaceHolder="请选择" style="width: 240px;">
+                <div nz-col nzSpan="8" class="value">
+                    <nz-select [(ngModel)]="serverId" nzAllowClear nzPlaceHolder="请选择" style="width: 100%">
                         <nz-option-group nzLabel="Manager">
                             <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
                             <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
@@ -24,16 +24,19 @@ import {FormBuilder} from "@angular/forms";
                         </nz-option-group>
                     </nz-select>
                 </div>
+                <div nz-col nzSpan="11" class="value" style="padding-top: 2px; margin-left: 30px;">
+                    <nz-switch [(ngModel)]="isUrl" nzCheckedChildren="路径导入" nzUnCheckedChildren="文本导入"></nz-switch>
+                </div>
             </div>
-            <div nz-row>
+            <div nz-row *ngIf="isUrl">
                 <div nz-col nzSpan="4" class="label">
                     Swagger Json地址：
                 </div>
                 <div nz-col nzSpan="19" class="value">
-                    <input [(ngModel)]="swaggerUrl" nz-input placeholder="http://127.0.0.1:8080/v2/api-docs" />
+                    <input [(ngModel)]="jsonUrl" nz-input placeholder="http://127.0.0.1:8080/v2/api-docs" />
                 </div>
             </div>
-            <div nz-row>
+            <div nz-row *ngIf="!isUrl">
                 <div nz-col nzSpan="4" class="label">
                     文本：
                 </div>
@@ -75,10 +78,19 @@ export class ApisImportOneComponent implements OnInit {
                 public gatewayService: GatewayService) {
     }
 
-    selectedValue;
-    swaggerUrl;
-    jsonText;
+    serverId: string;
+    jsonUrl: string;
+    jsonText: string;
+    isUrl: boolean = true;
 
     ngOnInit(): void {
+    }
+
+    getFromValues() {
+        return {
+            serverId: this.serverId,
+            jsonUrl: this.isUrl ? this.jsonUrl : '',
+            jsonText: this.isUrl ? '' : this.jsonText
+        }
     }
 }

@@ -4,8 +4,9 @@ import {BaseService} from '@service/http/base.service';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {ToolService} from '@core/utils/tool.service';
-import {GatewayService} from "@service/http/gateway.service";
 import {ApisImportComponent} from "@feature/interfaces/apis/components/apis-import.component";
+import {InterfacesService} from "@service/http/interfaces.service";
+import {finalize} from "rxjs/operators";
 
 @Component({
     selector: 'app-interfaces-apis',
@@ -25,7 +26,7 @@ export class ApisComponent extends BaseComponent implements OnInit {
                 public nzMessageService: NzMessageService,
                 public cdr: ChangeDetectorRef,
                 public toolService: ToolService,
-                public gatewayService: GatewayService,
+                public interfacesService: InterfacesService,
                 public config: Config) {
         super(baseService, rd, modalService, nzMessageService);
     }
@@ -59,6 +60,18 @@ export class ApisComponent extends BaseComponent implements OnInit {
                     },
                     onClick: (componentInstance) => {
                         componentInstance.current = this.current += 1;
+                        componentInstance.loading = true;
+                        if(this.current === 1) {
+                            this.interfacesService.serverAnalysis(componentInstance.getFromValues()).pipe(
+                                finalize(() => componentInstance.loading = false)
+                            ).subscribe(
+                                (res) => {
+                                    console.log(res);
+                                }
+                            );
+                        } else {
+                            componentInstance.loading = false;
+                        }
                     }
                 },
                 {

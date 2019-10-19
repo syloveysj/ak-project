@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Config} from "@config/config";
@@ -12,6 +12,9 @@ import {GatewayService} from "@service/http/gateway.service";
     `],
 })
 export class ApisImportComponent implements OnInit {
+    @ViewChild('onePanelChild') onePanel;
+    @ViewChild('twoPanelChild') twoPanel;
+
     constructor(public fb: FormBuilder,
                 public config: Config,
                 private nzMessageService: NzMessageService,
@@ -29,4 +32,13 @@ export class ApisImportComponent implements OnInit {
             routeName: ['', [Validators.required]],
         });
     }
+
+    getFromValues() {
+        if(this.current === 1) {
+            return this.onePanel.getFromValues();
+        } else {
+            return null;
+        }
+    }
+
 }
