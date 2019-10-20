@@ -27,12 +27,12 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
             key: '99',
             children: [
                 {
-                    title: 'parent 1-0',
+                    title: '网关集群',
                     key: '1001',
                     isLeaf: true
                 },
                 {
-                    title: 'parent 1-1',
+                    title: '工作流集群',
                     key: '1002',
                     isLeaf: true
                 }
@@ -43,12 +43,12 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
             key: '100',
             children: [
                 {
-                    title: 'parent 1-0',
+                    title: '供应链集群',
                     key: '1011',
                     isLeaf: true
                 },
                 {
-                    title: 'parent 1-1',
+                    title: '第三方对接集群',
                     key: '1012',
                     isLeaf: true
                 }
@@ -57,33 +57,19 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
     ];
     menus: Menu[] = [
         {
-            title: '平台应用',
+            title: '网关配置',
             id: '99',
             selected: false,
             level: 1,
             children: [
                 {
-                    title: 'parent 1-0',
+                    title: '集群管理',
                     id: '1001',
                     selected: true,
-                    level: 2,
-                    children: [
-                        {
-                            title: 'parent 1-0',
-                            id: '1111',
-                            selected: false,
-                            level: 3
-                        },
-                        {
-                            title: 'parent 1-1',
-                            id: '1112',
-                            selected: false,
-                            level: 3
-                        }
-                    ]
+                    level: 2
                 },
                 {
-                    title: 'parent 1-1',
+                    title: '路由管理',
                     id: '1002',
                     selected: false,
                     level: 2
@@ -91,19 +77,19 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
             ]
         },
         {
-            title: '业务应用',
+            title: 'APIs管理',
             id: '100',
             selected: false,
             level: 1,
             children: [
                 {
-                    title: 'parent 1-0',
+                    title: 'APIs服务',
                     id: '1011',
                     selected: false,
                     level: 2
                 },
                 {
-                    title: 'parent 1-1',
+                    title: 'APIs客户',
                     id: '1012',
                     selected: false,
                     level: 2

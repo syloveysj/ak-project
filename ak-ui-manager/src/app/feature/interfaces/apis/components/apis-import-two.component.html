@@ -15,7 +15,7 @@
     <div nz-col nzSpan="8" nzOffset="1" style="padding-bottom: 2px;">
         <nz-alert nzType="info" [nzMessage]="selectInfo"></nz-alert>
         <ng-template #selectInfo>
-            总共 <span style="font-weight: bold; color: blue;">{{listOfData.length}}</span> 项, 已选择 <span style="font-weight: bold; color: blue;">{{checkedNumber}}</span> 项.
+            总共 <span style="font-weight: bold; color: blue;">{{apiList.length}}</span> 项, 已选择 <span style="font-weight: bold; color: blue;">{{checkedNumber}}</span> 项.
             <nz-divider nzType="vertical"></nz-divider>
             <a nz-popconfirm nzPlacement="left" nzTitle="您确认要清空吗?" (nzOnConfirm)="deleteRoute(null)">
                 清空选择
@@ -31,7 +31,7 @@
         [nzScroll]="{y: scrollY + 'px'}"
         [nzFrontPagination]="true"
         [nzShowPagination]="true"
-        [nzData]="listOfData || []"
+        [nzData]="apiList || []"
         [nzPageSize]="20"
         nzSize="small"
         (nzCurrentPageDataChange)="currentPageDataChange($event)">
@@ -54,8 +54,8 @@
         <tr *ngFor="let item of contentTb.data">
             <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshStatus()"></td>
             <td>{{item?.name}}</td>
-            <td nzAlign="center">{{item?.hostsMemo}}</td>
-            <td>{{item?.alias}}</td>
+            <td nzAlign="center">{{item?.method}}</td>
+            <td>{{item?.uri}}</td>
             <td nzAlign="center">{{item?.pathsMemo}}</td>
             <td nzAlign="center">
                 <button nz-button nzType="link" nz-popconfirm nzPlacement="left" nzTitle="您确认要删除吗?"

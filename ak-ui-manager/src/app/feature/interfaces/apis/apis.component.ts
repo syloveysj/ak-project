@@ -59,14 +59,15 @@ export class ApisComponent extends BaseComponent implements OnInit {
                         return this.current < 2;
                     },
                     onClick: (componentInstance) => {
-                        componentInstance.current = this.current += 1;
                         componentInstance.loading = true;
-                        if(this.current === 1) {
+                        if(this.current === 0) {
                             this.interfacesService.serverAnalysis(componentInstance.getFromValues()).pipe(
                                 finalize(() => componentInstance.loading = false)
                             ).subscribe(
                                 (res) => {
                                     console.log(res);
+                                    componentInstance.current = this.current += 1;
+                                    componentInstance.setApisBean(res);
                                 }
                             );
                         } else {

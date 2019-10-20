@@ -1,5 +1,5 @@
 <ng-container [ngSwitch]="current">
     <app-apis-import-one #onePanelChild *ngSwitchCase="0"></app-apis-import-one>
-    <app-apis-import-two #twoPanelChild *ngSwitchCase="1"></app-apis-import-two>
+    <app-apis-import-two [apiList]="apisBean?.data" #twoPanelChild *ngSwitchCase="1"></app-apis-import-two>
     <app-apis-import-three *ngSwitchCase="2"></app-apis-import-three>
 </ng-container>
