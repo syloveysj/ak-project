@@ -1,9 +1,9 @@
-package com.yunjian.ak.gateway.controller;
+package com.yunjian.ak.gateway.controller.router;
 
 import com.yunjian.ak.dao.mybatis.enhance.Page;
-import com.yunjian.ak.gateway.entity.TargetEntity;
-import com.yunjian.ak.gateway.entity.UpstreamEntity;
-import com.yunjian.ak.gateway.service.UpstreamService;
+import com.yunjian.ak.gateway.entity.router.TargetEntity;
+import com.yunjian.ak.gateway.entity.router.UpstreamEntity;
+import com.yunjian.ak.gateway.service.router.UpstreamService;
 import com.yunjian.ak.kong.client.exception.KongClientException;
 import com.yunjian.ak.kong.client.impl.KongClient;
 import com.yunjian.ak.kong.client.model.admin.target.Target;
@@ -12,7 +12,6 @@ import com.yunjian.ak.kong.client.model.admin.upstream.Upstream;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Description:

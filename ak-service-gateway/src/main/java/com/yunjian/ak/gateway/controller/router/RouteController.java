@@ -1,11 +1,10 @@
-package com.yunjian.ak.gateway.controller;
+package com.yunjian.ak.gateway.controller.router;
 
 import com.alibaba.fastjson.JSON;
 import com.yunjian.ak.dao.mybatis.enhance.Page;
-import com.yunjian.ak.gateway.entity.RouteEntity;
-import com.yunjian.ak.gateway.entity.ServiceEntity;
-import com.yunjian.ak.gateway.service.RouteService;
-import com.yunjian.ak.gateway.service.ServiceService;
+import com.yunjian.ak.gateway.entity.router.RouteEntity;
+import com.yunjian.ak.gateway.service.router.RouteService;
+import com.yunjian.ak.gateway.service.router.ServiceService;
 import com.yunjian.ak.kong.client.impl.KongClient;
 import com.yunjian.ak.kong.client.model.admin.route.Route;
 import com.yunjian.ak.kong.client.model.admin.service.Service;

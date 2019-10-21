@@ -1,10 +1,11 @@
-package com.yunjian.ak.gateway.controller;
+package com.yunjian.ak.gateway.controller.apis;
 
 import com.alibaba.fastjson.JSON;
 import com.yunjian.ak.exception.ValidationException;
-import com.yunjian.ak.gateway.vo.ApiAnalysisVo;
-import com.yunjian.ak.gateway.vo.ApiPackageVo;
-import com.yunjian.ak.gateway.vo.ApiVo;
+import com.yunjian.ak.gateway.controller.router.UpstreamController;
+import com.yunjian.ak.gateway.vo.apis.ApiAnalysisVo;
+import com.yunjian.ak.gateway.vo.apis.ApiPackageVo;
+import com.yunjian.ak.gateway.vo.apis.ApiVo;
 import com.yunjian.ak.web.utils.http.RestUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

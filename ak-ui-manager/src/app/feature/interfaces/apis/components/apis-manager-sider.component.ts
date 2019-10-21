@@ -5,6 +5,8 @@ import {Subject} from 'rxjs';
 import {BaseComponent} from "@shared/base-class/base.component";
 import {BaseService} from "@service/http/base.service";
 import {isEmpty} from "@core/utils/string.util";
+import {ApisPortfolioWinComponent} from "@feature/interfaces/apis/components/apis-portfolio-win.component";
+import {ApisServerWinComponent} from "@feature/interfaces/apis/components/apis-server-win.component";
 
 @Component({
     selector: 'app-apis-manager-sider',
@@ -118,7 +120,80 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
         this.changeFold.emit(this.fold = !this.fold);
     }
 
-    refresh() {
+    addApplication() {
+        const modal = this.modalService.create({
+            nzWrapClassName: 'vertical-center-modal normal',
+            nzTitle: "添加服务应用",
+            nzMaskClosable: false,
+            nzClosable: true,
+            nzFooter: [
+                {
+                    label: '保存',
+                    shape: 'primary',
+                    disabled: (componentInstance) => {
+                        return false;
+                    },
+                    // loading: (componentInstance) => {
+                    //     return componentInstance.loading;
+                    // },
+                    onClick: (componentInstance) => {
+                    }
+                },
+                {
+                    label: '取消',
+                    shape: 'default',
+                    onClick: () => {
+                        modal.destroy();
+                    }
+                }
+            ],
+            nzContent: ApisServerWinComponent,
+            nzComponentParams: {
+            }
+        });
+
+        modal.afterClose.subscribe((result) => {
+            if (result) {
+            }
+        });
+    }
+
+    addPortfolio() {
+        const modal = this.modalService.create({
+            nzWrapClassName: 'vertical-center-modal normal',
+            nzTitle: "添加服务分类",
+            nzMaskClosable: false,
+            nzClosable: true,
+            nzFooter: [
+                {
+                    label: '保存',
+                    shape: 'primary',
+                    disabled: (componentInstance) => {
+                        return false;
+                    },
+                    // loading: (componentInstance) => {
+                    //     return componentInstance.loading;
+                    // },
+                    onClick: (componentInstance) => {
+                    }
+                },
+                {
+                    label: '取消',
+                    shape: 'default',
+                    onClick: () => {
+                        modal.destroy();
+                    }
+                }
+            ],
+            nzContent: ApisPortfolioWinComponent,
+            nzComponentParams: {
+            }
+        });
+
+        modal.afterClose.subscribe((result) => {
+            if (result) {
+            }
+        });
     }
 
     typeChange() {

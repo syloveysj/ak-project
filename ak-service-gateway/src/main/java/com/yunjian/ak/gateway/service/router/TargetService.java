@@ -1,4 +1,4 @@
-package com.yunjian.ak.gateway.service;
+package com.yunjian.ak.gateway.service.router;
 
 import com.alibaba.fastjson.JSON;
 import com.yunjian.ak.dao.core.DaoFactory;
@@ -6,7 +6,7 @@ import com.yunjian.ak.dao.mybatis.enhance.Page;
 import com.yunjian.ak.dao.mybatis.enhance.Pageable;
 import com.yunjian.ak.dao.mybatis.enhance.Sortable;
 import com.yunjian.ak.dao.utils.SortableUtil;
-import com.yunjian.ak.gateway.entity.TargetEntity;
+import com.yunjian.ak.gateway.entity.router.TargetEntity;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 

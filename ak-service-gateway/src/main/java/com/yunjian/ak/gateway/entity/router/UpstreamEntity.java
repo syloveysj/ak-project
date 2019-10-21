@@ -1,4 +1,4 @@
-package com.yunjian.ak.gateway.entity;
+package com.yunjian.ak.gateway.entity.router;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yunjian.ak.dao.annotation.Column;
@@ -18,9 +18,9 @@ import java.util.List;
  * @Version 1.0
  */
 @Entity(
-        id = "entity:com.yunjian.ak.gateway.entity.UpstreamEntity",
+        id = "entity:com.yunjian.ak.gateway.entity.router.UpstreamEntity",
         table = "upstreams",
-        ds = "sys",
+        ds = "router",
         cache = false
 )
 @Data

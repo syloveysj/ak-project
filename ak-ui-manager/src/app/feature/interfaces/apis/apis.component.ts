@@ -58,6 +58,12 @@ export class ApisComponent extends BaseComponent implements OnInit {
                     show: () => {
                         return this.current < 2;
                     },
+                    disabled: (componentInstance) => {
+                        if(this.current === 1) {
+                            return componentInstance.twoPanel.allCheckedNumber === 0;
+                        }
+                        return false;
+                    },
                     onClick: (componentInstance) => {
                         const params = componentInstance.getFromValues();
                         if(params === null) return;
@@ -74,6 +80,12 @@ export class ApisComponent extends BaseComponent implements OnInit {
                                 }
                             );
                         } else {
+                            this.modalService.confirm({
+                                nzTitle: '<i>您确认现在就提交保存吗?</i>',
+                                nzOnOk: () => {
+                                    componentInstance.current = this.current += 1;
+                                }
+                            });
                             componentInstance.loading = false;
                         }
                     }

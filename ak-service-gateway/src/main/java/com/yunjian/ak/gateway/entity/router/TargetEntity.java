@@ -1,4 +1,4 @@
-package com.yunjian.ak.gateway.entity;
+package com.yunjian.ak.gateway.entity.router;
 
 import com.yunjian.ak.dao.annotation.Column;
 import com.yunjian.ak.dao.annotation.ColumnType;
@@ -16,9 +16,9 @@ import java.util.List;
  * @Version 1.0
  */
 @Entity(
-        id = "entity:com.yunjian.ak.gateway.entity.TargetEntity",
+        id = "entity:com.yunjian.ak.gateway.entity.router.TargetEntity",
         table = "targets",
-        ds = "sys",
+        ds = "router",
         cache = false
 )
 @Data

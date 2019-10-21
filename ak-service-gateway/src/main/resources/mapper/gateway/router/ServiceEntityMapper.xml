@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yunjian.ak.gateway.entity.ServiceEntityMapper">
+<mapper namespace="com.yunjian.ak.gateway.entity.router.ServiceEntityMapper">
     <!-- 数据库中表名为:services的列名 -->
     <sql id="column_sql">
         services.id,
@@ -36,7 +36,7 @@
     </sql>
 
     <!-- Service的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
-    <resultMap id="result_Service_Map" type="com.yunjian.ak.gateway.entity.ServiceEntity">
+    <resultMap id="result_Service_Map" type="com.yunjian.ak.gateway.entity.router.ServiceEntity">
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="protocol" property="protocol" />
@@ -53,7 +53,7 @@
     </resultMap>
 
     <!--获得类名为:Service对应的数据库表满足条件的数据总行数 -->
-    <select id="count" parameterType="com.yunjian.ak.gateway.entity.ServiceEntity" resultType="int">
+    <select id="count" parameterType="com.yunjian.ak.gateway.entity.router.ServiceEntity" resultType="int">
         select count(*) from services
         <where>
             <include refid="whereClause_sql"/>
@@ -61,7 +61,7 @@
     </select>
 
     <!-- 通过Service的id将Service中属性值不为null的数据更新到数据库对应的表中 -->
-    <update id="update" parameterType="com.yunjian.ak.gateway.entity.ServiceEntity">
+    <update id="update" parameterType="com.yunjian.ak.gateway.entity.router.ServiceEntity">
         update services
         <set>
             <trim suffixOverrides=",">
@@ -77,7 +77,7 @@
     </update>
 
     <!-- 获得一个Service对象,以参数Service对象中不为空的属性作为条件进行查询 -->
-    <select id="select" parameterType="com.yunjian.ak.gateway.entity.ServiceEntity" resultMap="result_Service_Map">
+    <select id="select" parameterType="com.yunjian.ak.gateway.entity.router.ServiceEntity" resultMap="result_Service_Map">
         select
         <include refid="column_sql"/>
         from services
@@ -102,7 +102,7 @@
     </select>
 
     <!-- 获得一个Service对象,以参数Service对象中不为空的属性作为条件进行分页查询 -->
-    <select id="selectByPage" parameterType="com.yunjian.ak.gateway.entity.ServiceEntity" resultMap="result_Service_Map">
+    <select id="selectByPage" parameterType="com.yunjian.ak.gateway.entity.router.ServiceEntity" resultMap="result_Service_Map">
         select
         <include refid="column_sql"/>
         from services

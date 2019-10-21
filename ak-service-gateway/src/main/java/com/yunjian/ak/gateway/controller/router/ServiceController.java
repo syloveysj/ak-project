@@ -1,7 +1,7 @@
-package com.yunjian.ak.gateway.controller;
+package com.yunjian.ak.gateway.controller.router;
 
-import com.yunjian.ak.gateway.entity.ServiceEntity;
-import com.yunjian.ak.gateway.service.ServiceService;
+import com.yunjian.ak.gateway.entity.router.ServiceEntity;
+import com.yunjian.ak.gateway.service.router.ServiceService;
 import com.yunjian.ak.kong.client.impl.KongClient;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

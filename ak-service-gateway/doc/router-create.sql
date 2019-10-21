@@ -1,0 +1,5 @@
+ALTER TABLE upstreams ADD COLUMN alias TEXT;
+
+ALTER TABLE services ADD COLUMN alias TEXT;
+
+ALTER TABLE routes ADD COLUMN alias TEXT;

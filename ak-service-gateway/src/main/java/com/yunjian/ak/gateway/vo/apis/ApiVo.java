@@ -1,4 +1,4 @@
-package com.yunjian.ak.gateway.vo;
+package com.yunjian.ak.gateway.vo.apis;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

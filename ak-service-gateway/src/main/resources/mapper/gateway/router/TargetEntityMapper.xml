@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yunjian.ak.gateway.entity.TargetEntityMapper">
+<mapper namespace="com.yunjian.ak.gateway.entity.router.TargetEntityMapper">
     <!-- 数据库中表名为:Targets的列名 -->
     <sql id="column_sql">
         targets.id,
@@ -16,14 +16,14 @@
     </sql>
 
     <!-- Target的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
-    <resultMap id="result_Target_Map" type="com.yunjian.ak.gateway.entity.TargetEntity">
+    <resultMap id="result_Target_Map" type="com.yunjian.ak.gateway.entity.router.TargetEntity">
         <id column="id" property="id" />
         <result column="target" property="target" />
         <result column="weight" property="weight" />
     </resultMap>
 
     <!--获得类名为:Target对应的数据库表满足条件的数据总行数 -->
-    <select id="count" parameterType="com.yunjian.ak.gateway.entity.TargetEntity" resultType="int">
+    <select id="count" parameterType="com.yunjian.ak.gateway.entity.router.TargetEntity" resultType="int">
         select count(*) from targets
         <where>
             <include refid="whereClause_sql"/>
@@ -31,7 +31,7 @@
     </select>
 
     <!-- 获得一个Target对象,以参数Target对象中不为空的属性作为条件进行查询 -->
-    <select id="select" parameterType="com.yunjian.ak.gateway.entity.TargetEntity" resultMap="result_Target_Map">
+    <select id="select" parameterType="com.yunjian.ak.gateway.entity.router.TargetEntity" resultMap="result_Target_Map">
         select
         <include refid="column_sql"/>
         from targets
@@ -48,7 +48,7 @@
     </select>
 
     <!-- 获得一个Target对象,以参数Target对象中不为空的属性作为条件进行分页查询 -->
-    <select id="selectByPage" parameterType="com.yunjian.ak.gateway.entity.TargetEntity" resultMap="result_Target_Map">
+    <select id="selectByPage" parameterType="com.yunjian.ak.gateway.entity.router.TargetEntity" resultMap="result_Target_Map">
         select
         <include refid="column_sql"/>
         from targets

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yunjian.ak.gateway.entity.UpstreamEntityMapper">
+<mapper namespace="com.yunjian.ak.gateway.entity.router.UpstreamEntityMapper">
     <!-- 数据库中表名为:upstreams的列名 -->
     <sql id="column_sql">
         upstreams.id,
@@ -27,7 +27,7 @@
     </sql>
 
     <!-- Upstream的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
-    <resultMap id="result_Upstream_Map" type="com.yunjian.ak.gateway.entity.UpstreamEntity">
+    <resultMap id="result_Upstream_Map" type="com.yunjian.ak.gateway.entity.router.UpstreamEntity">
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="algorithm" property="algorithm" />
@@ -38,7 +38,7 @@
     </resultMap>
 
     <!--获得类名为:Upstream对应的数据库表满足条件的数据总行数 -->
-    <select id="count" parameterType="com.yunjian.ak.gateway.entity.UpstreamEntity" resultType="int">
+    <select id="count" parameterType="com.yunjian.ak.gateway.entity.router.UpstreamEntity" resultType="int">
         select count(*) from upstreams
         <where>
             <include refid="whereClause_sql"/>
@@ -46,7 +46,7 @@
     </select>
 
     <!-- 通过Upstream的id将Upstream中属性值不为null的数据更新到数据库对应的表中 -->
-    <update id="update" parameterType="com.yunjian.ak.gateway.entity.UpstreamEntity">
+    <update id="update" parameterType="com.yunjian.ak.gateway.entity.router.UpstreamEntity">
         update upstreams
         <set>
             <trim suffixOverrides=",">
@@ -62,7 +62,7 @@
     </update>
 
     <!-- 获得一个Upstream对象,以参数Upstream对象中不为空的属性作为条件进行查询 -->
-    <select id="select" parameterType="com.yunjian.ak.gateway.entity.UpstreamEntity" resultMap="result_Upstream_Map">
+    <select id="select" parameterType="com.yunjian.ak.gateway.entity.router.UpstreamEntity" resultMap="result_Upstream_Map">
         select
         <include refid="column_sql"/>
         from upstreams
@@ -87,7 +87,7 @@
     </select>
 
     <!-- 获得一个Upstream对象,以参数Upstream对象中不为空的属性作为条件进行分页查询 -->
-    <select id="selectByPage" parameterType="com.yunjian.ak.gateway.entity.UpstreamEntity" resultMap="result_Upstream_Map">
+    <select id="selectByPage" parameterType="com.yunjian.ak.gateway.entity.router.UpstreamEntity" resultMap="result_Upstream_Map">
         select
         <include refid="column_sql"/>
         from upstreams

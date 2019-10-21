@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yunjian.ak.gateway.entity.RouteEntityMapper">
+<mapper namespace="com.yunjian.ak.gateway.entity.router.RouteEntityMapper">
     <!-- 数据库中表名为:routes的列名 -->
     <sql id="column_sql">
         routes.id,
@@ -42,7 +42,7 @@
     </sql>
 
     <!-- Route的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
-    <resultMap id="result_Route_Map" type="com.yunjian.ak.gateway.entity.RouteEntity">
+    <resultMap id="result_Route_Map" type="com.yunjian.ak.gateway.entity.router.RouteEntity">
         <id column="id" property="id" />
         <result column="service_id" property="serviceId" />
         <result column="name" property="name" />
@@ -59,7 +59,7 @@
     </resultMap>
 
     <!--获得类名为:Route对应的数据库表满足条件的数据总行数 -->
-    <select id="count" parameterType="com.yunjian.ak.gateway.entity.RouteEntity" resultType="int">
+    <select id="count" parameterType="com.yunjian.ak.gateway.entity.router.RouteEntity" resultType="int">
         select count(*) from routes
         <where>
             <include refid="whereClause_sql"/>
@@ -67,7 +67,7 @@
     </select>
 
     <!-- 通过Route的id将Route中属性值不为null的数据更新到数据库对应的表中 -->
-    <update id="update" parameterType="com.yunjian.ak.gateway.entity.RouteEntity">
+    <update id="update" parameterType="com.yunjian.ak.gateway.entity.router.RouteEntity">
         update routes
         <set>
             <trim suffixOverrides=",">
@@ -94,7 +94,7 @@
     </update>
 
     <!-- 获得一个Route对象,以参数Route对象中不为空的属性作为条件进行查询 -->
-    <select id="select" parameterType="com.yunjian.ak.gateway.entity.RouteEntity" resultMap="result_Route_Map">
+    <select id="select" parameterType="com.yunjian.ak.gateway.entity.router.RouteEntity" resultMap="result_Route_Map">
         select
         <include refid="column_sql"/>
         from routes
@@ -119,7 +119,7 @@
     </select>
 
     <!-- 获得一个Route对象,以参数Route对象中不为空的属性作为条件进行分页查询 -->
-    <select id="selectByPage" parameterType="com.yunjian.ak.gateway.entity.RouteEntity" resultMap="result_Route_Map">
+    <select id="selectByPage" parameterType="com.yunjian.ak.gateway.entity.router.RouteEntity" resultMap="result_Route_Map">
         select
         <include refid="column_sql"/>
         from routes
