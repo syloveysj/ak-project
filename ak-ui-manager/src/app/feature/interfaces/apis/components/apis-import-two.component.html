@@ -1,24 +1,28 @@
 <div nz-row style="margin-bottom: 4px;">
     <div nz-col nzSpan="6" style="text-align: left; padding-top: 4px">
-        <nz-radio-group [(ngModel)]="size">
-            <label nz-radio-button nzValue="small"><span>全部</span></label>
-            <label nz-radio-button nzValue="default"><span>可更新</span></label>
-            <label nz-radio-button nzValue="large"><span>可导入</span></label>
+        <nz-radio-group [(ngModel)]="state" (ngModelChange)="filterApiList()">
+            <label nz-radio-button [nzValue]="null"><span>全部</span></label>
+            <label nz-radio-button [nzValue]="0"><span>可导入</span></label>
+            <label nz-radio-button [nzValue]="1"><span>可更新</span></label>
         </nz-radio-group>
     </div>
     <div nz-col nzSpan="3" style="text-align: right; padding-top: 8px">
         搜索：
     </div>
     <div nz-col nzSpan="6" style="padding-top: 4px">
-        <input nz-input placeholder="请输入" [(ngModel)]="value" />
+        <input nz-input placeholder="搜索服务名称、方法、路径" [(ngModel)]="keyword" (ngModelChange)="filterApiList()"/>
     </div>
     <div nz-col nzSpan="8" nzOffset="1" style="padding-bottom: 2px;">
         <nz-alert nzType="info" [nzMessage]="selectInfo"></nz-alert>
         <ng-template #selectInfo>
-            总共 <span style="font-weight: bold; color: blue;">{{apiList.length}}</span> 项, 已选择 <span style="font-weight: bold; color: blue;">{{checkedNumber}}</span> 项.
+            总共 <span style="font-weight: bold; color: blue;">{{apiList.length}}</span> 项, 已选择 <span style="font-weight: bold; color: blue;">{{allCheckedNumber}}</span> 项.
             <nz-divider nzType="vertical"></nz-divider>
-            <a nz-popconfirm nzPlacement="left" nzTitle="您确认要清空吗?" (nzOnConfirm)="deleteRoute(null)">
+            <a nz-popconfirm nzPlacement="left" style="color:red;" nzTitle="您确认要清空吗?" (nzOnConfirm)="clearChecked()">
                 清空选择
+            </a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <a nz-popconfirm nzPlacement="left" nzTitle="您确认要全选吗?" (nzOnConfirm)="checkedAll()">
+                选择所有
             </a>
         </ng-template>
     </div>
@@ -31,8 +35,8 @@
         [nzScroll]="{y: scrollY + 'px'}"
         [nzFrontPagination]="true"
         [nzShowPagination]="true"
-        [nzData]="apiList || []"
-        [nzPageSize]="20"
+        [nzData]="showApiList || []"
+        [nzPageSize]="10"
         nzSize="small"
         (nzCurrentPageDataChange)="currentPageDataChange($event)">
         <thead (nzSortChange)="sortChange($event)" nzSingleSort>
@@ -52,14 +56,17 @@
         </thead>
         <tbody>
         <tr *ngFor="let item of contentTb.data">
-            <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshStatus()"></td>
+            <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="checkedChange(item)"></td>
             <td>{{item?.name}}</td>
-            <td nzAlign="center">{{item?.method}}</td>
+            <td nzAlign="center" [ngClass]="{'_get':item.method==='GET','_post':item.method==='POST','_delete':item.method==='DELETE',
+                '_put':item.method==='PUT','_head':item.method==='HEAD','_patch':item.method==='PATCH',
+                '_options':item.method==='OPTIONS','_trace':item.method==='TRACE'}">
+                {{item?.method}}</td>
             <td>{{item?.uri}}</td>
-            <td nzAlign="center">{{item?.pathsMemo}}</td>
+            <td nzAlign="center">{{item?.state===0 ? '可导入' : '可更新'}}</td>
             <td nzAlign="center">
                 <button nz-button nzType="link" nz-popconfirm nzPlacement="left" nzTitle="您确认要删除吗?"
-                        (nzOnConfirm)="deleteRoute(item)">删除</button>
+                        (nzOnConfirm)="deleteItem(item)">删除</button>
             </td>
         </tr>
         </tbody>

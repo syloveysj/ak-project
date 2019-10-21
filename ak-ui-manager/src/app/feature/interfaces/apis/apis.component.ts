@@ -59,6 +59,9 @@ export class ApisComponent extends BaseComponent implements OnInit {
                         return this.current < 2;
                     },
                     onClick: (componentInstance) => {
+                        const params = componentInstance.getFromValues();
+                        if(params === null) return;
+
                         componentInstance.loading = true;
                         if(this.current === 0) {
                             this.interfacesService.serverAnalysis(componentInstance.getFromValues()).pipe(

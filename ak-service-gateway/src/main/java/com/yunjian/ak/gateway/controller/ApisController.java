@@ -66,6 +66,8 @@ public class ApisController {
             throw new ValidationException("json信息无法解析");
         }
 
+        boolean flag = true;
+
         List<ApiVo> apiVos = new ArrayList<>();
         Map paths = MapUtils.getMap(data, "paths", null);
         if(paths != null) {
@@ -81,6 +83,8 @@ public class ApisController {
                     ApiVo apiVo = new ApiVo();
                     apiVo.setUri(pathsEntry.getKey());
                     apiVo.setMethod(methodsEntry.getKey().toUpperCase());
+                    apiVo.setState(flag ? 0 : 1);
+                    flag = !flag;
 
                     Map methodInfo = methodsEntry.getValue();
                     apiVo.setName(MapUtils.getString(methodInfo, "summary"));
@@ -89,7 +93,7 @@ public class ApisController {
             }
         }
 
-        apiPackageVo.setData(apiVos);
+        apiPackageVo.setRows(apiVos);
         return apiPackageVo;
     }
 }

@@ -4,6 +4,7 @@ import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {GatewayService} from "@service/http/gateway.service";
 import {Config} from "@config/config";
 import {FormBuilder} from "@angular/forms";
+import {isEmpty} from "@core/utils/string.util";
 
 @Component({
     selector: 'app-apis-import-one',
@@ -79,14 +80,26 @@ export class ApisImportOneComponent implements OnInit {
     }
 
     serverId: string;
-    jsonUrl: string;
+    jsonUrl: string = 'http://127.0.0.1:8080/v2/api-docs';
     jsonText: string;
     isUrl: boolean = true;
 
     ngOnInit(): void {
     }
 
-    getFromValues() {
+    getFromValues(): any {
+        if(isEmpty(this.serverId)) {
+            this.nzMessageService.create('error', `请选择需要导入的应用`);
+            return null;
+        }
+        if(this.isUrl && isEmpty(this.jsonUrl)) {
+            this.nzMessageService.create('error', `请填写正确的url地址`);
+            return null;
+        }
+        if(!this.isUrl && isEmpty(this.jsonText)) {
+            this.nzMessageService.create('error', `请填写正确json文本`);
+            return null;
+        }
         return {
             serverId: this.serverId,
             jsonUrl: this.isUrl ? this.jsonUrl : '',

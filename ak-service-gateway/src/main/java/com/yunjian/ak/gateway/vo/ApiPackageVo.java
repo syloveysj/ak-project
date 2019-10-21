@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class ApiPackageVo {
     @ApiModelProperty(value = "api列表")
-    private List<ApiVo> data;
+    private List<ApiVo> rows;
     @ApiModelProperty(value = "json文本")
     private String jsonText;
 }

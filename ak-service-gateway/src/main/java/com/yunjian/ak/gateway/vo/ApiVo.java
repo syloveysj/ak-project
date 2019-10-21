@@ -17,6 +17,6 @@ public class ApiVo {
     private String method;
     @ApiModelProperty(value = "路径")
     private String uri;
-    @ApiModelProperty(value = "状态")
-    private String state;
+    @ApiModelProperty(value = "状态(0：可导入，1：可更新)")
+    private Integer state;
 }
