@@ -35,7 +35,11 @@ export class PropertiesBase {
     COLUMNS: SelfColumn[] = [];
     defaultColumns = this.COLUMNS.map(item => item.value);
 
-    groupMarkets$: Observable<any>;
+    // 应用分类
+    applicationTypes$: Observable<any>;
+    // 服务应用
+    services$: Observable<any>;
+
     // 组件内部查询参数
     selfQueryParams: { [key: string]: any } = {
         dimensionId: null,
