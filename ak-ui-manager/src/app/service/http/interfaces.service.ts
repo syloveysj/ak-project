@@ -29,6 +29,13 @@ export class InterfacesService {
                 map((c: CustomResponse<any[]>) => c.data));
     }
 
+    // 获取服务应用
+    public getServiceAll(): Observable<any[]> {
+        return this.httpClient.get<CustomResponse<any[]>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any[]>) => c.data));
+    }
+
     // 获取服务分类
     public getApisClassifyAll(): Observable<any[]> {
         return this.httpClient.get<CustomResponse<any[]>>(`${this.config.apiAddr}/v1/mgr/gateway/apis-classify/all`)

@@ -37,6 +37,31 @@ export class ConstantsEffect {
         )
     );
 
+    /**
+     * @description 服务应用
+     */
+    @Effect()
+    loadServices$: Observable<Action> = this.actions$.pipe(
+        ofType<ConstantsActions.LoadServices>(ConstantsActionTypes.LOAD_SERVICES),
+        withLatestFrom(this.store$.select(fromRoot.getServices), (_, data) => data),
+        filter(data => !data.length),
+        switchMap(
+            () => this.interfacesService.getServiceAll().pipe(
+                map(res => {
+                    // 对获取的数据进行加工
+                    console.log(res);
+                    return res;
+                }),
+                map((data) => new ConstantsActions.LoadServicesSuccess(data)),
+                catchError((err) => of(new ConstantsActions.LoadFail({
+                    status: err.status,
+                    message: err.error.messages,
+                    timestamp: new Date()
+                })))
+            )
+        )
+    );
+
     constructor(private actions$: Actions,
                 private interfacesService: InterfacesService,
                 private store$: Store<fromRoot.State>,

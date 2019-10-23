@@ -2,9 +2,11 @@ ALTER TABLE upstreams ADD COLUMN alias TEXT;
 
 ALTER TABLE services ADD COLUMN alias TEXT;
 ALTER TABLE services ADD COLUMN memo TEXT;
+ALTER TABLE services ADD COLUMN type_id int;
 
 ALTER TABLE routes ADD COLUMN alias TEXT;
 ALTER TABLE routes ADD COLUMN memo TEXT;
+ALTER TABLE routes ADD COLUMN classify_id uuid;
 
 create table application_type (
     id                   int                  not null,

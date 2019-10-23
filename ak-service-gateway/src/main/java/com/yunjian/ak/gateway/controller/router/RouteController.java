@@ -40,7 +40,7 @@ public class RouteController {
     private RouteService routeService;
 
     @Autowired
-    private KongClient kongClient;
+    private KongClient kongRouterClient;
 
     @PostMapping
     @ApiOperation("添加Route")
@@ -55,13 +55,13 @@ public class RouteController {
         // 调用接口添加服务
         Service service = new Service();
         BeanUtils.copyProperties(entity.getService(), service);
-        service = kongClient.getServiceService().createService(service);
+        service = kongRouterClient.getServiceService().createService(service);
 
         // 调用接口添加路由
         Route route = new Route();
         BeanUtils.copyProperties(entity, route);
         route.setService(service);
-        route = kongClient.getRouteService().createRoute(route);
+        route = kongRouterClient.getRouteService().createRoute(route);
 
         // 通过数据库更新别名
         entity.getService().setId(service.getId());
@@ -85,13 +85,13 @@ public class RouteController {
         // 调用接口更新服务
         Service service = new Service();
         BeanUtils.copyProperties(entity.getService(), service);
-        service = kongClient.getServiceService().updateService(entity.getService().getId(), service);
+        service = kongRouterClient.getServiceService().updateService(entity.getService().getId(), service);
 
         // 调用接口更新路由
         Route route = new Route();
         BeanUtils.copyProperties(entity, route);
         route.setService(service);
-        route = kongClient.getRouteService().updateRoute(entity.getId(), route);
+        route = kongRouterClient.getRouteService().updateRoute(entity.getId(), route);
 
         // 通过数据库更新别名
         this.serviceService.update(entity.getService());
@@ -110,8 +110,8 @@ public class RouteController {
         LOGGER.debug("请求RouteController删除指定id的Route:{}!", id);
 
         // 调用接口删除路由
-        kongClient.getRouteService().deleteRoute(id);
-        kongClient.getServiceService().deleteService(serviceId);
+        kongRouterClient.getRouteService().deleteRoute(id);
+        kongRouterClient.getServiceService().deleteService(serviceId);
     }
 
     @DeleteMapping
@@ -126,8 +126,8 @@ public class RouteController {
         // 调用接口删除路由
         List<Map> idList = JSON.parseObject(ids, List.class);
         for (Map id : idList) {
-            kongClient.getRouteService().deleteRoute(MapUtils.getString(id, "routeId"));
-            kongClient.getServiceService().deleteService(MapUtils.getString(id, "serviceId"));
+            kongRouterClient.getRouteService().deleteRoute(MapUtils.getString(id, "routeId"));
+            kongRouterClient.getServiceService().deleteService(MapUtils.getString(id, "serviceId"));
         }
     }
 

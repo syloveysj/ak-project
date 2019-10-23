@@ -37,7 +37,7 @@ public class UpstreamController {
     private UpstreamService upstreamService;
 
     @Autowired
-    private KongClient kongClient;
+    private KongClient kongRouterClient;
 
     @PostMapping
     @ApiOperation("添加Upstream")
@@ -52,14 +52,14 @@ public class UpstreamController {
         // 调用接口添加上游
         Upstream request = new Upstream();
         BeanUtils.copyProperties(entity, request);
-        Upstream result = kongClient.getUpstreamService().createUpstream(request);
+        Upstream result = kongRouterClient.getUpstreamService().createUpstream(request);
 
         // 调用接口添加目标
         if(entity.getTargets() != null && !entity.getTargets().isEmpty()){
             for (TargetEntity targetEntity : entity.getTargets()) {
                 Target target = new Target();
                 BeanUtils.copyProperties(targetEntity, target);
-                kongClient.getTargetService().createTarget(result.getId(), target);
+                kongRouterClient.getTargetService().createTarget(result.getId(), target);
             }
         }
 
@@ -95,7 +95,7 @@ public class UpstreamController {
         LOGGER.debug("请求UpstreamController删除指定id的Upstream:{}!", id);
 
         // 调用接口删除上游
-        kongClient.getUpstreamService().deleteUpstream(id);
+        kongRouterClient.getUpstreamService().deleteUpstream(id);
     }
 
     @GetMapping("/all")
@@ -140,7 +140,7 @@ public class UpstreamController {
 
         // 调用接口获取所有目标
         try {
-            TargetList targetList = kongClient.getTargetService().listTargets(id, null, null, null, 100L, null);
+            TargetList targetList = kongRouterClient.getTargetService().listTargets(id, null, null, null, 100L, null);
             return targetList.getData();
         } catch (KongClientException e) {
             e.printStackTrace();
@@ -162,7 +162,7 @@ public class UpstreamController {
         // 调用接口添加目标
         Target request = new Target();
         BeanUtils.copyProperties(entity, request);
-        Target result = kongClient.getTargetService().createTarget(id, request);
+        Target result = kongRouterClient.getTargetService().createTarget(id, request);
 
         return result;
     }
@@ -177,7 +177,7 @@ public class UpstreamController {
         LOGGER.debug("请求UpstreamController删除指定id的Target:{}!", tid);
 
         // 调用接口删除上游
-        kongClient.getTargetService().deleteTarget(id, tid);
+        kongRouterClient.getTargetService().deleteTarget(id, tid);
     }
 
     @DeleteMapping("/{id}/targets")
@@ -194,7 +194,7 @@ public class UpstreamController {
         String idList[] = ids.split(",");
         // 调用接口删除上游
         for(String tid : idList) {
-            kongClient.getTargetService().deleteTarget(id, tid);
+            kongRouterClient.getTargetService().deleteTarget(id, tid);
         }
     }
 }

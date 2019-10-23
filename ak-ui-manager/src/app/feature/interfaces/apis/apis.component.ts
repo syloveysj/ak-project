@@ -33,14 +33,16 @@ export class ApisComponent extends BaseComponent implements OnInit {
                 private store$: Store<fromRoot.State>,
                 public config: Config) {
         super(baseService, rd, modalService, nzMessageService);
-        this.store$.dispatch(new ConstantsActions.LoadApplicationTypes());
     }
 
     ngOnInit() {
         this.applicationTypes$ = this.store$.select(fromRoot.getApplicationTypes);
+        this.services$ = this.store$.select(fromRoot.getServices);
         this.applicationTypes$.subscribe(data => {
             console.log(data);
-        })
+        });
+        this.store$.dispatch(new ConstantsActions.LoadApplicationTypes());
+        this.store$.dispatch(new ConstantsActions.LoadServices());
     }
 
     openWin() {

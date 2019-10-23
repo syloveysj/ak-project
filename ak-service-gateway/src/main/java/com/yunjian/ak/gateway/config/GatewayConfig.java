@@ -15,8 +15,14 @@ import org.springframework.context.annotation.Configuration;
 public class GatewayConfig {
 
     @Bean
-    public KongClient kongClient() {
-        KongClient kongClient = new KongClient(ConfigManager.getInstance().getConfig("kong_admin_url"));
-        return kongClient;
+    public KongClient kongRouterClient() {
+        KongClient kongRouterClient = new KongClient(ConfigManager.getInstance().getConfig("kong_router_admin_url"));
+        return kongRouterClient;
+    }
+
+    @Bean
+    public KongClient kongApisClient() {
+        KongClient kongApisClient = new KongClient(ConfigManager.getInstance().getConfig("kong_apis_admin_url"));
+        return kongApisClient;
     }
 }

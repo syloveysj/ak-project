@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunjian.ak.gateway.entity.apis.RouteEntityMapper">
+    <!-- 数据库中表名为:routes的列名 -->
+    <sql id="column_sql">
+        routes.id,
+        routes.service_id,
+        routes.name,
+        routes.protocols,
+        routes.methods,
+        routes.hosts,
+        routes.paths,
+        routes.strip_path,
+        routes.preserve_host,
+        routes.alias,
+        routes.updated_at,
+        routes.created_at,
+        (select host from services where id=routes.service_id) host
+    </sql>
+
+    <!-- 数据库中表名为:routes的非空where条件 -->
+    <sql id="whereClause_sql">
+        <if test="id != null">and routes.id::text = #{id}</if>
+        <if test="serviceId != null">and routes.service_id::text = #{serviceId}</if>
+        <if test="name != null">and routes.name = #{name}</if>
+        <if test="stripPath != null">and routes.strip_path = #{stripPath}</if>
+        <if test="preserveHost != null">and routes.slots = #{preserveHost}</if>
+        <if test="alias != null and alias != '' ">
+            and routes.alias like concat('%',#{alias},'%')
+        </if>
+        <if test="hostsMemo != null and hostsMemo != '' ">
+            and routes.hosts::text like concat('%',#{hostsMemo},'%')
+        </if>
+        <if test="pathsMemo != null and pathsMemo != '' ">
+            and routes.paths::text like concat('%',#{pathsMemo},'%')
+        </if>
+        <if test="methodsMemo != null and methodsMemo != '' ">
+            and routes.methods::text like concat('%',#{methodsMemo},'%')
+        </if>
+        <if test="updatedAt != null">and routes.updated_at = #{updatedAt}</if>
+        <if test="createdAt != null">and routes.created_at = #{createdAt}</if>
+    </sql>
+
+    <!-- Route的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+    <resultMap id="result_Route_Map" type="com.yunjian.ak.gateway.entity.apis.RouteEntity">
+        <id column="id" property="id" />
+        <result column="service_id" property="serviceId" />
+        <result column="name" property="name" />
+        <result column="protocols" property="protocolsMemo" />
+        <result column="methods" property="methodsMemo" />
+        <result column="hosts" property="hostsMemo" />
+        <result column="paths" property="pathsMemo" />
+        <result column="strip_path" property="stripPath" />
+        <result column="preserve_host" property="preserveHost" />
+        <result column="alias" property="alias" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="created_at" property="createdAt" />
+        <result column="host" property="service.host" />
+    </resultMap>
+
+    <!--获得类名为:Route对应的数据库表满足条件的数据总行数 -->
+    <select id="count" parameterType="com.yunjian.ak.gateway.entity.apis.RouteEntity" resultType="int">
+        select count(*) from routes
+        <where>
+            <include refid="whereClause_sql"/>
+        </where>
+    </select>
+
+    <!-- 通过Route的id将Route中属性值不为null的数据更新到数据库对应的表中 -->
+    <update id="update" parameterType="com.yunjian.ak.gateway.entity.apis.RouteEntity">
+        update routes
+        <set>
+            <trim suffixOverrides=",">
+                <if test="alias != null">alias = #{alias},</if>
+            </trim>
+        </set>
+        <where>
+            <choose>
+                <when test="id != null">and id::text = #{id}</when>
+                <otherwise>and id::text = </otherwise>
+            </choose>
+        </where>
+    </update>
+
+    <!-- 批量更新 -->
+    <update id="updateBatch" parameterType="list">
+        <foreach collection="list" index="index" item="item" open="" separator=";" close="">
+            update routes
+            <set>
+                alias = #{item.alias}
+            </set>
+            WHERE id::text = #{item.id}
+        </foreach>
+    </update>
+
+    <!-- 获得一个Route对象,以参数Route对象中不为空的属性作为条件进行查询 -->
+    <select id="select" parameterType="com.yunjian.ak.gateway.entity.apis.RouteEntity" resultMap="result_Route_Map">
+        select
+        <include refid="column_sql"/>
+        from routes
+        <where>
+            <include refid="whereClause_sql"/>
+        </where>
+    </select>
+
+    <!-- 查询数据库中表名为:routes的所有数据 -->
+    <select id="selectAll" resultMap="result_Route_Map">
+        select
+        <include refid="column_sql"/>
+        from routes
+    </select>
+
+    <!-- 通过Route的id获得对应数据库中表的数据对象 -->
+    <select id="selectByID" parameterType="String" resultMap="result_Route_Map">
+        select
+        <include refid="column_sql"/>
+        from routes
+        where routes.id::text = #{id}
+    </select>
+
+    <!-- 获得一个Route对象,以参数Route对象中不为空的属性作为条件进行分页查询 -->
+    <select id="selectByPage" parameterType="com.yunjian.ak.gateway.entity.apis.RouteEntity" resultMap="result_Route_Map">
+        select
+        <include refid="column_sql"/>
+        from routes
+        <where>
+            <include refid="whereClause_sql"/>
+        </where>
+    </select>
+
+</mapper>

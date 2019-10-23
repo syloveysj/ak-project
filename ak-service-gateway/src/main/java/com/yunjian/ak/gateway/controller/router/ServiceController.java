@@ -26,7 +26,7 @@ public class ServiceController {
     private ServiceService serviceService;
 
     @Autowired
-    private KongClient kongClient;
+    private KongClient kongRouterClient;
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除指定id的Service")
@@ -38,7 +38,7 @@ public class ServiceController {
         LOGGER.debug("请求ServiceController删除指定id的Service:{}!", id);
 
         // 调用接口删除服务
-        kongClient.getServiceService().deleteService(id);
+        kongRouterClient.getServiceService().deleteService(id);
     }
 
     @GetMapping("/{id}")

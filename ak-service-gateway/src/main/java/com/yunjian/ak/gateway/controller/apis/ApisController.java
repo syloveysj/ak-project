@@ -3,6 +3,8 @@ package com.yunjian.ak.gateway.controller.apis;
 import com.alibaba.fastjson.JSON;
 import com.yunjian.ak.exception.ValidationException;
 import com.yunjian.ak.gateway.controller.router.UpstreamController;
+import com.yunjian.ak.gateway.entity.apis.ServiceEntity;
+import com.yunjian.ak.gateway.service.apis.ApisServiceService;
 import com.yunjian.ak.gateway.vo.apis.ApiAnalysisVo;
 import com.yunjian.ak.gateway.vo.apis.ApiPackageVo;
 import com.yunjian.ak.gateway.vo.apis.ApiVo;
@@ -14,12 +16,10 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
@@ -38,6 +38,23 @@ import java.util.Map;
 @RequestMapping("/v1/mgr/gateway/apis")
 public class ApisController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UpstreamController.class);
+
+    @Autowired
+    private ApisServiceService apisServiceService;
+
+    @GetMapping("/services")
+    @ApiOperation("获取所有Services")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "获取所有ApplicationType成功",
+            response = ServiceEntity.class,
+            responseContainer = "List"
+    )})
+    public List<ServiceEntity> getAll() {
+        LOGGER.debug("请求ApplicationTypeController获取所有ApplicationType!");
+
+        return this.apisServiceService.getAll();
+    }
 
     @PostMapping("/analysis")
     @ApiOperation("解析服务")
