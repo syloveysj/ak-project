@@ -110,7 +110,7 @@ export class ApplicationTreeSelectComponent implements OnChanges, ControlValueAc
             if (isNotEmpty(this.initServerId)) {
                 this.prevValue = this.value = this.initServerId;
             } else {
-                if('children' in nodes[0] && nodes[0].children.length>0) {
+                if(nodes[0] && 'children' in nodes[0] && nodes[0].children.length>0) {
                     this.prevValue = this.value = nodes[0].children[0].key;
                 } else {
                     this.prevValue = this.value = null;

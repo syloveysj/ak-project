@@ -36,9 +36,9 @@ export class PropertiesBase {
     defaultColumns = this.COLUMNS.map(item => item.value);
 
     // 应用分类
-    applicationTypes$: Observable<any>;
+    applicationTypes$: Observable<any[]>;
     // 服务应用
-    services$: Observable<any>;
+    services$: Observable<any[]>;
 
     // 组件内部查询参数
     selfQueryParams: { [key: string]: any } = {

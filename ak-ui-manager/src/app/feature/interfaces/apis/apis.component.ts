@@ -7,9 +7,6 @@ import {ToolService} from '@core/utils/tool.service';
 import {ApisImportComponent} from "@feature/interfaces/apis/components/apis-import.component";
 import {InterfacesService} from "@service/http/interfaces.service";
 import {finalize} from "rxjs/operators";
-import {ConstantsActions} from "@store/actions";
-import {Store} from "@ngrx/store";
-import {fromRoot} from "@store/store";
 
 @Component({
     selector: 'app-interfaces-apis',
@@ -30,19 +27,11 @@ export class ApisComponent extends BaseComponent implements OnInit {
                 public cdr: ChangeDetectorRef,
                 public toolService: ToolService,
                 public interfacesService: InterfacesService,
-                private store$: Store<fromRoot.State>,
                 public config: Config) {
         super(baseService, rd, modalService, nzMessageService);
     }
 
     ngOnInit() {
-        this.applicationTypes$ = this.store$.select(fromRoot.getApplicationTypes);
-        this.services$ = this.store$.select(fromRoot.getServices);
-        this.applicationTypes$.subscribe(data => {
-            console.log(data);
-        });
-        this.store$.dispatch(new ConstantsActions.LoadApplicationTypes());
-        this.store$.dispatch(new ConstantsActions.LoadServices());
     }
 
     openWin() {

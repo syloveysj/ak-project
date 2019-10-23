@@ -1,12 +1,16 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, Renderer2} from '@angular/core';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {Menu} from '@model/common';
-import {Subject} from 'rxjs';
+import {combineLatest, Subject} from 'rxjs';
 import {BaseComponent} from "@shared/base-class/base.component";
 import {BaseService} from "@service/http/base.service";
 import {isEmpty} from "@core/utils/string.util";
 import {ApisPortfolioWinComponent} from "@feature/interfaces/apis/components/apis-portfolio-win.component";
 import {ApisServerWinComponent} from "@feature/interfaces/apis/components/apis-server-win.component";
+import {Store} from "@ngrx/store";
+import * as fromRoot from "@store/reducers";
+import * as ConstantsActions from "@store/actions/constants.actions";
+import {map} from "rxjs/operators";
 
 @Component({
     selector: 'app-apis-manager-sider',
@@ -23,40 +27,7 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
 
     serversLoading: boolean = false;
     portfolioLoading: boolean = false;
-    serverNodes = [
-        {
-            title: '平台应用',
-            key: '99',
-            children: [
-                {
-                    title: '网关集群',
-                    key: '1001',
-                    isLeaf: true
-                },
-                {
-                    title: '工作流集群',
-                    key: '1002',
-                    isLeaf: true
-                }
-            ]
-        },
-        {
-            title: '业务应用',
-            key: '100',
-            children: [
-                {
-                    title: '供应链集群',
-                    key: '1011',
-                    isLeaf: true
-                },
-                {
-                    title: '第三方对接集群',
-                    key: '1012',
-                    isLeaf: true
-                }
-            ]
-        }
-    ];
+    serverNodes = [];
     menus: Menu[] = [
         {
             title: '网关配置',
@@ -109,11 +80,42 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
                 public rd: Renderer2,
                 public cdr: ChangeDetectorRef,
                 public modalService: NzModalService,
+                private store$: Store<fromRoot.State>,
                 public nzMessageService: NzMessageService) {
         super(baseService, rd, modalService, nzMessageService);
     }
 
     ngOnInit(): void {
+        this.applicationTypes$ = this.store$.select(fromRoot.getApplicationTypes);
+        this.services$ = this.store$.select(fromRoot.getServices);
+        this.store$.dispatch(new ConstantsActions.LoadApplicationTypes());
+        this.store$.dispatch(new ConstantsActions.LoadServices());
+
+        combineLatest(this.applicationTypes$, this.services$).pipe(
+            map(([applicationTypes, services]) => {
+                const data = [];
+                applicationTypes.forEach(type => {
+                    const bean = {
+                        key: type.id,
+                        title: type.typeName,
+                        children: []
+                    };
+                    services.forEach(service => {
+                        if(service.typeId === type.id) {
+                            bean.children.push({
+                                key: service.id,
+                                title: service.alias,
+                                isLeaf: true
+                            });
+                        }
+                    });
+                    data.push(bean);
+                });
+                return data;
+            })
+        ).subscribe(data =>{
+            this.serverNodes = data;
+        });
     }
 
     triggerFold() {
