@@ -140,4 +140,32 @@ export class InterfacesService {
             .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
                 map((c: CustomResponse<any>) => c.data));
     }
+
+    // 添加路由s
+    public addRoutes(upstreamName: string, params: any): Observable<any> {
+        return this.httpClient.post<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes`, params)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 更新路由s分类
+    public updateRoutesClassify(classifyId: string, ids: string[]): Observable<any> {
+        return this.httpClient.put<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes/classify/${classifyId}`, ids)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除路由
+    public removeRoute(id: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes/${id}`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除路由s
+    public removeRoutes(ids: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes`, {params: {ids}})
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
 }

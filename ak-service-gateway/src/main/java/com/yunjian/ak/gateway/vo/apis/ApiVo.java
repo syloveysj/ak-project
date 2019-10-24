@@ -11,6 +11,8 @@ import lombok.Data;
  */
 @Data
 public class ApiVo {
+    @ApiModelProperty(value = "ID")
+    private String id;
     @ApiModelProperty(value = "名称")
     private String name;
     @ApiModelProperty(value = "方法")

@@ -79,6 +79,14 @@ public class RouteEntity {
     @ApiModelProperty(value = "更新时间")
     private Date updatedAt;
 
+    @Column( id = "memo" )
+    @ApiModelProperty(value = "备注")
+    private String memo;
+
+    @Column( id = "classify_id" )
+    @ApiModelProperty(value = "服务分类")
+    private String classifyId;
+
     @ApiModelProperty(value = "标签")
     private List<String> tags;
 
