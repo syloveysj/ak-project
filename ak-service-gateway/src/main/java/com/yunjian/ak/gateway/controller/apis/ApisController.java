@@ -35,10 +35,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -397,13 +399,15 @@ public class ApisController {
                     Map.Entry<String, Map> methodsEntry = methodsEntries.next();
 
                     ApiVo apiVo = new ApiVo();
+                    apiVo.setName(Base64Utils.encodeToUrlSafeString(pathsEntry.getKey().getBytes(Charset.forName("UTF-8"))));
                     apiVo.setUri(pathsEntry.getKey());
+                    apiVo.setMemo(pathsEntry.getKey());
                     apiVo.setMethod(methodsEntry.getKey().toUpperCase());
                     apiVo.setState(flag ? 0 : 1);
                     flag = !flag;
 
                     Map methodInfo = methodsEntry.getValue();
-                    apiVo.setName(MapUtils.getString(methodInfo, "summary"));
+                    apiVo.setAlias(MapUtils.getString(methodInfo, "summary"));
                     apiVos.add(apiVo);
                 }
             }
