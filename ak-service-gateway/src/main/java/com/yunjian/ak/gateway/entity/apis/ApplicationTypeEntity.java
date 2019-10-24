@@ -23,7 +23,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public class ApplicationTypeEntity {
     @Column( id = "id", type = ColumnType.custom )
     @ApiModelProperty(value = "ID")
-    private String id;
+    private Integer id;
 
     @Column( id = "type_name" )
     @ApiModelProperty(value = "应用分类名称")

@@ -65,7 +65,7 @@ public class ApisClassifyController {
         this.apisClassifyService.delete(id);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     @ApiOperation("获取所有ApisClassify")
     @ApiResponses({@ApiResponse(
             code = 200,
@@ -73,9 +73,23 @@ public class ApisClassifyController {
             response = ApisClassifyEntity.class,
             responseContainer = "List"
     )})
-    public List<ApisClassifyEntity> getAll() {
+    public List<ApisClassifyEntity> getLis(@RequestParam(value = "cond", required = false) String cond) {
         LOGGER.debug("请求ApisClassifyController获取所有ApisClassify!");
 
-        return this.apisClassifyService.getAll();
+        return this.apisClassifyService.getList(cond);
+    }
+
+    @GetMapping("/services/{serviceId}")
+    @ApiOperation("获取所有ApisClassify")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "获取所有ApisClassify成功",
+            response = ApisClassifyEntity.class,
+            responseContainer = "List"
+    )})
+    public List<ApisClassifyEntity> getListByServiceId(@PathVariable("serviceId") String serviceId) {
+        LOGGER.debug("请求ApisClassifyController获取所有ApisClassify!");
+
+        return this.apisClassifyService.getListByServiceId(serviceId);
     }
 }

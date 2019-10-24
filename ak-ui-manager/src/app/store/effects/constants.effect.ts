@@ -24,7 +24,7 @@ export class ConstantsEffect {
             () => this.interfacesService.getApplicationTypeAll().pipe(
                 map(res => {
                     // 对获取的数据进行加工
-                    console.log(res);
+                    console.log('loadApplicationTypes$', res);
                     return res;
                 }),
                 map((data) => new ConstantsActions.LoadApplicationTypesSuccess(data)),
@@ -49,7 +49,7 @@ export class ConstantsEffect {
             () => this.interfacesService.getServiceAll().pipe(
                 map(res => {
                     // 对获取的数据进行加工
-                    console.log(res);
+                    console.log('loadServices$', res);
                     return res;
                 }),
                 map((data) => new ConstantsActions.LoadServicesSuccess(data)),

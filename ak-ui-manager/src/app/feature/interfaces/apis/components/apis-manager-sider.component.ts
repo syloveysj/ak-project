@@ -10,7 +10,8 @@ import {ApisServerWinComponent} from "@feature/interfaces/apis/components/apis-s
 import {Store} from "@ngrx/store";
 import * as fromRoot from "@store/reducers";
 import * as ConstantsActions from "@store/actions/constants.actions";
-import {map} from "rxjs/operators";
+import {finalize, map} from "rxjs/operators";
+import {InterfacesService} from "@service/http/interfaces.service";
 
 @Component({
     selector: 'app-apis-manager-sider',
@@ -25,51 +26,10 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
     fold: boolean = false;
     serverId = null;
 
-    serversLoading: boolean = false;
+    serversLoading: boolean = true;
     portfolioLoading: boolean = false;
     serverNodes = [];
-    menus: Menu[] = [
-        {
-            title: '网关配置',
-            id: '99',
-            selected: false,
-            level: 1,
-            children: [
-                {
-                    title: '集群管理',
-                    id: '1001',
-                    selected: true,
-                    level: 2
-                },
-                {
-                    title: '路由管理',
-                    id: '1002',
-                    selected: false,
-                    level: 2
-                }
-            ]
-        },
-        {
-            title: 'APIs管理',
-            id: '100',
-            selected: false,
-            level: 1,
-            children: [
-                {
-                    title: 'APIs服务',
-                    id: '1011',
-                    selected: false,
-                    level: 2
-                },
-                {
-                    title: 'APIs客户',
-                    id: '1012',
-                    selected: false,
-                    level: 2
-                }
-            ]
-        }
-    ];
+    menus: Menu[] = [];
     apisNum = 1199; // 接口数量
 
     // 辅助函数
@@ -81,6 +41,7 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
                 public cdr: ChangeDetectorRef,
                 public modalService: NzModalService,
                 private store$: Store<fromRoot.State>,
+                public interfacesService: InterfacesService,
                 public nzMessageService: NzMessageService) {
         super(baseService, rd, modalService, nzMessageService);
     }
@@ -93,6 +54,8 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
 
         combineLatest(this.applicationTypes$, this.services$).pipe(
             map(([applicationTypes, services]) => {
+                console.log(applicationTypes, services);
+                this.serversLoading = false;
                 const data = [];
                 applicationTypes.forEach(type => {
                     const bean = {
@@ -114,8 +77,62 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
                 return data;
             })
         ).subscribe(data =>{
+            console.log(data);
             this.serverNodes = data;
         });
+    }
+
+    initPortfolio() {
+        if(isEmpty(this.serverId)) {
+            this.menus = [];
+            return;
+        }
+
+        this.portfolioLoading = true;
+        this.interfacesService.getApisClassifyListByServiceId(this.serverId).pipe(
+            finalize(() => this.portfolioLoading = false)
+        ).subscribe(
+            (res) => {
+                const temp = [{
+                    title: '待分类',
+                    id: '',
+                    selected: true,
+                    level: 2,
+                    isLeaf: true
+                }];
+                res.forEach(item => {
+                    if(item.pid === 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') {
+                        temp.push({
+                            title: item.alias,
+                            id: item.id,
+                            selected: false,
+                            level: 2,
+                            isLeaf: true
+                        });
+                    }
+                });
+                res.forEach(item => {
+                    if(item.pid !== 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') {
+                        temp.forEach(bean => {
+                            if(item.pid === bean.id) {
+                                if(bean.level === 2) {
+                                    bean.level = 1;
+                                    delete bean.isLeaf;
+                                    bean['children'] = [];
+                                }
+                                bean['children'].push({
+                                    title: item.alias,
+                                    id: item.id,
+                                    selected: false,
+                                    level: 2
+                                });
+                            }
+                        })
+                    }
+                });
+                this.menus = temp;
+            }
+        );
     }
 
     triggerFold() {
@@ -133,12 +150,20 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
                     label: '保存',
                     shape: 'primary',
                     disabled: (componentInstance) => {
-                        return false;
+                        return !componentInstance.form.valid;
                     },
-                    // loading: (componentInstance) => {
-                    //     return componentInstance.loading;
-                    // },
+                    loading: (componentInstance) => {
+                        return componentInstance.loading;
+                    },
                     onClick: (componentInstance) => {
+                        componentInstance.loading = true;
+                        this.interfacesService.addService(componentInstance.form.value).pipe(
+                            finalize(() => componentInstance.loading = false)
+                        ).subscribe(
+                            (res) => {
+                                modal.destroy(true);
+                            }
+                        );
                     }
                 },
                 {
@@ -156,11 +181,16 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
 
         modal.afterClose.subscribe((result) => {
             if (result) {
+                this.store$.dispatch(new ConstantsActions.LoadServices());
             }
         });
     }
 
     addPortfolio() {
+        if(this.serverId === null) {
+            this.nzMessageService.create('warning', `当前没有服务应用.`);
+            return null;
+        }
         const modal = this.modalService.create({
             nzWrapClassName: 'vertical-center-modal normal',
             nzTitle: "添加服务分类",
@@ -171,12 +201,20 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
                     label: '保存',
                     shape: 'primary',
                     disabled: (componentInstance) => {
-                        return false;
+                        return !componentInstance.form.valid;
                     },
-                    // loading: (componentInstance) => {
-                    //     return componentInstance.loading;
-                    // },
+                    loading: (componentInstance) => {
+                        return componentInstance.loading;
+                    },
                     onClick: (componentInstance) => {
+                        componentInstance.loading = true;
+                        this.interfacesService.addApisClassify(componentInstance.form.value).pipe(
+                            finalize(() => componentInstance.loading = false)
+                        ).subscribe(
+                            (res) => {
+                                modal.destroy(true);
+                            }
+                        );
                     }
                 },
                 {
@@ -189,11 +227,13 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
             ],
             nzContent: ApisPortfolioWinComponent,
             nzComponentParams: {
+                serverId: this.serverId
             }
         });
 
         modal.afterClose.subscribe((result) => {
             if (result) {
+                this.initPortfolio();
             }
         });
     }
@@ -204,6 +244,7 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
 
     serverIdChange(server: { serverId?: string }) {
         this.serverId = server.serverId;
+        this.initPortfolio();
     }
 
     menuHomeClicked() {

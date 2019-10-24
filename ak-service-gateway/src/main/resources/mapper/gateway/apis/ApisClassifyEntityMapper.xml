@@ -42,9 +42,9 @@
             <if test="memo != null">memo,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">#{id},</if>
-            <if test="pid != null">#{pid},</if>
-            <if test="serviceId != null">#{service_id},</if>
+            <if test="id != null">#{id}::uuid,</if>
+            <if test="pid != null">#{pid}::uuid,</if>
+            <if test="serviceId != null">#{serviceId}::uuid,</if>
             <if test="alias != null">#{alias},</if>
             <if test="memo != null">#{memo},</if>
         </trim>
@@ -63,9 +63,9 @@
         VALUES
         <foreach collection="list" item="entity" index="index" separator=",">
             (
-            #{entity.id},
-            #{entity.pid},
-            #{entity.serviceId},
+            #{entity.id}::uuid,
+            #{entity.pid}::uuid,
+            #{entity.serviceId}::uuid,
             #{entity.alias},
             #{entity.memo}
             )
@@ -85,8 +85,8 @@
         update apis_classify
         <set>
             <trim suffixOverrides=",">
-                <if test="pid != null">pid = #{pid},</if>
-                <if test="serviceId != null">service_id = #{serviceId},</if>
+                <if test="pid != null">pid = #{pid}::uuid,</if>
+                <if test="serviceId != null">service_id = #{serviceId}::uuid,</if>
                 <if test="alias != null">alias = #{alias},</if>
                 <if test="memo != null">memo = #{memo},</if>
             </trim>
@@ -105,8 +105,8 @@
             update apis_classify
             <set>
                 <trim suffixOverrides=",">
-                    <if test="item.pid != null">pid = #{item.pid},</if>
-                    <if test="item.serviceId != null">service_id = #{item.serviceId},</if>
+                    <if test="item.pid != null">pid = #{item.pid}::uuid,</if>
+                    <if test="item.serviceId != null">service_id = #{item.serviceId}::uuid,</if>
                     <if test="item.alias != null">alias = #{item.alias},</if>
                     <if test="item.memo != null">memo = #{item.memo},</if>
                 </trim>

@@ -4,6 +4,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Config} from "@config/config";
 import {BaseService} from "@service/http/base.service";
 import {GatewayService} from "@service/http/gateway.service";
+import {Store} from "@ngrx/store";
+import * as fromRoot from "@store/reducers";
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'app-apis-server-win',
@@ -13,8 +16,8 @@ import {GatewayService} from "@service/http/gateway.service";
                 <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="typeId">应用分类</nz-form-label>
                 <nz-form-control [nzSm]="14" [nzXs]="24">
                     <nz-select formControlName="typeId" id="typeId" nzPlaceHolder="请选择">
-                        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                        <nz-option *ngFor="let item of applicationTypes$ | async" [nzValue]="item.id"
+                                   [nzLabel]="item.typeName"></nz-option>
                     </nz-select>
                 </nz-form-control>
             </nz-form-item>
@@ -42,16 +45,22 @@ export class ApisServerWinComponent implements OnInit {
                 private nzMessageService: NzMessageService,
                 public modalService: NzModalService,
                 public baseService: BaseService,
+                private store$: Store<fromRoot.State>,
                 public gatewayService: GatewayService) {
     }
 
     form: FormGroup;
     loading = false;
+    // 应用分类
+    applicationTypes$: Observable<any[]>;
 
     ngOnInit(): void {
+        this.applicationTypes$ = this.store$.select(fromRoot.getApplicationTypes);
+
+
         this.form = this.fb.group({
             typeId: [null, [Validators.required]],
-            alias: [null],
+            alias: [null, [Validators.required]],
             memo: [null]
         });
     }

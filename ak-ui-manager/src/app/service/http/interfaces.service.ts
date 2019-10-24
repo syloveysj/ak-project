@@ -66,8 +66,16 @@ export class InterfacesService {
     }
 
     // 获取服务分类
-    public getApisClassifyAll(): Observable<any[]> {
-        return this.httpClient.get<CustomResponse<any[]>>(`${this.config.apiAddr}/v1/mgr/gateway/apis-classify/all`)
+    public getApisClassifyListByServiceId(serviceId: string): Observable<any[]> {
+        return this.httpClient.get<CustomResponse<any[]>>(`${this.config.apiAddr}/v1/mgr/gateway/apis-classify/services/${serviceId}`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any[]>) => c.data));
+    }
+
+    // 获取服务分类
+    public getApisClassifyList(params: any): Observable<any[]> {
+        const values: HttpParams = new HttpParams({fromObject: {cond: JSON.stringify(params)}, encoder: new HttpQueryEncoderUtil()});
+        return this.httpClient.get<CustomResponse<any[]>>(`${this.config.apiAddr}/v1/mgr/gateway/apis-classify`,{params : values})
             .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
                 map((c: CustomResponse<any[]>) => c.data));
     }

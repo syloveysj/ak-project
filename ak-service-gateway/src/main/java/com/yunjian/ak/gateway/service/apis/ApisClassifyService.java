@@ -56,8 +56,15 @@ public class ApisClassifyService {
         return DaoFactory.create(ApisClassifyEntity.class).selectByID(id);
     }
 
-    public List<ApisClassifyEntity> getAll() {
-        return DaoFactory.create(ApisClassifyEntity.class).selectAll();
+    public List<ApisClassifyEntity> getListByServiceId(String serviceId) {
+        ApisClassifyEntity entity = new ApisClassifyEntity();
+        entity.setServiceId(serviceId);
+        return DaoFactory.create(ApisClassifyEntity.class).select(entity);
+    }
+
+    public List<ApisClassifyEntity> getList(String cond) {
+        ApisClassifyEntity entity = StringUtils.isNotBlank(cond) ? JSON.parseObject(cond, ApisClassifyEntity.class) : new ApisClassifyEntity();
+        return DaoFactory.create(ApisClassifyEntity.class).select(entity);
     }
 
     public Page<ApisClassifyEntity> getListByPage(int page, int pagesize, String sort, String order, String cond) {

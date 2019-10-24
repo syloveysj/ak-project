@@ -42,17 +42,17 @@ public class ApplicationTypeService {
         return DaoFactory.create(ApplicationTypeEntity.class).updateBatch(list);
     }
 
-    public void delete(String id) {
+    public void delete(Integer id) {
         ApplicationTypeEntity entity = new ApplicationTypeEntity();
         entity.setId(id);
         DaoFactory.create(ApplicationTypeEntity.class).delete(entity);
     }
 
-    public int deleteBatch(List<String> ids) {
+    public int deleteBatch(List<Integer> ids) {
         return DaoFactory.create(ApplicationTypeEntity.class).deleteBatch(ids);
     }
 
-    public ApplicationTypeEntity get(String id) {
+    public ApplicationTypeEntity get(Integer id) {
         return DaoFactory.create(ApplicationTypeEntity.class).selectByID(id);
     }
 

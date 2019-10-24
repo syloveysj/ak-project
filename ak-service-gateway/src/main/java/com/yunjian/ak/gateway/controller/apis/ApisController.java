@@ -101,7 +101,7 @@ public class ApisController {
 
         entity.setId(service.getId());
         apisServiceService.update(entity);
-        return null;
+        return entity;
     }
 
     @PutMapping("/services/{id}")
