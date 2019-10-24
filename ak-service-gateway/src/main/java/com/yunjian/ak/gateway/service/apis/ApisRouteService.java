@@ -10,7 +10,9 @@ import com.yunjian.ak.gateway.entity.apis.RouteEntity;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description:
@@ -31,6 +33,13 @@ public class ApisRouteService {
 
     public int updateBatch(List<RouteEntity> list) {
         return DaoFactory.create(RouteEntity.class).updateBatch(list);
+    }
+
+    public int updateClassifyBatch(String classifyId, List<String> ids) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("classifyId", classifyId);
+        map.put("list", ids);
+        return DaoFactory.create(RouteEntity.class).getSession().update("com.yunjian.ak.gateway.entity.apis.RouteEntityMapper.updateClassifyBatch", map);
     }
 
     public RouteEntity get(String id) {

@@ -72,6 +72,8 @@
         <set>
             <trim suffixOverrides=",">
                 <if test="alias != null">alias = #{alias},</if>
+                <if test="memo != null">memo = #{memo},</if>
+                <if test="typeId != null">type_id = #{typeId},</if>
             </trim>
         </set>
         <where>

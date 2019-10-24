@@ -2,6 +2,7 @@ package com.yunjian.ak.gateway.vo.apis;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.util.List;
 
@@ -13,6 +14,9 @@ import java.util.List;
  */
 @Data
 public class ApiPackageVo {
+    @ApiModelProperty(value = "服务ID")
+    @NotBlank(message = "服务ID不能为空")
+    private String serverId;
     @ApiModelProperty(value = "api列表")
     private List<ApiVo> rows;
     @ApiModelProperty(value = "json文本")

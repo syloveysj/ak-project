@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Config} from '@config/config';
 import {filter, map} from 'rxjs/operators';
-import {CustomResponse} from '@model/common';
+import {CustomResponse, Paging} from '@model/common';
 import {isSuccess} from "@core/utils/http-result.util";
+import {HttpQueryEncoderUtil} from "@core/utils/http-query-encoder.util";
 
 @Injectable({
     providedIn: 'root',
@@ -34,6 +35,34 @@ export class InterfacesService {
         return this.httpClient.get<CustomResponse<any[]>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services`)
             .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
                 map((c: CustomResponse<any[]>) => c.data));
+    }
+
+    // 添加服务应用
+    public addService(params: any): Observable<any> {
+        return this.httpClient.post<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services`, params)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 更新服务应用
+    public updateService(id: string, params: any): Observable<any> {
+        return this.httpClient.put<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${id}`, params)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除服务应用
+    public removeService(id: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${id}`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 获取指定服务应用
+    public getService(id: string): Observable<any> {
+        return this.httpClient.get<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${id}`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
     }
 
     // 获取服务分类
@@ -83,5 +112,69 @@ export class InterfacesService {
         return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/swagger/${id}`)
             .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
                 map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 获取上游目标
+    public getUpstreamTargetList(upstreamName: string): Observable<any[]> {
+        return this.httpClient.get<CustomResponse<any[]>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${upstreamName}/targets`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any[]>) => c.data));
+    }
+
+    // 添加目标
+    public addTarget(upstreamName: string, params: any): Observable<any> {
+        return this.httpClient.post<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${upstreamName}/targets`, params)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除目标
+    public removeTarget(upstreamName: string, targetId: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${upstreamName}/targets/${targetId}`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除目标s
+    public removeTargetList(upstreamName: string, ids: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${upstreamName}/targets`, {params: {ids}})
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 添加路由s
+    public addRoutes(upstreamName: string, params: any): Observable<any> {
+        return this.httpClient.post<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes`, params)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 更新路由s分类
+    public updateRoutesClassify(classifyId: string, ids: string[]): Observable<any> {
+        return this.httpClient.put<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes/classify/${classifyId}`, ids)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除路由
+    public removeRoute(id: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes/${id}`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除路由s
+    public removeRoutes(ids: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes`, {params: {ids}})
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 获取路由列表
+    public getRouteList(params: any): Observable<Paging<any>> {
+        const values: HttpParams = new HttpParams({fromObject: params, encoder: new HttpQueryEncoderUtil()});
+        return this.httpClient.get<CustomResponse<Paging<any>>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes`, {params : values})
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<Paging<any>>) => c.data));
     }
 }

@@ -156,7 +156,7 @@ public class UpstreamController {
             message = "添加Target成功",
             response = Target.class
     )})
-    public Target insertTargets(@PathVariable("id") String id, @Valid @RequestBody TargetEntity entity) {
+    public Target insertTarget(@PathVariable("id") String id, @Valid @RequestBody TargetEntity entity) {
         LOGGER.debug("请求 UpstreamController 的 Target insert!");
 
         // 调用接口添加目标
@@ -173,10 +173,10 @@ public class UpstreamController {
             code = 200,
             message = "删除指定id的Target成功"
     )})
-    public void deleteTargets(@PathVariable("id") String id, @PathVariable("tid") String tid) {
+    public void deleteTarget(@PathVariable("id") String id, @PathVariable("tid") String tid) {
         LOGGER.debug("请求UpstreamController删除指定id的Target:{}!", tid);
 
-        // 调用接口删除上游
+        // 调用接口删除目标
         kongRouterClient.getTargetService().deleteTarget(id, tid);
     }
 
@@ -186,13 +186,13 @@ public class UpstreamController {
             code = 200,
             message = "删除指定id的Target成功"
     )})
-    public void deleteTargetsList(@PathVariable("id") String id, @RequestParam String ids) {
+    public void deleteTargets(@PathVariable("id") String id, @RequestParam String ids) {
         LOGGER.debug("请求UpstreamController删除指定ids的Target!");
 
         if(StringUtils.isEmpty(ids)) return;
 
         String idList[] = ids.split(",");
-        // 调用接口删除上游
+        // 调用接口删除目标
         for(String tid : idList) {
             kongRouterClient.getTargetService().deleteTarget(id, tid);
         }
