@@ -112,4 +112,32 @@ export class InterfacesService {
             .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
                 map((c: CustomResponse<any>) => c.data));
     }
+
+    // 获取上游目标
+    public getUpstreamTargetList(upstreamName: string): Observable<any[]> {
+        return this.httpClient.get<CustomResponse<any[]>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${upstreamName}/targets`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any[]>) => c.data));
+    }
+
+    // 添加目标
+    public addTarget(upstreamName: string, params: any): Observable<any> {
+        return this.httpClient.post<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${upstreamName}/targets`, params)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除目标
+    public removeTarget(upstreamName: string, targetId: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${upstreamName}/targets/${targetId}`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除目标s
+    public removeTargetList(upstreamName: string, ids: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${upstreamName}/targets`, {params: {ids}})
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
 }

@@ -4,15 +4,18 @@ import com.alibaba.fastjson.JSON;
 import com.yunjian.ak.exception.ValidationException;
 import com.yunjian.ak.gateway.controller.router.UpstreamController;
 import com.yunjian.ak.gateway.entity.apis.ServiceEntity;
+import com.yunjian.ak.gateway.entity.apis.TargetEntity;
 import com.yunjian.ak.gateway.entity.apis.UpstreamEntity;
 import com.yunjian.ak.gateway.service.apis.ApisServiceService;
 import com.yunjian.ak.gateway.service.apis.ApisUpstreamService;
 import com.yunjian.ak.gateway.vo.apis.ApiAnalysisVo;
 import com.yunjian.ak.gateway.vo.apis.ApiPackageVo;
 import com.yunjian.ak.gateway.vo.apis.ApiVo;
+import com.yunjian.ak.kong.client.exception.KongClientException;
 import com.yunjian.ak.kong.client.impl.KongClient;
 import com.yunjian.ak.kong.client.model.admin.route.RouteList;
 import com.yunjian.ak.kong.client.model.admin.service.Service;
+import com.yunjian.ak.kong.client.model.admin.target.Target;
 import com.yunjian.ak.kong.client.model.admin.target.TargetList;
 import com.yunjian.ak.kong.client.model.admin.upstream.Upstream;
 import com.yunjian.ak.utils.UUIDUtil;
@@ -64,7 +67,7 @@ public class ApisController {
             message = "添加Services成功",
             response = ServiceEntity.class
     )})
-    public ServiceEntity insertServices(@Valid @RequestBody ServiceEntity entity) {
+    public ServiceEntity insertService(@Valid @RequestBody ServiceEntity entity) {
         LOGGER.debug("请求 ApisController 的 Services insert!");
 
         // 调用接口添加上游
@@ -102,7 +105,7 @@ public class ApisController {
             message = "添加Services成功",
             response = ServiceEntity.class
     )})
-    public ServiceEntity updateServices(@Valid @RequestBody ServiceEntity entity) {
+    public ServiceEntity updateService(@Valid @RequestBody ServiceEntity entity) {
         LOGGER.debug("请求 ApisController 的 Services update!");
 
         // 调用接口添加服务
@@ -127,7 +130,7 @@ public class ApisController {
             code = 200,
             message = "删除指定id的Services成功"
     )})
-    public void deleteServices(@PathVariable("id") String id) {
+    public void deleteService(@PathVariable("id") String id) {
         LOGGER.debug("请求 ApisController 删除指定id的Services:{}!", id);
 
         ServiceEntity entity = apisServiceService.get(id);
@@ -153,7 +156,7 @@ public class ApisController {
             message = "获取指定id的Services成功",
             response = ServiceEntity.class
     )})
-    public ServiceEntity getServices(@PathVariable("id") String id) {
+    public ServiceEntity getService(@PathVariable("id") String id) {
         LOGGER.debug("请求 ApisController 获取指定id的Services:{}!", id);
 
         return apisServiceService.get(id);
@@ -168,9 +171,80 @@ public class ApisController {
             responseContainer = "List"
     )})
     public List<ServiceEntity> getAllServices() {
-        LOGGER.debug("请求ApplicationTypeController获取所有ApplicationType!");
+        LOGGER.debug("请求 ApisController 获取所有 Services!");
 
         return this.apisServiceService.getAll();
+    }
+
+    @PostMapping("/services/{name}/targets")
+    @ApiOperation("添加Target")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "添加Target成功",
+            response = Target.class
+    )})
+    public Target insertTarget(@PathVariable("name") String name, @Valid @RequestBody TargetEntity entity) {
+        LOGGER.debug("请求 ApisController 的 Target insert!");
+
+        // 调用接口添加目标
+        Target target = new Target();
+        BeanUtils.copyProperties(entity, target);
+        target = kongApisClient.getTargetService().createTarget(name, target);
+
+        return target;
+    }
+
+    @DeleteMapping("/services/{name}/targets/{tid}")
+    @ApiOperation("删除指定id的Target")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "删除指定id的Target成功"
+    )})
+    public void deleteTarget(@PathVariable("name") String name, @PathVariable("tid") String tid) {
+        LOGGER.debug("请求 ApisController 删除指定id的Target:{}!", tid);
+
+        // 调用接口删除目标
+        kongApisClient.getTargetService().deleteTarget(name, tid);
+    }
+
+    @DeleteMapping("/services/{name}/targets")
+    @ApiOperation("删除指定id的Target")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "删除指定id的Target成功"
+    )})
+    public void deleteTargets(@PathVariable("name") String name, @RequestParam String ids) {
+        LOGGER.debug("请求 ApisController 删除指定ids的Target!");
+
+        if(StringUtils.isEmpty(ids)) return;
+
+        String idList[] = ids.split(",");
+        // 调用接口删除目标
+        for(String tid : idList) {
+            kongApisClient.getTargetService().deleteTarget(name, tid);
+        }
+    }
+
+    @GetMapping("/services/{name}/targets")
+    @ApiOperation("获取Upstream的Target列表")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "获取Upstream的Target列表成功",
+            response = Target.class,
+            responseContainer = "List"
+    )})
+    public List<Target> getTargets(@PathVariable("name") String name) {
+        LOGGER.debug("请求 ApisController 获取Upstream的Target列表!");
+
+        // 调用接口获取所有目标
+        try {
+            TargetList targetList = kongApisClient.getTargetService().listTargets(name, null, null, null, 100L, null);
+            return targetList.getData();
+        } catch (KongClientException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @PostMapping("/analysis")
