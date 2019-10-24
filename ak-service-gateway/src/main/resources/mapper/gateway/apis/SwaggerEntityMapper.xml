@@ -34,18 +34,13 @@
 
     <!-- 将列表中Swagger对象数据,同时插入到对应数据库的表中 -->
     <insert id="insertBatch" parameterType="list">
-        insert into tb_tenant_domain
-        <trim prefix=" (" suffix=")" suffixOverrides=",">
-            id,
-            content,
-        </trim>
-        VALUES
-        <foreach collection="list" item="entity" index="index" separator=",">
-            (
-            #{entity.id},
-            #{entity.content},
-            )
+        insert into swagger (id, content)
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.id}, #{item.content})
         </foreach>
+        ON DUPLICATE KEY UPDATE
+        content = values(content)
     </insert>
 
     <!--获得类名为:Swagger对应的数据库表满足条件的数据总行数 -->
