@@ -64,7 +64,7 @@ public class ApisController {
             message = "添加Services成功",
             response = ServiceEntity.class
     )})
-    public ServiceEntity insert(@Valid @RequestBody ServiceEntity entity) {
+    public ServiceEntity insertServices(@Valid @RequestBody ServiceEntity entity) {
         LOGGER.debug("请求 ApisController 的 Services insert!");
 
         // 调用接口添加上游
@@ -102,7 +102,7 @@ public class ApisController {
             message = "添加Services成功",
             response = ServiceEntity.class
     )})
-    public ServiceEntity update(@Valid @RequestBody ServiceEntity entity) {
+    public ServiceEntity updateServices(@Valid @RequestBody ServiceEntity entity) {
         LOGGER.debug("请求 ApisController 的 Services update!");
 
         // 调用接口添加服务
@@ -127,7 +127,7 @@ public class ApisController {
             code = 200,
             message = "删除指定id的Services成功"
     )})
-    public void delete(@PathVariable("id") String id) {
+    public void deleteServices(@PathVariable("id") String id) {
         LOGGER.debug("请求 ApisController 删除指定id的Services:{}!", id);
 
         ServiceEntity entity = apisServiceService.get(id);
@@ -146,6 +146,19 @@ public class ApisController {
         kongApisClient.getUpstreamService().deleteUpstream(entity.getHost());
     }
 
+    @GetMapping("/services/{id}")
+    @ApiOperation("获取指定id的Services")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "获取指定id的Services成功",
+            response = ServiceEntity.class
+    )})
+    public ServiceEntity getServices(@PathVariable("id") String id) {
+        LOGGER.debug("请求 ApisController 获取指定id的Services:{}!", id);
+
+        return apisServiceService.get(id);
+    }
+
     @GetMapping("/services")
     @ApiOperation("获取所有Services")
     @ApiResponses({@ApiResponse(
@@ -154,7 +167,7 @@ public class ApisController {
             response = ServiceEntity.class,
             responseContainer = "List"
     )})
-    public List<ServiceEntity> getAll() {
+    public List<ServiceEntity> getAllServices() {
         LOGGER.debug("请求ApplicationTypeController获取所有ApplicationType!");
 
         return this.apisServiceService.getAll();

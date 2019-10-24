@@ -36,6 +36,34 @@ export class InterfacesService {
                 map((c: CustomResponse<any[]>) => c.data));
     }
 
+    // 添加服务应用
+    public addService(params: any): Observable<any> {
+        return this.httpClient.post<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services`, params)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 更新服务应用
+    public updateService(id: string, params: any): Observable<any> {
+        return this.httpClient.put<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${id}`, params)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 删除服务应用
+    public removeService(id: string): Observable<any> {
+        return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${id}`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 获取指定服务应用
+    public getService(id: string): Observable<any> {
+        return this.httpClient.get<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/services/${id}`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
     // 获取服务分类
     public getApisClassifyAll(): Observable<any[]> {
         return this.httpClient.get<CustomResponse<any[]>>(`${this.config.apiAddr}/v1/mgr/gateway/apis-classify/all`)
