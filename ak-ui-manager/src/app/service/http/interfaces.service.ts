@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Config} from '@config/config';
 import {filter, map} from 'rxjs/operators';
-import {CustomResponse} from '@model/common';
+import {CustomResponse, Paging} from '@model/common';
 import {isSuccess} from "@core/utils/http-result.util";
+import {HttpQueryEncoderUtil} from "@core/utils/http-query-encoder.util";
 
 @Injectable({
     providedIn: 'root',
@@ -167,5 +168,13 @@ export class InterfacesService {
         return this.httpClient.delete<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes`, {params: {ids}})
             .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
                 map((c: CustomResponse<any>) => c.data));
+    }
+
+    // 获取路由列表
+    public getRouteList(params: any): Observable<Paging<any>> {
+        const values: HttpParams = new HttpParams({fromObject: params, encoder: new HttpQueryEncoderUtil()});
+        return this.httpClient.get<CustomResponse<Paging<any>>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes`, {params : values})
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<Paging<any>>) => c.data));
     }
 }

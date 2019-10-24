@@ -15,7 +15,8 @@
         routes.alias,
         routes.updated_at,
         routes.created_at,
-        (select host from services where id=routes.service_id) host
+        routes.memo,
+        routes.classify_id
     </sql>
 
     <!-- 数据库中表名为:routes的非空where条件 -->
@@ -39,6 +40,8 @@
         </if>
         <if test="updatedAt != null">and routes.updated_at = #{updatedAt}</if>
         <if test="createdAt != null">and routes.created_at = #{createdAt}</if>
+        <if test="memo != null">and routes.memo = #{memo}</if>
+        <if test="classifyId != null">and routes.classify_id = #{classifyId}</if>
     </sql>
 
     <!-- Route的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
@@ -55,7 +58,8 @@
         <result column="alias" property="alias" />
         <result column="updated_at" property="updatedAt" />
         <result column="created_at" property="createdAt" />
-        <result column="host" property="service.host" />
+        <result column="memo" property="memo" />
+        <result column="classify_id" property="classifyId" />
     </resultMap>
 
     <!--获得类名为:Route对应的数据库表满足条件的数据总行数 -->

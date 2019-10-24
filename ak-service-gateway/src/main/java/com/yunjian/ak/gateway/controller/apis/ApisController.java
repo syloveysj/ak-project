@@ -1,6 +1,7 @@
 package com.yunjian.ak.gateway.controller.apis;
 
 import com.alibaba.fastjson.JSON;
+import com.yunjian.ak.dao.mybatis.enhance.Page;
 import com.yunjian.ak.exception.ValidationException;
 import com.yunjian.ak.gateway.controller.router.UpstreamController;
 import com.yunjian.ak.gateway.entity.apis.RouteEntity;
@@ -335,6 +336,21 @@ public class ApisController {
         for(String id : idList) {
             kongApisClient.getRouteService().deleteRoute(id);
         }
+    }
+
+    @GetMapping("/routes")
+    @ApiOperation("获取匹配Route列表")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "获取Route列表成功",
+            response = Page.class
+    )})
+    public Page<RouteEntity> getRoutesByPage(@RequestParam("page") int page, @RequestParam("pagesize") int pagesize,
+                                            @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "order", required = false) String order,
+                                            @RequestParam(value = "cond", required = false) String cond) {
+        LOGGER.debug("请求 ApisController 获取匹配Route列表!");
+
+        return apisRouteService.getListByPage(page, pagesize, sort, order, cond);
     }
 
     @PostMapping("/analysis")
