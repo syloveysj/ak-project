@@ -201,7 +201,7 @@ export interface SelfColumn {
 }
 
 export interface Menu {
-    id: number | string;
+    id: string;
     level?: number;
     title?: string;
     icon?: string;

@@ -11,20 +11,14 @@ import {
 import {BaseComponent} from '@shared/base-class/base.component';
 import {BaseService} from '@service/http/base.service';
 import {NzMessageService, NzModalService, NzThComponent} from 'ng-zorro-antd';
-import {Option} from '@model/common';
+import {Menu, Option} from '@model/common';
 import {combineLatest, defer, Observable, Subject} from 'rxjs';
-import {
-    debounceTime,
-    distinctUntilChanged,
-    map,
-    startWith,
-    switchMap,
-    tap
-} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap, tap} from 'rxjs/operators';
 import {defaultDebounceTime} from "@core/utils/constant.util";
 import {ToolService} from "@core/utils/tool.service";
-import {GatewayService} from "@service/http/gateway.service";
 import {Config} from "@config/config";
+import {InterfacesService} from "@service/http/interfaces.service";
+import {isEmpty} from "@core/utils/string.util";
 
 @Component({
     selector: 'app-apis-list',
@@ -35,9 +29,22 @@ export class ApisListComponent extends BaseComponent implements OnInit, AfterVie
     @ViewChildren(NzThComponent, {read: false}) private nzThComponents: QueryList<NzThComponent>;
     scrollXWidth = 0;
 
-    @Input() portfolioId$: Observable<number>;
-    @Input() chooseMenu: (id: number, level: number) => void;
+    constructor(public baseService: BaseService,
+                public rd: Renderer2,
+                public modalService: NzModalService,
+                public nzMessageService: NzMessageService,
+                public cdr: ChangeDetectorRef,
+                public toolService: ToolService,
+                public interfacesService: InterfacesService,
+                public config: Config) {
+        super(baseService, rd, modalService, nzMessageService);
+    }
 
+    isEmpty = isEmpty;
+    serviceId: string = null;
+    classifyId: string = null;
+    menuName: string = '';
+    menus: Menu[] = [];
     dynamicKeys: Option[] = [
         {id: 'alias', text: '名称'},
         {id: 'pathsMemo', text: '路径'}
@@ -52,17 +59,6 @@ export class ApisListComponent extends BaseComponent implements OnInit, AfterVie
         {id: 'OPTIONS', text: 'OPTIONS'},
         {id: 'TRACE', text: 'TRACE'}
     ];
-
-    constructor(public baseService: BaseService,
-                public rd: Renderer2,
-                public modalService: NzModalService,
-                public nzMessageService: NzMessageService,
-                public cdr: ChangeDetectorRef,
-                public toolService: ToolService,
-                public gatewayService: GatewayService,
-                public config: Config) {
-        super(baseService, rd, modalService, nzMessageService);
-    }
 
     ngOnInit(): void {
         // 初始化页面参数
@@ -83,8 +79,8 @@ export class ApisListComponent extends BaseComponent implements OnInit, AfterVie
         combineLatest([dynamicKey$, keyword$, typeId$, page$, pageSize$, sort$, order$]).pipe(
             map(([selfDynamicKey, selfKeyword, selfTypeId, selfPage, selfPageSize, selfSort, selfOrder]) => {
                 const params: any = {};
-                let cond: any = null;
-                (selfKeyword) && ((!cond) && (cond={}) && (cond[selfDynamicKey] = selfKeyword));
+                let cond: any = {serviceId: isEmpty(this.serviceId) ? '-1' : this.serviceId, classifyId: isEmpty(this.classifyId) ? null : this.classifyId};
+                (selfKeyword) && (cond[selfDynamicKey] = selfKeyword);
                 (selfTypeId !== null) && (((!cond) && (cond={}) || cond) && (cond['methodsMemo'] = selfTypeId));
                 (selfPage !== null) && (params.page = selfPage);
                 (selfPageSize !== null) && (params.pagesize = selfPageSize);
@@ -99,33 +95,92 @@ export class ApisListComponent extends BaseComponent implements OnInit, AfterVie
                 this.loading = true;
             }),
             switchMap(val => defer(() => {
-                // return this.gatewayService.getRouteList(val).pipe(
-                //     finalize(() => this.loading = false));
-                console.log(val);
-                let demo = new Subject<string | string[]>();
-                return demo.asObservable().pipe(startWith({
-                    total: 100,
-                    footer: null,
-                    from: 0,
-                    size: 10,
-                    page: 1,
-                    pagesize: 10,
-                    rows: [{'a': 'aa'}, {'a': 'bb'}, {'a': 'cc'}, {'a': 'dd'}]
-                }));
+                return this.interfacesService.getRouteList(val).pipe(
+                    finalize(() => this.loading = false));
             }))
         ).subscribe((data: any) => {
             this.loading = false;
             console.log(data);
+            if(data.rows && data.rows.length > 0) {
+                data.rows.forEach(item => {
+                    item.methodsMemo = this.clearString(item.methodsMemo);
+                })
+            }
             this.data = data;
         });
+    }
+
+    setData(data: { serverId: string, menuId:string }) {
+        if(this.serviceId === data.serverId && this.classifyId === data.menuId) return;
+        this.serviceId = data.serverId;
+        this.classifyId = data.menuId;
+        this.updateMenuName();
+        this.resetPage();
+    }
+
+    setMenus(menus: Menu[]) {
+        this.menus = menus;
+        this.updateMenuName();
+    }
+
+    updateMenuName() {
+        this.menus.forEach(menu => {
+            if(this.classifyId === menu.id) {
+                this.menuName = menu.title;
+            }
+            if(menu['children'] && menu['children'].length>0) {
+                menu['children'].forEach(item => {
+                    if(this.classifyId === item.id) {
+                        this.menuName = item.title;
+                    }
+                })
+            }
+        })
+    }
+
+    clearString(str: string) {
+        if(isEmpty(str)) return '';
+        return str.replace('{', '').replace('}', '');
     }
 
     openWin(bean: any = null) {
         console.log(this.scrollY);
     }
 
-    deleteRoute(bean: any = null) {
+    changeClassify(classifyId: string) {
+        const ids = [];
+        this.data.rows.forEach(item => {
+            if(item.checked) {
+                ids.push(item.id);
+            }
+        })
+        this.interfacesService.updateRoutesClassify(classifyId, ids).subscribe(
+            (res) => {
+                this.selfPage.next(this.selfQueryParams.page);
+            }
+        )
+    }
 
+    deleteRoute(bean: any = null) {
+        if(bean == null) {
+            let ids = "";
+            this.data.rows.forEach(item => {
+                if(item.checked === true) {
+                    ids += isEmpty(ids)? item.id : ',' + item.id;
+                }
+            });
+            this.interfacesService.removeRoutes(ids).subscribe(
+                (res) => {
+                    this.selfPage.next(this.selfQueryParams.page);
+                }
+            )
+        } else {
+            this.interfacesService.removeRoute(bean.id).subscribe(
+                (res) => {
+                    this.selfPage.next(this.selfQueryParams.page);
+                }
+            );
+        }
     }
 
     resetFilters() {

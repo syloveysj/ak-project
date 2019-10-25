@@ -4,6 +4,7 @@
             <label nz-radio-button [nzValue]="null"><span>全部</span></label>
             <label nz-radio-button [nzValue]="0"><span>可导入</span></label>
             <label nz-radio-button [nzValue]="1"><span>可更新</span></label>
+            <label nz-radio-button [nzValue]="2"><span>已存在</span></label>
         </nz-radio-group>
     </div>
     <div nz-col nzSpan="3" style="text-align: right; padding-top: 8px">
@@ -44,7 +45,7 @@
             <th nzWidth="40px" nzShowCheckbox
                 [(nzChecked)]="allChecked"
                 [nzIndeterminate]="indeterminate"
-                [nzDisabled]="!displayData.length"
+                [nzDisabled]="!displayData.length || state===2"
                 (nzCheckedChange)="checkAll($event)">
             </th>
             <th nzWidth="120px">服务名称</th>
@@ -56,14 +57,20 @@
         </thead>
         <tbody>
         <tr *ngFor="let item of contentTb.data">
-            <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="checkedChange(item)"></td>
-            <td>{{item?.name}}</td>
+            <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="checkedChange(item)" [nzDisabled]="item.state===2"></td>
+            <td>{{item?.alias}}</td>
             <td nzAlign="center" [ngClass]="{'_get':item.method==='GET','_post':item.method==='POST','_delete':item.method==='DELETE',
                 '_put':item.method==='PUT','_head':item.method==='HEAD','_patch':item.method==='PATCH',
                 '_options':item.method==='OPTIONS','_trace':item.method==='TRACE'}">
                 {{item?.method}}</td>
-            <td>{{item?.uri}}</td>
-            <td nzAlign="center">{{item?.state===0 ? '可导入' : '可更新'}}</td>
+            <td>{{item?.memo}}</td>
+            <td nzAlign="center">
+                <ng-container [ngSwitch]="item.state">
+                    <ng-container *ngSwitchCase="0">可导入</ng-container>
+                    <ng-container *ngSwitchCase="1">可更新</ng-container>
+                    <ng-container *ngSwitchCase="2">已存在</ng-container>
+                </ng-container>
+            </td>
             <td nzAlign="center">
                 <button nz-button nzType="link" nz-popconfirm nzPlacement="left" nzTitle="您确认要删除吗?"
                         (nzOnConfirm)="deleteItem(item)">删除</button>

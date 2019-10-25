@@ -23,17 +23,19 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
     @Input() initServerId = null;
 
     @Output() changeFold = new EventEmitter<boolean>();
+    @Output() dataChange = new EventEmitter<{ serverId: string, menuId:string }>();
+    @Output() menuChange = new EventEmitter<Menu[]>();
     fold: boolean = false;
-    serverId = null;
+    serverId: string;
 
     serversLoading: boolean = true;
     portfolioLoading: boolean = false;
-    serverNodes = [];
+    serverNodes: any[] = [];
     menus: Menu[] = [];
-    apisNum = 1199; // 接口数量
+    // apisNum: number = 1111; // 接口数量
 
     // 辅助函数
-    isBlank = isEmpty;
+    // isBlank = isEmpty;
 
     private _destroy = new Subject<void>();
     constructor(public baseService: BaseService,
@@ -44,14 +46,14 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
                 public interfacesService: InterfacesService,
                 public nzMessageService: NzMessageService) {
         super(baseService, rd, modalService, nzMessageService);
-    }
 
-    ngOnInit(): void {
         this.applicationTypes$ = this.store$.select(fromRoot.getApplicationTypes);
         this.services$ = this.store$.select(fromRoot.getServices);
         this.store$.dispatch(new ConstantsActions.LoadApplicationTypes());
         this.store$.dispatch(new ConstantsActions.LoadServices());
+    }
 
+    ngOnInit(): void {
         combineLatest(this.applicationTypes$, this.services$).pipe(
             map(([applicationTypes, services]) => {
                 console.log(applicationTypes, services);
@@ -95,7 +97,7 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
             (res) => {
                 const temp = [{
                     title: '待分类',
-                    id: '',
+                    id: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
                     selected: true,
                     level: 2,
                     isLeaf: true
@@ -124,13 +126,15 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
                                     title: item.alias,
                                     id: item.id,
                                     selected: false,
-                                    level: 2
+                                    level: 2,
+                                    isLeaf: true
                                 });
                             }
                         })
                     }
                 });
                 this.menus = temp;
+                this.menuChange.emit(temp);
             }
         );
     }
@@ -187,7 +191,7 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
     }
 
     addPortfolio() {
-        if(this.serverId === null) {
+        if(isEmpty(this.serverId)) {
             this.nzMessageService.create('warning', `当前没有服务应用.`);
             return null;
         }
@@ -242,16 +246,21 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
 
     }
 
-    serverIdChange(server: { serverId?: string }) {
+    serverIdChange(server: { serverId: string }) {
         this.serverId = server.serverId;
+        this.dataChange.emit({serverId: this.serverId, menuId: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'});
         this.initPortfolio();
     }
 
     menuHomeClicked() {
+        this.dataChange.emit({serverId: this.serverId, menuId: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'});
         this.initPortfolio();
     }
 
     menuClicked(menu: Menu, childrenMenu?: Menu[]) {
+        console.log(menu);
+        this.dataChange.emit({serverId: this.serverId, menuId: menu.id});
+
         // if (this.menuId$.value === menu.id && this.menuLevel === menu.level) {
         //     if (childrenMenu && childrenMenu.length > 0) {
         //         childrenMenu.forEach(childMenu => this.setJuniorMenuInactive(childMenu));

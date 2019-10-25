@@ -1,10 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {BaseService} from '@service/http/base.service';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
-import {GatewayService} from "@service/http/gateway.service";
 import {Config} from "@config/config";
 import {FormBuilder} from "@angular/forms";
 import {isEmpty} from "@core/utils/string.util";
+import {Store} from "@ngrx/store";
+import * as fromRoot from "@store/reducers";
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'app-apis-import-one',
@@ -16,12 +18,10 @@ import {isEmpty} from "@core/utils/string.util";
                 </div>
                 <div nz-col nzSpan="8" class="value">
                     <nz-select [(ngModel)]="serverId" nzAllowClear nzPlaceHolder="请选择" style="width: 100%">
-                        <nz-option-group nzLabel="Manager">
-                            <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                            <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                        </nz-option-group>
-                        <nz-option-group nzLabel="Engineer">
-                            <nz-option nzValue="Tom" nzLabel="tom"></nz-option>
+                        <nz-option-group  *ngFor="let type of applicationTypes$ | async" [nzLabel]="type.typeName">
+                            <ng-container *ngFor="let service of services$ | async">
+                                <nz-option *ngIf="service.typeId === type.id" [nzValue]="service.id" [nzLabel]="service.alias"></nz-option>
+                            </ng-container>
                         </nz-option-group>
                     </nz-select>
                 </div>
@@ -76,7 +76,7 @@ export class ApisImportOneComponent implements OnInit {
                 private nzMessageService: NzMessageService,
                 public modalService: NzModalService,
                 public baseService: BaseService,
-                public gatewayService: GatewayService) {
+                private store$: Store<fromRoot.State>) {
     }
 
     serverId: string;
@@ -84,7 +84,12 @@ export class ApisImportOneComponent implements OnInit {
     jsonText: string;
     isUrl: boolean = true;
 
+    applicationTypes$: Observable<any[]>;
+    services$: Observable<any[]>;
+
     ngOnInit(): void {
+        this.applicationTypes$ = this.store$.select(fromRoot.getApplicationTypes);
+        this.services$ = this.store$.select(fromRoot.getServices);
     }
 
     getFromValues(): any {

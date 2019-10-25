@@ -7,6 +7,7 @@ import {ToolService} from '@core/utils/tool.service';
 import {ApisImportComponent} from "@feature/interfaces/apis/components/apis-import.component";
 import {InterfacesService} from "@service/http/interfaces.service";
 import {finalize} from "rxjs/operators";
+import {Menu} from "@model/common";
 
 @Component({
     selector: 'app-interfaces-apis',
@@ -19,6 +20,7 @@ export class ApisComponent extends BaseComponent implements OnInit {
     current = 0;
     @ViewChild('importSteps')
     importSteps: TemplateRef<any>;
+    @ViewChild('apisListChild') apisList;
 
     constructor(public baseService: BaseService,
                 public rd: Renderer2,
@@ -31,7 +33,18 @@ export class ApisComponent extends BaseComponent implements OnInit {
         super(baseService, rd, modalService, nzMessageService);
     }
 
+    siderData: { serverId: string, menuId:string };
+
     ngOnInit() {
+    }
+
+    dataChange(data: { serverId: string, menuId:string }) {
+        this.siderData = data;
+        this.apisList.setData(data);
+    }
+
+    menuChange(menus: Menu[]) {
+        this.apisList.setMenus(menus);
     }
 
     openWin() {
@@ -128,6 +141,7 @@ export class ApisComponent extends BaseComponent implements OnInit {
 
         modal.afterClose.subscribe((result) => {
             if (result) {
+                this.apisList.setData(this.siderData);
             }
         });
     }

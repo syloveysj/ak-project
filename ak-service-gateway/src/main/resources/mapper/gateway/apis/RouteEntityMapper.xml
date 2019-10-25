@@ -40,8 +40,11 @@
         </if>
         <if test="updatedAt != null">and routes.updated_at = #{updatedAt}</if>
         <if test="createdAt != null">and routes.created_at = #{createdAt}</if>
-        <if test="memo != null">and routes.memo = #{memo}</if>
-        <if test="classifyId != null">and routes.classify_id = #{classifyId}</if>
+        <if test="memo != null and memo != '' ">
+            and routes.memo::text like concat('%',#{memo},'%')
+        </if>
+        <if test="memo == null">and routes.memo is not null</if>
+        <if test="classifyId != null">and routes.classify_id::text = #{classifyId}</if>
     </sql>
 
     <!-- Route的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
@@ -77,7 +80,7 @@
             <trim suffixOverrides=",">
                 <if test="alias != null">alias = #{alias},</if>
                 <if test="memo != null">memo = #{memo},</if>
-                <if test="classifyId != null">classify_id = #{classifyId},</if>
+                <if test="classifyId != null">classify_id = #{classifyId}::uuid,</if>
             </trim>
         </set>
         <where>
@@ -95,7 +98,7 @@
             <set>
                 alias = #{item.alias},
                 memo = #{item.memo},
-                classify_id = #{item.classifyId}
+                classify_id = #{item.classifyId}::uuid
             </set>
             WHERE id::text = #{item.id}
         </foreach>
@@ -105,7 +108,7 @@
     <update id="updateClassifyBatch" parameterType="map">
         update routes
         <set>
-            classify_id = #{classifyId}
+            classify_id = #{classifyId}::uuid
         </set>
         WHERE id::text in
         <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">

@@ -104,3 +104,11 @@ input.gap-right {
     z-index: 0 !important;
 }
 
+._get { color: #0F6AB4; }
+._post { color: #10A54A; }
+._delete { color: #A41E22; }
+._put { color: #C5862B; }
+._head { color: #FFD20F; }
+._patch { color: #D38042; }
+._options { color: #0F6AB4; }
+._trace { color: #0F6AB4; }

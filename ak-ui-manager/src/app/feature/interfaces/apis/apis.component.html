@@ -20,7 +20,7 @@
 <div class="list-page-wrapper" style="padding-bottom: 0;">
     <nz-layout style="background-color: transparent; margin-top: 10px">
         <nz-sider [nzWidth]="fold ? '30px' : '273px'" style="border-right: 1px solid #e3e3e3; background-color: transparent; margin-right: 10px;">
-            <app-apis-manager-sider #sider (changeFold)="changeFold($event)"></app-apis-manager-sider>
+            <app-apis-manager-sider (changeFold)="changeFold($event)" (dataChange)="dataChange($event)" (menuChange)="menuChange($event)"></app-apis-manager-sider>
         </nz-sider>
         <!-- *****************右侧tab***************** -->
         <nz-layout>
@@ -30,12 +30,7 @@
                            nzType="card"
                            nzSelectedIndex="0">
                     <nz-tab nzTitle="服务列表">
-                        <!--<app-apis-list-->
-                            <!--[portfolioId$]="sider.menuId$"-->
-                            <!--[chooseMenu]="sider.chooseMenu"-->
-                            <!--[table]="true"-->
-                        <!--&gt;</app-apis-list>-->
-                        <app-apis-list></app-apis-list>
+                        <app-apis-list #apisListChild></app-apis-list>
                     </nz-tab>
                     <nz-tab nzTitle="节点信息">
                         <app-apis-portfolio-node></app-apis-portfolio-node>

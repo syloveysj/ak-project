@@ -73,12 +73,12 @@ export class ApisImportTwoComponent extends BaseComponent implements OnInit {
     }
 
     checkAll(value: boolean): void {
-        this.displayData.forEach(data => data.checked = value);
+        this.displayData.forEach(data => (data.state !== 2) && (data.checked = value));
         this.showApiList.forEach(data => {
             const index = this.displayData.findIndex(item => {
                 return data.method === item.method && data.uri === item.uri;
             });
-            if(index > -1) data.checked = value;
+            if(index > -1 && data.state !== 2) data.checked = value;
         });
         this.refreshStatus();
     }
@@ -105,8 +105,8 @@ export class ApisImportTwoComponent extends BaseComponent implements OnInit {
     }
 
     checkedAll() {
-        this.displayData.forEach(data => data.checked = true);
-        this.apiList.forEach(data => data.checked = true);
+        this.displayData.forEach(data => (data.state !== 2) && (data.checked = true));
+        this.apiList.forEach(data => (data.state !== 2) && (data.checked = true));
         this.refreshStatus();
     }
 

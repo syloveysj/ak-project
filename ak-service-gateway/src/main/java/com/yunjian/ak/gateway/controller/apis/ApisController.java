@@ -274,7 +274,7 @@ public class ApisController {
             route.setMethods(Arrays.asList(row.getMethod()));
             route.setHosts(Arrays.asList());
             route.setPaths(Arrays.asList(row.getUri()));
-            route.setPaths(Arrays.asList("http", "https"));
+            route.setProtocols(Arrays.asList("http", "https"));
             route.setStripPath(true);
             route.setPreserveHost(false);
             if(row.getState() == 0) { // 添加
@@ -285,9 +285,9 @@ public class ApisController {
 
             RouteEntity routeEntity = new RouteEntity();
             routeEntity.setId(route.getId());
-            routeEntity.setAlias(row.getName());
-            routeEntity.setMemo(row.getUri());
-            routeEntity.setClassifyId(null);
+            routeEntity.setAlias(row.getAlias());
+            routeEntity.setMemo(row.getMemo());
+            routeEntity.setClassifyId("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
             routeEntities.add(routeEntity);
         }
 
@@ -384,8 +384,6 @@ public class ApisController {
             throw new ValidationException("json信息无法解析");
         }
 
-        boolean flag = true;
-
         List<ApiVo> apiVos = new ArrayList<>();
         Map paths = MapUtils.getMap(data, "paths", null);
         if(paths != null) {
@@ -401,12 +399,11 @@ public class ApisController {
                     if(!StringUtils.endsWithIgnoreCase(uri, "/")) uri += "/?$";
 
                     ApiVo apiVo = new ApiVo();
-                    apiVo.setName(Base64Utils.encodeToUrlSafeString(uri.getBytes(Charset.forName("UTF-8"))));
+                    apiVo.setName(Base64Utils.encodeToUrlSafeString((methodsEntry.getKey().toUpperCase() + ":" + uri).getBytes(Charset.forName("UTF-8"))).replaceAll("=", "."));
                     apiVo.setUri(uri);
                     apiVo.setMemo(pathsEntry.getKey());
                     apiVo.setMethod(methodsEntry.getKey().toUpperCase());
-                    apiVo.setState(flag ? 0 : 1);
-                    flag = !flag;
+                    apiVo.setState(0);
 
                     Map methodInfo = methodsEntry.getValue();
                     apiVo.setAlias(MapUtils.getString(methodInfo, "summary"));
