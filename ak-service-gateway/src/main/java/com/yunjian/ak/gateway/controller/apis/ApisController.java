@@ -270,6 +270,7 @@ public class ApisController {
         for(ApiVo row : entity.getRows()) {
             Route route = new Route();
             route.setService(service);
+            route.setName(row.getName());
             route.setMethods(Arrays.asList(row.getMethod()));
             route.setHosts(Arrays.asList());
             route.setPaths(Arrays.asList(row.getUri()));
@@ -277,7 +278,6 @@ public class ApisController {
             route.setStripPath(true);
             route.setPreserveHost(false);
             if(row.getState() == 0) { // 添加
-                route.setName(UUIDUtil.createUUID());
                 route = kongApisClient.getRouteService().createRoute(route);
             } else { // 更新
                 route = kongApisClient.getRouteService().updateRoute(row.getId(), route);
@@ -397,10 +397,12 @@ public class ApisController {
                 Iterator<Map.Entry<String, Map>> methodsEntries = methods.entrySet().iterator();
                 while(methodsEntries.hasNext()){
                     Map.Entry<String, Map> methodsEntry = methodsEntries.next();
+                    String uri = pathsEntry.getKey().replaceAll("\\{[^}]*\\}","[^/]*");
+                    if(!StringUtils.endsWithIgnoreCase(uri, "/")) uri += "/?$";
 
                     ApiVo apiVo = new ApiVo();
-                    apiVo.setName(Base64Utils.encodeToUrlSafeString(pathsEntry.getKey().getBytes(Charset.forName("UTF-8"))));
-                    apiVo.setUri(pathsEntry.getKey());
+                    apiVo.setName(Base64Utils.encodeToUrlSafeString(uri.getBytes(Charset.forName("UTF-8"))));
+                    apiVo.setUri(uri);
                     apiVo.setMemo(pathsEntry.getKey());
                     apiVo.setMethod(methodsEntry.getKey().toUpperCase());
                     apiVo.setState(flag ? 0 : 1);
