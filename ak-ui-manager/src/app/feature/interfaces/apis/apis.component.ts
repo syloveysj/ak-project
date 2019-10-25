@@ -83,10 +83,17 @@ export class ApisComponent extends BaseComponent implements OnInit {
                             this.modalService.confirm({
                                 nzTitle: '<i>您确认现在就提交保存吗?</i>',
                                 nzOnOk: () => {
-                                    componentInstance.current = this.current += 1;
+
+                                    this.interfacesService.addRoutes(componentInstance.getFromValues()).pipe(
+                                        finalize(() => componentInstance.loading = false)
+                                    ).subscribe(
+                                        (res) => {
+                                            console.log(res);
+                                            componentInstance.current = this.current += 1;
+                                        }
+                                    );
                                 }
                             });
-                            componentInstance.loading = false;
                         }
                     }
                 },
@@ -99,8 +106,8 @@ export class ApisComponent extends BaseComponent implements OnInit {
                     show: () => {
                         return this.current === 2;
                     },
-                    onClick: (componentInstance) => {
-                        modal.destroy();
+                    onClick: () => {
+                        modal.destroy(true);
                     }
                 },
                 {

@@ -248,17 +248,7 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
     }
 
     menuHomeClicked() {
-        // if (this.menuId$.value !== null) {
-        //     // if (this.adsData.isApi()) {
-        //         this.setSuperiorMenuInactive(this.getMenus(this.menuLevel, this.menuId$.value) as Menu);
-        //     // } else {
-        //     //     this.menus.forEach(menu => menu.selected = false);
-        //     // }
-        //     this.menuLevel$.next(this.menuLevel = AdsMenuLevel.PORTFOLIO);
-        //     this.tabIndex = 0;
-        // }
-        // this.setAdsData(null);
-        // this.menuId$.next(null);
+        this.initPortfolio();
     }
 
     menuClicked(menu: Menu, childrenMenu?: Menu[]) {
@@ -282,48 +272,6 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
         //         }
         //     });
         // }
-    }
-
-    /**********************************
-     *      菜单增、删、改、查
-     **********************************/
-
-    getMenus(level: number, id: number | string = null, parentMenu: Menu = null): Menu[] | Menu {
-        // let levelMenus: Menu[] = [];
-        // if (!isBlank(parentMenu) && parentMenu.children.length > 0) {
-        //     levelMenus = parentMenu.children;
-        // } else {
-        //     if (level === AdsMenuLevel.PORTFOLIO) {
-        //         levelMenus = this.menus.filter(menu => menu.level === level);
-        //     } else {
-        //         levelMenus = this.menus.map(menu => menu.children).reduce((e1, e2) => {
-        //             if (e1 && !e2) {
-        //                 return e1;
-        //             } else if (!e1 && e2) {
-        //                 return e2;
-        //             } else {
-        //                 return e1.concat(e2);
-        //             }
-        //         }, []);
-        //         if (level === AdsMenuLevel.GROUP) {
-        //             levelMenus = levelMenus.map(menu => menu.children).reduce((e1, e2) => {
-        //                 if (e1 && !e2) {
-        //                     return e1;
-        //                 } else if (!e1 && e2) {
-        //                     return e2;
-        //                 } else {
-        //                     return e1.concat(e2);
-        //                 }
-        //             }, []);
-        //         }
-        //     }
-        // }
-        // if (id !== null) {
-        //     const levelIdMenu = levelMenus.filter(menu => menu.id === id);
-        //     return levelIdMenu.length > 0 ? levelIdMenu[0] : null;
-        // }
-        // return levelMenus;
-        return null;
     }
 
     ngOnDestroy(): void {

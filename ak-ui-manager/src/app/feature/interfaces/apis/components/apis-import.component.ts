@@ -26,7 +26,7 @@ export class ApisImportComponent implements OnInit {
     form: FormGroup;
     loading = false;
     current = 0;
-    apisBean: {rows: any[], jsonText: string};
+    apisBean: {serverId: string, rows: any[], jsonText: string};
 
     ngOnInit(): void {
         this.form = this.fb.group({
@@ -39,6 +39,7 @@ export class ApisImportComponent implements OnInit {
             return this.onePanel.getFromValues();
         } else if(this.current === 1) {
             return {
+                serverId: this.apisBean.serverId,
                 rows: this.twoPanel.getFromValues(),
                 jsonText: this.apisBean.jsonText
             };

@@ -151,7 +151,7 @@ export class InterfacesService {
     }
 
     // 添加路由s
-    public addRoutes(upstreamName: string, params: any): Observable<any> {
+    public addRoutes(params: any): Observable<any> {
         return this.httpClient.post<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis/routes`, params)
             .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
                 map((c: CustomResponse<any>) => c.data));
