@@ -58,6 +58,8 @@
     <div class="tab" appCalcTableScrolly (scrollY)="scrollY = $event">
         <nz-table
             #pT nzBordered
+            appCalcThWidth
+            (scrollXWidth)="scrollXWidth = $event"
             [nzScroll]="{x: scrollXWidth + 'px', y: scrollY + 'px'}"
             [nzFrontPagination]="false"
             [nzShowPagination]="false"

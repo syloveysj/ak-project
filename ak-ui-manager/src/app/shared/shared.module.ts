@@ -7,13 +7,12 @@ import {QuillModule} from 'ngx-quill';
 import {quillConfig} from '@core/utils/quill-config.util';
 import {TagCloseComponent} from '@shared/components/tag-close.component';
 import {PipeModule} from '@pipe/index';
+import {DirectiveModule} from "@shared/directive";
 import {ResetFiltersComponent} from '@shared/components/reset-filters.component';
 import {HeightSearchLabelsComponent} from '@shared/components/height-search-labels.component';
 import {TablePaginationInfoComponent} from '@shared/components/table-pagination-info.component';
 import {InputGroupWrapperComponent} from '@shared/components/input-group-wrapper.component';
-import {NumberOnlyDirective} from '@shared/directive/number-only.directive';
 import {ApplicationTreeSelectComponent} from "@feature/interfaces/apis/components/application-tree-select.component";
-import {CalcTableScrollyDirective} from "@shared/directive/calc-table-scrolly.directive";
 import {RouterPluginsEditComponent} from "@feature/gateway/advanced-router/components/router-plugins-edit.component";
 
 // 在这里注入模块
@@ -24,6 +23,7 @@ const MODULES = [
     ReactiveFormsModule,
     NgZorroAntdModule,
     PipeModule,
+    DirectiveModule,
 ];
 
 // 在这里注入组件，指令，管道
@@ -33,8 +33,6 @@ const DECLARATIONS = [
     HeightSearchLabelsComponent,
     TablePaginationInfoComponent,
     InputGroupWrapperComponent,
-    NumberOnlyDirective,
-    CalcTableScrollyDirective,
     ApplicationTreeSelectComponent,
     RouterPluginsEditComponent,
 ];
@@ -46,8 +44,6 @@ const EXPORT_COMPONENTS = [
     HeightSearchLabelsComponent,
     TablePaginationInfoComponent,
     InputGroupWrapperComponent,
-    NumberOnlyDirective,
-    CalcTableScrollyDirective,
     ApplicationTreeSelectComponent,
     RouterPluginsEditComponent,
 ];

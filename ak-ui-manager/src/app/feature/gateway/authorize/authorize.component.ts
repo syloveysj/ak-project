@@ -1,7 +1,7 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, Renderer2} from '@angular/core';
 import {BaseComponent} from '@shared/base-class/base.component';
 import {BaseService} from '@service/http/base.service';
-import {NzMessageService, NzModalService, NzThComponent} from 'ng-zorro-antd';
+import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {Config} from '@config/config';
 import {Option} from '@model/common';
 import {ToolService} from '@core/utils/tool.service';
@@ -15,8 +15,7 @@ import {CertificateEditComponent} from "@feature/gateway/authorize/components/ce
     templateUrl: './authorize.component.html',
     styleUrls: ['./authorize.component.css']
 })
-export class AuthorizeComponent extends BaseComponent implements OnInit, AfterViewInit {
-    @ViewChildren(NzThComponent, {read: false}) private nzThComponents: QueryList<NzThComponent>;
+export class AuthorizeComponent extends BaseComponent implements OnInit {
     scrollXWidth = 0;
 
     dynamicKeys: Option[] = [
@@ -126,30 +125,5 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     resetFilters() {
-    }
-
-    ngAfterViewInit(): void {
-        // 监听th的宽度变化
-        this.nzThComponents.changes.pipe(
-            map((components: QueryList<NzThComponent>) => components.map(item => item.nzWidth)),
-            map(array => array.filter(item => !!item)), // 过滤出有值的数据,形如 [undefined, '100px', '200px'] => ['100px', '200px'];
-            map((res) => {
-                let sum = 0;
-                // 去除px字符串，进行累加
-                res.map(item => {
-                    if (item.indexOf('px') > -1) {
-                        sum = sum + Number(item.slice(0, -2));
-                    } else {
-                        return;
-                    }
-                });
-                return sum;
-            }),
-        ).subscribe(
-            res => {
-                this.scrollXWidth = res;
-                this.cdr.detectChanges(); // 解决变更检测报错
-            }
-        );
     }
 }

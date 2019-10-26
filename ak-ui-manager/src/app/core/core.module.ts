@@ -16,6 +16,7 @@ import {AppComponent} from '@core/app.component';
       AppComponent
     ],
     exports: [
+        HeadBarComponent,
     ]
 })
 export class CoreModule {
