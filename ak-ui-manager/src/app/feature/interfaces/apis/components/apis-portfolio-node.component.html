@@ -7,37 +7,25 @@
                 <nz-descriptions-item nzTitle="上级节点">
                     <ng-container *ngIf="state===0">{{bean?._alias}}</ng-container>
                     <ng-container *ngIf="state===1">
-                        <nz-form-item>
-                            <nz-form-control>
-                                <nz-select formControlName="pid" id="pid" nzPlaceHolder="请选择" [nzAllowClear]="false" style="width: 240px;">
-                                    <nz-option nzValue="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" nzLabel="根节点"></nz-option>
-                                    <ng-container *ngFor="let item of menus">
-                                        <nz-option *ngIf="item.id !== 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb' && item.id!==bean?.id" [nzValue]="item.id"
-                                                   [nzLabel]="item.title"></nz-option>
-                                    </ng-container>
-                                </nz-select>
-                            </nz-form-control>
-                        </nz-form-item>
+                        <nz-select formControlName="pid" id="pid" nzPlaceHolder="请选择" [nzAllowClear]="false" style="width: 240px;">
+                            <nz-option nzValue="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" nzLabel="根节点"></nz-option>
+                            <ng-container *ngFor="let item of menus">
+                                <nz-option *ngIf="item.id !== 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb' && item.id!==bean?.id" [nzValue]="item.id"
+                                           [nzLabel]="item.title"></nz-option>
+                            </ng-container>
+                        </nz-select>
                     </ng-container>
                 </nz-descriptions-item>
                 <nz-descriptions-item nzTitle="节点名称">
                     <ng-container *ngIf="state===0">{{bean?.alias}}</ng-container>
                     <ng-container *ngIf="state===1">
-                        <nz-form-item>
-                            <nz-form-control>
-                                <input nz-input formControlName="alias" id="alias" style="width: 240px;" />
-                            </nz-form-control>
-                        </nz-form-item>
+                        <input nz-input formControlName="alias" id="alias" style="width: 240px;" />
                     </ng-container>
                 </nz-descriptions-item>
                 <nz-descriptions-item nzTitle="备&emsp;&emsp;注">
                     <ng-container *ngIf="state===0">{{bean?.memo}}</ng-container>
                     <ng-container *ngIf="state===1">
-                        <nz-form-item>
-                            <nz-form-control>
-                                <input nz-input formControlName="memo" id="memo" style="width: 240px;" />
-                            </nz-form-control>
-                        </nz-form-item>
+                        <input nz-input formControlName="memo" id="memo" style="width: 240px;" />
                     </ng-container>
                 </nz-descriptions-item>
             </nz-descriptions>
