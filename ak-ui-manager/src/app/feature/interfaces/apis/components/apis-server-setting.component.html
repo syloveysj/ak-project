@@ -2,17 +2,79 @@
     <div class="tab" appCalcTableScrolly offsetTop="345" [showShadow]="false"
          (scrollY)="scrollY = $event" scrollYUnit="" [style.height]="scrollY + 152 + 'px'"
          (tabWidthChange)="tabWidthChange($event)">
-        <nz-descriptions nzTitle="基本信息" [nzColumn]="3">
-            <nz-descriptions-item nzTitle="应用分类">平台应用</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="应用名称">网关集群</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="备&emsp;&emsp;注">进行域名和API维护</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="连接超时">60000ms</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="发送超时">60000ms</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="读取超时">60000ms</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="协&emsp;&emsp;议">http</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="路&emsp;&emsp;径">/</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="端&emsp;&emsp;口">80</nz-descriptions-item>
-        </nz-descriptions>
+        <form nz-form [formGroup]="form">
+            <nz-descriptions nzTitle="基本信息" [nzColumn]="3">
+                <nz-descriptions-item nzTitle="应用分类">
+                    <ng-container *ngIf="state===0">{{bean?.typeName}}</ng-container>
+                    <ng-container *ngIf="state===1">
+                        <nz-select formControlName="typeId" id="typeId" nzPlaceHolder="请选择" style="width: 160px;">
+                            <nz-option *ngFor="let item of applicationTypes$ | async" [nzValue]="item.id"
+                                       [nzLabel]="item.typeName"></nz-option>
+                        </nz-select>
+                    </ng-container>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="应用名称">
+                    <ng-container *ngIf="state===0">{{bean?.alias}}</ng-container>
+                    <ng-container *ngIf="state===1">
+                        <input nz-input formControlName="alias" id="alias" />
+                    </ng-container>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="备&emsp;&emsp;注">
+                    <ng-container *ngIf="state===0">{{bean?.memo}}</ng-container>
+                    <ng-container *ngIf="state===1">
+                        <input nz-input formControlName="memo" id="memo" />
+                    </ng-container>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="连接超时">
+                    <ng-container *ngIf="state===0">{{bean?.connectTimeout}}ms</ng-container>
+                    <ng-container *ngIf="state===1">
+                        <nz-input-group nzAddOnAfter="毫秒">
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="connectTimeout"
+                                   id="connectTimeout" maxlength="100"/>
+                        </nz-input-group>
+                    </ng-container>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="读取超时">
+                    <ng-container *ngIf="state===0">{{bean?.readTimeout}}ms</ng-container>
+                    <ng-container *ngIf="state===1">
+                        <nz-input-group nzAddOnAfter="毫秒">
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="writeTimeout"
+                                   id="writeTimeout" maxlength="100"/>
+                        </nz-input-group>
+                    </ng-container>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="发送超时">
+                    <ng-container *ngIf="state===0">{{bean?.writeTimeout}}ms</ng-container>
+                    <ng-container *ngIf="state===1">
+                        <nz-input-group nzAddOnAfter="毫秒">
+                            <input nz-input placeholder="" appNumberOnly [scale]="0" formControlName="readTimeout"
+                                   id="readTimeout" maxlength="100"/>
+                        </nz-input-group>
+                    </ng-container>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="协&emsp;&emsp;议">
+                    <ng-container *ngIf="state===0">{{bean?.protocol}}</ng-container>
+                    <ng-container *ngIf="state===1">
+                        <nz-select formControlName="protocol" id="protocol" nzPlaceHolder="请选择" style="width: 160px;">
+                            <nz-option nzValue="http" nzLabel="http"></nz-option>
+                            <nz-option nzValue="https" nzLabel="https"></nz-option>
+                        </nz-select>
+                    </ng-container>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="路&emsp;&emsp;径">
+                    <ng-container *ngIf="state===0">{{bean?.path}}</ng-container>
+                    <ng-container *ngIf="state===1">
+                        <input nz-input formControlName="path" id="path" />
+                    </ng-container>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="端&emsp;&emsp;口">
+                    <ng-container *ngIf="state===0">{{bean?.port}}</ng-container>
+                    <ng-container *ngIf="state===1">
+                        <input nz-input appNumberOnly [scale]="0" formControlName="port" id="port" />
+                    </ng-container>
+                </nz-descriptions-item>
+            </nz-descriptions>
+        </form>
 
         <div nz-row>
             <div nz-col nzSpan="12">
@@ -142,7 +204,9 @@
             <div class="list-page-buttons fl">
             </div>
             <div class="bottom-pagination fr">
-                <button nz-button nzType="primary">保 存</button>
+                <button *ngIf="state===0" nz-button nzType="primary" (click)="state=1">编 辑</button>
+                <button *ngIf="state===1" nz-button nzType="primary" [disabled]="!form.valid" (click)="saveData()">保 存</button>&nbsp;
+                <button *ngIf="state===1" nz-button nzType="default" (click)="state=0">取 消</button>
             </div>
         </div>
     </div>

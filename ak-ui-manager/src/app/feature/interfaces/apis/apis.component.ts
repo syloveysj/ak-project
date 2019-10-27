@@ -45,6 +45,7 @@ export class ApisComponent extends BaseComponent implements OnInit {
         this.siderData = data;
         this.apisList.setData(data);
         this.apisPortfolio.setData(data);
+        this.apisServer.setData(data);
     }
 
     menuChange(menus: Menu[]) {

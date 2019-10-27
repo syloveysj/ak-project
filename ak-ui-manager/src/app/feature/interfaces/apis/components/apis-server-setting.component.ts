@@ -1,14 +1,19 @@
-import {ChangeDetectorRef, Component, Input, OnInit, Renderer2} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output, Renderer2} from '@angular/core';
 import {BaseService} from '@service/http/base.service';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
-import {GatewayService} from "@service/http/gateway.service";
 import {Config} from "@config/config";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {BaseComponent} from "@shared/base-class/base.component";
 import {ToolService} from "@core/utils/tool.service";
 import {UUID} from "angular2-uuid";
 import {isEmpty, isNotEmpty} from "@core/utils/string.util";
 import {RouterPluginsEditComponent} from "@feature/gateway/advanced-router/components/router-plugins-edit.component";
+import {finalize} from "rxjs/operators";
+import {InterfacesService} from "@service/http/interfaces.service";
+import * as fromRoot from "@store/reducers";
+import {Store} from "@ngrx/store";
+import {Option} from "@model/common";
+import * as ConstantsActions from "@store/actions/constants.actions";
 
 @Component({
     selector: 'app-apis-server-setting',
@@ -18,14 +23,6 @@ import {RouterPluginsEditComponent} from "@feature/gateway/advanced-router/compo
 })
 export class ApisServerSettingComponent extends BaseComponent implements OnInit {
 
-    @Input() bean: any;
-
-    targets: any[] = [];
-    editCache: { [key: string]: any } = {};
-    editing = false;
-
-    pluginsList: any[] = [{name:'key-auth', enabled: true, config: ''}];
-
     constructor(public baseService: BaseService,
                 public rd: Renderer2,
                 public modalService: NzModalService,
@@ -33,18 +30,101 @@ export class ApisServerSettingComponent extends BaseComponent implements OnInit 
                 public cdr: ChangeDetectorRef,
                 public toolService: ToolService,
                 public fb: FormBuilder,
-                public gatewayService: GatewayService,
+                private store$: Store<fromRoot.State>,
+                public interfacesService: InterfacesService,
                 public config: Config) {
         super(baseService, rd, modalService, nzMessageService);
     }
 
+    bean: any;
+    applicationTypes: Option[] = [];
+    // 0:查看，1:编辑
+    state = 0;
+    loading = true;
+    form: FormGroup;
+    siderData: { serverId: string, menuId:string };
+    targets: any[] = [];
+    editCache: { [key: string]: any } = {};
+    editing = false;
+
+    pluginsList: any[] = [{name:'key-auth', enabled: true, config: ''}];
+
     ngOnInit(): void {
+        this.form = this.fb.group({
+            typeId: [null, [Validators.required]],
+            alias: [null, [Validators.required]],
+            memo: [null],
+            connectTimeout: [null, [Validators.required]],
+            readTimeout: [null, [Validators.required]],
+            writeTimeout: [null, [Validators.required]],
+            protocol: [null, [Validators.required]],
+            path: [null],
+            port: [null, [Validators.required]]
+        });
+
+        this.applicationTypes$ = this.store$.select(fromRoot.getApplicationTypes);
+        this.applicationTypes$.subscribe(data => {
+            this.applicationTypes = data;
+        });
+    }
+
+    initBean() {
+        this.interfacesService.getService(this.siderData.serverId).pipe(
+            finalize(() => this.loading = false)
+        ).subscribe(
+            (res) => {
+                this.bean = res;
+                this.applicationTypes.forEach(item => {
+                   if(this.bean.typeId === item.id) {
+                       this.bean.typeName = item.typeName;
+                   }
+                });
+                this.showBean();
+            }
+        );
+    }
+
+    showBean() {
+        this.form.get("typeId").setValue(this.bean.typeId);
+        this.form.get("alias").setValue(this.bean.alias);
+        this.form.get("memo").setValue(this.bean.memo);
+        this.form.get("connectTimeout").setValue(this.bean.connectTimeout);
+        this.form.get("readTimeout").setValue(this.bean.readTimeout);
+        this.form.get("writeTimeout").setValue(this.bean.writeTimeout);
+        this.form.get("protocol").setValue(this.bean.protocol);
+        this.form.get("path").setValue(this.bean.path);
+        this.form.get("port").setValue(this.bean.port);
+    }
+
+    setData(data: { serverId: string, menuId:string }) {
+        this.siderData = data;
+        if(this.bean && this.bean.id === data.serverId) return;
+        this.state = 0;
+        this.initBean();
+    }
+
+    saveData() {
+        this.loading = true;
+        const params = this.form.value;
+        params.id = this.bean.id;
+        params.name = this.bean.name;
+        params.host = this.bean.host;
+        params.path = isEmpty(params.path) ? null : params.path;
+        this.interfacesService.updateService(this.bean.id, params).pipe(
+            finalize(() => this.loading = false)
+        ).subscribe(
+            () => {
+                this.state = 0;
+                this.initBean();
+                this.store$.dispatch(new ConstantsActions.LoadServices());
+            }
+        );
     }
 
     initTaggets() {
         // 编辑时初始化
         if (this.bean != null) {
-            this.gatewayService.getUpstreamTargetList(this.bean.id).subscribe(
+            this.interfacesService.getUpstreamTargetList(this.bean.id).subscribe(
                 (res) => {
                     if(res !== null) {
                         this.targets = [];
@@ -122,7 +202,7 @@ export class ApisServerSettingComponent extends BaseComponent implements OnInit 
 
         const item = this.targets[index];
         if (this.bean != null) {
-            this.gatewayService.addTarget(this.bean.id, {target:item.ip + ':' + (isNotEmpty(item.port) ? item.port : '80'), weight: isNotEmpty(item.weight) ? item.weight : '100'}).subscribe(
+            this.interfacesService.addTarget(this.bean.id, {target:item.ip + ':' + (isNotEmpty(item.port) ? item.port : '80'), weight: isNotEmpty(item.weight) ? item.weight : '100'}).subscribe(
                 (res) => {
                     this.initTaggets();
                 }
@@ -143,14 +223,14 @@ export class ApisServerSettingComponent extends BaseComponent implements OnInit 
                     }
                 });
                 if(isNotEmpty(ids)) {
-                    this.gatewayService.removeTargetList(this.bean.id, ids).subscribe(
+                    this.interfacesService.removeTargetList(this.bean.id, ids).subscribe(
                         (res) => {
                             this.initTaggets();
                         }
                     );
                 }
             } else {
-                this.gatewayService.removeTarget(this.bean.id, obj.id).subscribe(
+                this.interfacesService.removeTarget(this.bean.id, obj.id).subscribe(
                     (res) => {
                         this.initTaggets();
                     }

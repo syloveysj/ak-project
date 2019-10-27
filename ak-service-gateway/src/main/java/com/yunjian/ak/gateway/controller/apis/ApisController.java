@@ -129,7 +129,6 @@ public class ApisController {
         upstreamEntity.setAlias(entity.getAlias());
         apisUpstreamService.update(upstreamEntity);
 
-        entity.setId(service.getId());
         apisServiceService.update(entity);
         return entity;
     }
