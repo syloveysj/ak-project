@@ -20,7 +20,10 @@ export class ApisComponent extends BaseComponent implements OnInit {
     current = 0;
     @ViewChild('importSteps')
     importSteps: TemplateRef<any>;
+    @ViewChild('siderChild') sider;
     @ViewChild('apisListChild') apisList;
+    @ViewChild('apisPortfolioChild') apisPortfolio;
+    @ViewChild('apisServerChild') apisServer;
 
     constructor(public baseService: BaseService,
                 public rd: Renderer2,
@@ -41,10 +44,16 @@ export class ApisComponent extends BaseComponent implements OnInit {
     dataChange(data: { serverId: string, menuId:string }) {
         this.siderData = data;
         this.apisList.setData(data);
+        this.apisPortfolio.setData(data);
     }
 
     menuChange(menus: Menu[]) {
         this.apisList.setMenus(menus);
+        this.apisPortfolio.setMenus(menus);
+    }
+
+    updatePortfolio(data: any) {
+        this.sider.initPortfolio();
     }
 
     openWin() {

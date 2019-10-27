@@ -62,7 +62,7 @@
                                     (click)="menuClicked(menu, menu.children); $event.stopPropagation();"
                                 >
                                     <span title style="font-size: 13px" [style.color]="menu.selected ? '#0046f0' : 'inherit'">
-                                        <i *ngIf="menu.level === 1; else level2IconTpl" nz-icon [iconfont]="'icon-guanggaozu'" style="font-size: 16px;"></i>
+                                        <i *ngIf="menu.level === 1; else level2IconTpl" nz-icon nzType="inbox" nzTheme="outline" style="font-size: 16px;"></i>
                                         <ng-template #level2IconTpl>
                                             <i nz-icon nzType="bars" nzTheme="outline" style="font-size: 16px;"></i>
                                         </ng-template>
@@ -81,7 +81,7 @@
                                         (click)="menuClicked(menu, null); $event.stopPropagation();"
                                     >
                                         <span title style="font-size: 13px">
-                                            <i *ngIf="menu.level === 1; else level2IconTpl" nz-icon [iconfont]="'icon-guanggaozu'" style="font-size: 16px;"></i>
+                                            <i *ngIf="menu.level === 1; else level2IconTpl" nz-icon nzType="inbox" nzTheme="outline" style="font-size: 16px;"></i>
                                             <ng-template #level2IconTpl>
                                                 <i *ngIf="menu.level === 2" nz-icon nzType="bars" nzTheme="outline" style="font-size: 16px;"></i>
                                             </ng-template>

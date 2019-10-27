@@ -101,6 +101,13 @@ export class InterfacesService {
                 map((c: CustomResponse<any>) => c.data));
     }
 
+    // 获取指定服务分类
+    public getApisClassify(id: string): Observable<any> {
+        return this.httpClient.get<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/apis-classify/${id}`)
+            .pipe(filter((c: CustomResponse<any>) => isSuccess(c)),
+                map((c: CustomResponse<any>) => c.data));
+    }
+
     // 添加Swagger
     public addSwagger(params: any): Observable<any> {
         return this.httpClient.post<CustomResponse<any>>(`${this.config.apiAddr}/v1/mgr/gateway/swagger`, params)

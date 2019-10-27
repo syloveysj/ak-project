@@ -258,29 +258,7 @@ export class ApisManagerSiderComponent extends BaseComponent implements OnInit, 
     }
 
     menuClicked(menu: Menu, childrenMenu?: Menu[]) {
-        console.log(menu);
         this.dataChange.emit({serverId: this.serverId, menuId: menu.id});
-
-        // if (this.menuId$.value === menu.id && this.menuLevel === menu.level) {
-        //     if (childrenMenu && childrenMenu.length > 0) {
-        //         childrenMenu.forEach(childMenu => this.setJuniorMenuInactive(childMenu));
-        //     }
-        // } else {
-        //     this.setAdsData(menu);
-        //     this.menuLevel$.next(this.menuLevel = menu.level);
-        //     this.tabIndex = 0;
-        //
-        //     this.menuId$.next(menu.id as number);
-        //     const levelMenus = this.getMenus(menu.level) as Menu[];
-        //     levelMenus.forEach(menu => {
-        //         if (menu.id !== this.menuId$.value) {
-        //             this.setJuniorMenuInactive(menu);
-        //         } else {
-        //             // this.setSuperiorMenuActive(menu);
-        //             menu.selected = true;
-        //         }
-        //     });
-        // }
     }
 
     ngOnDestroy(): void {

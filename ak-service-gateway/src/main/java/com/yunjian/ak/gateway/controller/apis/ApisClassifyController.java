@@ -65,6 +65,19 @@ public class ApisClassifyController {
         this.apisClassifyService.delete(id);
     }
 
+    @GetMapping("/{id}")
+    @ApiOperation("获取定id的ApisClassify")
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "获取定id的ApisClassify成功",
+            response = ApisClassifyEntity.class
+    )})
+    public ApisClassifyEntity get(@PathVariable("id") String id) {
+        LOGGER.debug("请求ApisClassifyController获取定id的ApisClassify:{}!", id);
+
+        return this.apisClassifyService.get(id);
+    }
+
     @GetMapping
     @ApiOperation("获取所有ApisClassify")
     @ApiResponses({@ApiResponse(
