@@ -462,6 +462,39 @@ public class ApisController {
 
         doc.put("host", ConfigManager.getInstance().getConfig("kong_apis_url"));
         doc.put("basePath", "/");
+        doc.put("schemes", Arrays.asList("http", "https"));
+
+//        Map<String, Object> basic = new HashMap<>();
+//        basic.put("type", "basic");
+
+        Map<String, Object> api_key = new HashMap<>();
+        api_key.put("type", "apiKey");
+        api_key.put("name", "api_key");
+        api_key.put("in", "header");
+
+//        Map<String, Object> scopes = new HashMap<>();
+//        scopes.put("write:pets", "modify pets in your account");
+//        scopes.put("read:pets", "read your pets");
+//        Map<String, Object> petstore_auth = new HashMap<>();
+//        petstore_auth.put("type", "oauth2");
+//        petstore_auth.put("authorizationUrl", "http://petstore.swagger.io/oauth/dialog");
+//        petstore_auth.put("flow", "implicit");
+//        petstore_auth.put("scopes", scopes);
+
+        Map<String, Object> securityDefinitions = new HashMap<>();
+//        securityDefinitions.put("basic", basic);
+        securityDefinitions.put("api_key", api_key);
+//        securityDefinitions.put("petstore_auth", petstore_auth);
+        doc.put("securityDefinitions", securityDefinitions);
+
+//        Map<String, Object> _basic = new HashMap<>();
+//        _basic.put("basic", Arrays.asList());
+        Map<String, Object> _api_key = new HashMap<>();
+        _api_key.put("api_key", Arrays.asList());
+//        Map<String, Object> _petstore_auth = new HashMap<>();
+//        _petstore_auth.put("petstore_auth", Arrays.asList("read:pets", "write:pets"));
+//        doc.put("security", Arrays.asList(_basic, _api_key, _petstore_auth));
+        doc.put("security", Arrays.asList(_api_key));
 
         Map paths = MapUtils.getMap(swagger, "paths", null);
         if(paths != null && paths.containsKey(apiVo.getMemo())) {
@@ -490,6 +523,44 @@ public class ApisController {
             }
 
             // 添加paths
+            Object parameters = MapUtils.getObject(method, "parameters", null);
+            List<Map<String, Object>> parametersList = null;
+            if(parameters != null) {
+                parametersList = (List<Map<String, Object>>) parameters;
+            }
+            if(parametersList == null) parametersList = new ArrayList<>();
+
+            // 添加请求头参数
+            Map<String, Object> header_scheme = new HashMap<>();
+            header_scheme.put("in", "header");
+            header_scheme.put("name", "AK-TENANT-SCHEME");
+            header_scheme.put("description", "租户scheme");
+            header_scheme.put("type", "string");
+            header_scheme.put("required", false);
+            Map<String, Object> header_userid = new HashMap<>();
+            header_userid.put("in", "header");
+            header_userid.put("name", "AK-USER-ID");
+            header_userid.put("description", "用户ID");
+            header_userid.put("type", "string");
+            header_userid.put("required", false);
+            Map<String, Object> header_name = new HashMap<>();
+            header_name.put("in", "header");
+            header_name.put("name", "AK-LOGIN-NAME");
+            header_name.put("description", "登录名");
+            header_name.put("type", "string");
+            header_name.put("required", false);
+            Map<String, Object> header_sessionid = new HashMap<>();
+            header_sessionid.put("in", "header");
+            header_sessionid.put("name", "AK-SESSION-ID");
+            header_sessionid.put("description", "SessionId");
+            header_sessionid.put("type", "string");
+            header_sessionid.put("required", false);
+            parametersList.add(header_scheme);
+            parametersList.add(header_userid);
+            parametersList.add(header_name);
+            parametersList.add(header_sessionid);
+            method.put("parameters", parametersList);
+
             Map<String, Object> methodMap = new HashMap<>();
             methodMap.put(apiVo.getMethod().toLowerCase(), method);
             Map<String, Object> pathsMap = new HashMap<>();
@@ -497,15 +568,11 @@ public class ApisController {
             doc.put("paths", pathsMap);
 
             // 添加definitions
-            List<String> keys = getKeys(method);
+            Set<String> keys = getKeys(method);
             if(keys.size() > 0) {
                 Map definitions = MapUtils.getMap(swagger, "definitions", null);
                 Map<String, Object> definitionsMap = new HashMap<>();
-                if (definitions != null) {
-                    for (String key : keys) {
-                        definitionsMap.put(key, MapUtils.getMap(definitions, key, null));
-                    }
-                }
+                addDefinitions(keys, definitions, definitionsMap);
                 doc.put("definitions", definitionsMap);
             } else {
                 doc.put("definitions", new HashMap<>());
@@ -515,18 +582,33 @@ public class ApisController {
         return doc;
     }
 
-    private List<String> getKeys(Map map) {
-        if(map == null) return Arrays.asList();
+    private void addDefinitions(Set<String> keys, Map definitions, Map<String, Object> definitionsMap) {
+        for (String key : keys) {
+            if(!definitionsMap.containsKey(key)) {
+                Map definition = MapUtils.getMap(definitions, key, null);
+                if(definition != null) {
+                    definitionsMap.put(key, definition);
+                    Set<String> otherKeys = getKeys(definition);
+                    addDefinitions(otherKeys, definitions, definitionsMap);
+                } else {
+                    definitionsMap.put(key, new HashMap<>());
+                }
+            }
+        }
+    }
 
-        Set<String> set = new HashSet<>();
+    private Set<String> getKeys(Map map) {
+        if(map == null) return new HashSet<>();
+
+        Set<String> result = new HashSet<>();
         String content = JSON.toJSONString(map);
         String regEx = "\"#/definitions/([^\"]*?)\"";
         Pattern pat = Pattern.compile(regEx);
         Matcher mat = pat.matcher(content);
         while(mat.find()) {
-            set.add(mat.group(1)); //mat.group(0)包括前后两个字符
+            result.add(mat.group(1)); //mat.group(0)包括前后两个字符
         }
 
-        return new ArrayList<>(set);
+        return result;
     }
 }
