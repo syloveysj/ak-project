@@ -1,16 +1,15 @@
 package com.yunjian.ak.gateway.controller.apis;
 
 import com.alibaba.fastjson.JSON;
+import com.yunjian.ak.config.ConfigManager;
 import com.yunjian.ak.dao.mybatis.enhance.Page;
 import com.yunjian.ak.exception.ValidationException;
 import com.yunjian.ak.gateway.controller.router.UpstreamController;
-import com.yunjian.ak.gateway.entity.apis.RouteEntity;
-import com.yunjian.ak.gateway.entity.apis.ServiceEntity;
-import com.yunjian.ak.gateway.entity.apis.TargetEntity;
-import com.yunjian.ak.gateway.entity.apis.UpstreamEntity;
+import com.yunjian.ak.gateway.entity.apis.*;
 import com.yunjian.ak.gateway.service.apis.ApisRouteService;
 import com.yunjian.ak.gateway.service.apis.ApisServiceService;
 import com.yunjian.ak.gateway.service.apis.ApisUpstreamService;
+import com.yunjian.ak.gateway.service.apis.SwaggerService;
 import com.yunjian.ak.gateway.vo.apis.ApiAnalysisVo;
 import com.yunjian.ak.gateway.vo.apis.ApiPackageVo;
 import com.yunjian.ak.gateway.vo.apis.ApiVo;
@@ -42,6 +41,8 @@ import org.springframework.web.client.RestTemplate;
 import javax.validation.Valid;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Description:
@@ -62,6 +63,9 @@ public class ApisController {
 
     @Autowired
     private ApisRouteService apisRouteService;
+
+    @Autowired
+    private SwaggerService swaggerService;
 
     @Autowired
     private KongClient kongApisClient;
@@ -266,7 +270,10 @@ public class ApisController {
         Service service = new Service();
         service.setId(entity.getServerId());
 
+        Map swagger = JSON.parseObject(entity.getJsonText().replaceAll("\"\\$ref\"", "\"!!/ref\""), Map.class);
+
         List<RouteEntity> routeEntities = new ArrayList<>();
+        List<SwaggerEntity> swaggerEntities = new ArrayList<>();
         for(ApiVo row : entity.getRows()) {
             Route route = new Route();
             route.setService(service);
@@ -289,10 +296,18 @@ public class ApisController {
             routeEntity.setMemo(row.getMemo());
             routeEntity.setClassifyId("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
             routeEntities.add(routeEntity);
+
+            SwaggerEntity swaggerEntity = new SwaggerEntity();
+            swaggerEntity.setId(route.getId());
+            swaggerEntity.setContent(JSON.toJSONString(getSwaggerDoc(row, swagger)).replaceAll("\"!!/ref\"", "\"\\$ref\""));
+            swaggerEntities.add(swaggerEntity);
         }
 
         // 通过数据库更新相关信息
         apisRouteService.updateBatch(routeEntities);
+
+        // 通过数据库更新接口swagger文档
+        swaggerService.insertBatch(swaggerEntities);
     }
 
     @PutMapping("/routes/classify/{classifyId}")
@@ -367,25 +382,27 @@ public class ApisController {
 
         ApiPackageVo apiPackageVo = new ApiPackageVo();
         apiPackageVo.setServerId(apiAnalysisVo.getServerId());
-        Map data = null;
+        Map swagger = null;
         if(StringUtils.isNotEmpty(apiAnalysisVo.getJsonUrl())) {
             RestTemplate template = RestUtils.createRestTemplate();
-            ResponseEntity<Map> responseEntity = template.getForEntity(apiAnalysisVo.getJsonUrl(), Map.class);
+            ResponseEntity<String> responseEntity = template.getForEntity(apiAnalysisVo.getJsonUrl(), String.class);
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                data = responseEntity.getBody();
-                apiPackageVo.setJsonText(JSON.toJSONString(data));
+                String text = responseEntity.getBody();
+                swagger = JSON.parseObject(text, Map.class);
+                apiPackageVo.setJsonText(text);
             }
         } else if(StringUtils.isNotEmpty(apiAnalysisVo.getJsonText())) {
-            data = JSON.parseObject(apiAnalysisVo.getJsonText(), Map.class);
+            swagger = JSON.parseObject(apiAnalysisVo.getJsonText(), Map.class);
             apiPackageVo.setJsonText(apiAnalysisVo.getJsonText());
         }
 
-        if(data == null) {
+        if(swagger == null) {
             throw new ValidationException("json信息无法解析");
         }
 
+        List<RouteEntity> routeEntityList = apisRouteService.getAll();
         List<ApiVo> apiVos = new ArrayList<>();
-        Map paths = MapUtils.getMap(data, "paths", null);
+        Map paths = MapUtils.getMap(swagger, "paths", null);
         if(paths != null) {
             Iterator<Map.Entry<String, Map>> pathsEntries = paths.entrySet().iterator();
             while(pathsEntries.hasNext()){
@@ -405,14 +422,111 @@ public class ApisController {
                     apiVo.setMethod(methodsEntry.getKey().toUpperCase());
                     apiVo.setState(0);
 
+                    RouteEntity routeEntity = routeEntityList.stream().filter(item -> StringUtils.equals(item.getName(), apiVo.getName())).findFirst().orElse(null);
+                    if(routeEntity != null) {
+                        apiVo.setId(routeEntity.getId());
+                        if(StringUtils.equals(apiPackageVo.getServerId(), routeEntity.getServiceId())) {
+                            apiVo.setState(1);
+                        } else {
+                            apiVo.setState(2);
+                        }
+                    }
+
                     Map methodInfo = methodsEntry.getValue();
                     apiVo.setAlias(MapUtils.getString(methodInfo, "summary"));
                     apiVos.add(apiVo);
                 }
             }
         }
-
         apiPackageVo.setRows(apiVos);
+
         return apiPackageVo;
+    }
+
+    private Map getSwaggerDoc(ApiVo apiVo, Map swagger) {
+        Map<String, Object> doc = new HashMap<>();
+        doc.put("swagger", "2.0");
+
+        Map<String, Object> info = new HashMap<>();
+        info.put("description", "Api Documentation");
+        info.put("version", "1.0.0");
+        info.put("title", "Api Documentation");
+        info.put("termsOfService", "urn:tos");
+        info.put("contact", new HashMap<>());
+
+        Map<String, Object> license = new HashMap<>();
+        license.put("name", "Apache 2.0");
+        license.put("url", "http://www.apache.org/licenses/LICENSE-2.0.html");
+        info.put("license", license);
+        doc.put("info", info);
+
+        doc.put("host", ConfigManager.getInstance().getConfig("kong_apis_url"));
+        doc.put("basePath", "/");
+
+        Map paths = MapUtils.getMap(swagger, "paths", null);
+        if(paths != null && paths.containsKey(apiVo.getMemo())) {
+            Map path = MapUtils.getMap(paths, apiVo.getMemo());
+            Map method = MapUtils.getMap(path, apiVo.getMethod().toLowerCase());
+
+            // 添加tags
+            Object tagsChild = MapUtils.getObject(method, "tags", null);
+            if(tagsChild != null) {
+                List listTagsChild = (List) tagsChild;
+                if(listTagsChild != null) {
+                    String tagName = listTagsChild.size() > 0 ? listTagsChild.get(0).toString() : null;
+                    if (tagName != null) {
+                        Object tags = MapUtils.getObject(swagger, "tags", null);
+                        if (tags != null) {
+                            List<Map> listTags = (List<Map>) tags;
+                            if(listTags != null) {
+                                Map tag = listTags.stream().filter(item -> StringUtils.equals(item.get("name").toString(), tagName)).findFirst().orElse(null);
+                                if (tag != null) {
+                                    doc.put("tags", Arrays.asList(tag));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 添加paths
+            Map<String, Object> methodMap = new HashMap<>();
+            methodMap.put(apiVo.getMethod().toLowerCase(), method);
+            Map<String, Object> pathsMap = new HashMap<>();
+            pathsMap.put(apiVo.getMemo(), methodMap);
+            doc.put("paths", pathsMap);
+
+            // 添加definitions
+            List<String> keys = getKeys(method);
+            if(keys.size() > 0) {
+                Map definitions = MapUtils.getMap(swagger, "definitions", null);
+                Map<String, Object> definitionsMap = new HashMap<>();
+                if (definitions != null) {
+                    for (String key : keys) {
+                        definitionsMap.put(key, MapUtils.getMap(definitions, key, null));
+                    }
+                }
+                doc.put("definitions", definitionsMap);
+            } else {
+                doc.put("definitions", new HashMap<>());
+            }
+        }
+
+        return doc;
+    }
+
+    private List<String> getKeys(Map map) {
+        if(map == null) return Arrays.asList();
+
+        Set<String> set = new HashSet<>();
+        String content = JSON.toJSONString(map);
+        String regEx = "\"#/definitions/([^\"]*?)\"";
+        Pattern pat = Pattern.compile(regEx);
+        Matcher mat = pat.matcher(content);
+        while(mat.find()) {
+            set.add(mat.group(1)); //mat.group(0)包括前后两个字符
+        }
+
+        return new ArrayList<>(set);
     }
 }

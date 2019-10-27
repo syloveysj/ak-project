@@ -66,7 +66,7 @@ export class ApisImportTwoComponent extends BaseComponent implements OnInit {
     updateApiList(): void {
         this.showApiList.forEach(data => {
             const index = this.apiList.findIndex(item => {
-                return data.method === item.method && data.uri === item.uri;
+                return data.name === item.name;
             });
             if(index > -1) this.apiList[index].checked = data.checked;
         });
@@ -76,7 +76,7 @@ export class ApisImportTwoComponent extends BaseComponent implements OnInit {
         this.displayData.forEach(data => (data.state !== 2) && (data.checked = value));
         this.showApiList.forEach(data => {
             const index = this.displayData.findIndex(item => {
-                return data.method === item.method && data.uri === item.uri;
+                return data.name === item.name;
             });
             if(index > -1 && data.state !== 2) data.checked = value;
         });
@@ -84,7 +84,7 @@ export class ApisImportTwoComponent extends BaseComponent implements OnInit {
     }
 
     checkedChange(item: any): void {
-        this.showApiList.forEach(data => (data.method === item.method && data.uri === item.uri) && (data.checked = item.checked));
+        this.showApiList.forEach(data => (data.name === item.name) && (data.checked = item.checked));
         this.refreshStatus();
     }
 
@@ -111,10 +111,15 @@ export class ApisImportTwoComponent extends BaseComponent implements OnInit {
     }
 
     deleteItem(item: any) {
-        const index = this.showApiList.findIndex(data => {
-            return data.method === item.method && data.uri === item.uri;
+        const index1 = this.showApiList.findIndex(data => {
+            return data.name === item.name;
         });
-        if(index > -1) this.showApiList.splice(index, 1);
+        if(index1 > -1) this.showApiList.splice(index1, 1);
+
+        const index2 = this.apiList.findIndex(data => {
+            return data.name === item.name;
+        });
+        if(index2 > -1) this.apiList.splice(index2, 1);
         this.showApiList = [...this.showApiList];
     }
 }

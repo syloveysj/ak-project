@@ -37,10 +37,10 @@
         insert into swagger (id, content)
         values
         <foreach collection="list" item="item" index="index" separator="," >
-            (#{item.id}, #{item.content})
+            (#{item.id}::uuid, #{item.content})
         </foreach>
-        ON DUPLICATE KEY UPDATE
-        content = values(content)
+        ON CONFLICT (id)
+        DO UPDATE SET content = EXCLUDED.content
     </insert>
 
     <!--获得类名为:Swagger对应的数据库表满足条件的数据总行数 -->
