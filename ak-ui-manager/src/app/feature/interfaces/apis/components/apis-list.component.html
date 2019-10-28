@@ -76,7 +76,7 @@
             <tbody>
             <tr *ngFor="let item of contentTb.data">
                 <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshStatus()"></td>
-                <td>{{(isEmpty(item?.type) ? '待分类' : item?.type)}}</td>
+                <td>{{(isEmpty(item?.classifyName) ? '待分类' : item?.classifyName)}}</td>
                 <td>{{item?.alias}}</td>
                 <td nzAlign="center" [ngClass]="{'_get':item.methodsMemo==='GET','_post':item.methodsMemo==='POST','_delete':item.methodsMemo==='DELETE',
                     '_put':item.methodsMemo==='PUT','_head':item.methodsMemo==='HEAD','_patch':item.methodsMemo==='PATCH',

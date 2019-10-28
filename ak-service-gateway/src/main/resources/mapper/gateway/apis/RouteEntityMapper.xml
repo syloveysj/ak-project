@@ -16,7 +16,8 @@
         routes.updated_at,
         routes.created_at,
         routes.memo,
-        routes.classify_id
+        routes.classify_id,
+        (select alias from apis_classify where id=routes.classify_id) classify_name
     </sql>
 
     <!-- 数据库中表名为:routes的非空where条件 -->
@@ -63,6 +64,7 @@
         <result column="created_at" property="createdAt" />
         <result column="memo" property="memo" />
         <result column="classify_id" property="classifyId" />
+        <result column="classify_name" property="classifyName" />
     </resultMap>
 
     <!--获得类名为:Route对应的数据库表满足条件的数据总行数 -->

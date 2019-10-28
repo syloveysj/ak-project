@@ -5,6 +5,9 @@ import {Config} from '@config/config';
 import {NzNotificationService} from 'ng-zorro-antd';
 import {Platform} from '@angular/cdk/platform';
 import {filter, map, mergeMap} from 'rxjs/operators';
+import {Store} from "@ngrx/store";
+import * as fromRoot from "@store/reducers";
+import * as ConstantsActions from "@store/actions/constants.actions";
 
 export interface RouterInfo {
     title: string;
@@ -29,7 +32,11 @@ export class AppComponent implements OnInit {
                 private router: Router,
                 private route: ActivatedRoute,
                 private platform: Platform,
+                private store$: Store<fromRoot.State>,
                 private nzNotificationService: NzNotificationService) {
+
+        this.store$.dispatch(new ConstantsActions.LoadApplicationTypes());
+        this.store$.dispatch(new ConstantsActions.LoadServices());
     }
 
     ngOnInit(): void {

@@ -98,7 +98,7 @@
                               [nzShowPagination]="false">
                         <thead>
                         <tr>
-                            <th *ngIf="state !== 0" nzWidth="40px">&nbsp;</th>
+                            <th nzWidth="40px">&nbsp;</th>
                             <th nzWidth="150px">IP</th>
                             <th nzWidth="100px">端口</th>
                             <th nzWidth="100px" nzAlign="right">权重</th>
@@ -107,7 +107,7 @@
                         </thead>
                         <tbody>
                         <tr *ngFor="let item of pT1.data; let i = index">
-                            <td *ngIf="state !== 0" nzShowCheckbox [(nzChecked)]="item.checked"></td>
+                            <td nzShowCheckbox [(nzChecked)]="item.checked"></td>
                             <td>
                                 <ng-container *ngIf="!editCache[item.id].edit; else ipInputTpl">
                                     {{ item?.ip }}

@@ -87,6 +87,9 @@ public class RouteEntity {
     @ApiModelProperty(value = "服务分类")
     private String classifyId;
 
+    @ApiModelProperty(value = "服务名称")
+    private String classifyName;
+
     @ApiModelProperty(value = "标签")
     private List<String> tags;
 
