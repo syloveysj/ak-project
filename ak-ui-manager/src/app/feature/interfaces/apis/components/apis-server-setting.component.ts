@@ -68,7 +68,7 @@ export class ApisServerSettingComponent extends BaseComponent implements OnInit 
         });
     }
 
-    initBean() {
+    initBean(flag:boolean = false) {
         this.interfacesService.getService(this.siderData.serverId).pipe(
             finalize(() => this.loading = false)
         ).subscribe(
@@ -80,6 +80,7 @@ export class ApisServerSettingComponent extends BaseComponent implements OnInit 
                    }
                 });
                 this.showBean();
+                if(flag) this.initTaggets();
             }
         );
     }
@@ -100,7 +101,7 @@ export class ApisServerSettingComponent extends BaseComponent implements OnInit 
         this.siderData = data;
         if(this.bean && this.bean.id === data.serverId) return;
         this.state = 0;
-        this.initBean();
+        this.initBean(true);
     }
 
     saveData() {
@@ -124,7 +125,7 @@ export class ApisServerSettingComponent extends BaseComponent implements OnInit 
     initTaggets() {
         // 编辑时初始化
         if (this.bean != null) {
-            this.interfacesService.getUpstreamTargetList(this.bean.id).subscribe(
+            this.interfacesService.getUpstreamTargetList(this.bean.host).subscribe(
                 (res) => {
                     if(res !== null) {
                         this.targets = [];
@@ -202,7 +203,7 @@ export class ApisServerSettingComponent extends BaseComponent implements OnInit 
 
         const item = this.targets[index];
         if (this.bean != null) {
-            this.interfacesService.addTarget(this.bean.id, {target:item.ip + ':' + (isNotEmpty(item.port) ? item.port : '80'), weight: isNotEmpty(item.weight) ? item.weight : '100'}).subscribe(
+            this.interfacesService.addTarget(this.bean.host, {target:item.ip + ':' + (isNotEmpty(item.port) ? item.port : '80'), weight: isNotEmpty(item.weight) ? item.weight : '100'}).subscribe(
                 (res) => {
                     this.initTaggets();
                 }
@@ -223,14 +224,14 @@ export class ApisServerSettingComponent extends BaseComponent implements OnInit 
                     }
                 });
                 if(isNotEmpty(ids)) {
-                    this.interfacesService.removeTargetList(this.bean.id, ids).subscribe(
+                    this.interfacesService.removeTargetList(this.bean.host, ids).subscribe(
                         (res) => {
                             this.initTaggets();
                         }
                     );
                 }
             } else {
-                this.interfacesService.removeTarget(this.bean.id, obj.id).subscribe(
+                this.interfacesService.removeTarget(this.bean.host, obj.id).subscribe(
                     (res) => {
                         this.initTaggets();
                     }

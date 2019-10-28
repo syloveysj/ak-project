@@ -80,11 +80,11 @@
             <div nz-col nzSpan="12">
                 <nz-card [nzBordered]="false" [nzSize]="'small'" nzTitle="服务器" [nzExtra]="targetsExtraTemplate">
                     <ng-template #targetsExtraTemplate>
-                        <button nz-button [disabled]="editing" nzType="primary" nzShape="circle"
+                        <button *ngIf="state !== 0" nz-button [disabled]="editing" nzType="primary" nzShape="circle"
                                 (click)="addTarget()">
                             <i nz-icon nzType="file-add"></i>
                         </button>&nbsp;
-                        <button nz-button [disabled]="editing" nzType="danger" nzShape="circle"
+                        <button *ngIf="state !== 0" nz-button [disabled]="editing" nzType="danger" nzShape="circle"
                                 nz-popconfirm nzTitle="您确认要删除所选记录吗?"
                                 (nzOnConfirm)="deleteTargets()">
                             <i nz-icon nzType="delete"></i>
@@ -98,16 +98,16 @@
                               [nzShowPagination]="false">
                         <thead>
                         <tr>
-                            <th nzWidth="40px">&nbsp;</th>
+                            <th *ngIf="state !== 0" nzWidth="40px">&nbsp;</th>
                             <th nzWidth="150px">IP</th>
                             <th nzWidth="100px">端口</th>
                             <th nzWidth="100px" nzAlign="right">权重</th>
-                            <th nzWidth="100px" nzAlign="center">操作</th>
+                            <th *ngIf="state !== 0" nzWidth="100px" nzAlign="center">操作</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr *ngFor="let item of pT1.data; let i = index">
-                            <td nzShowCheckbox [(nzChecked)]="item.checked"></td>
+                            <td *ngIf="state !== 0" nzShowCheckbox [(nzChecked)]="item.checked"></td>
                             <td>
                                 <ng-container *ngIf="!editCache[item.id].edit; else ipInputTpl">
                                     {{ item?.ip }}
@@ -132,7 +132,7 @@
                                     <input type="text" nz-input [(ngModel)]="editCache[item.id].data.weight" appNumberOnly [scale]="0" [ngModelOptions]="{standalone: true}" />
                                 </ng-template>
                             </td>
-                            <td nzAlign="center">
+                            <td *ngIf="state !== 0" nzAlign="center">
                                 <ng-container *ngIf="!editCache[item.id].edit; else saveTpl">
                                     <ng-container *ngIf="bean == null">
                                         <button nz-button nzType="primary" (click)="startEdit(item.id)">
@@ -161,7 +161,7 @@
             <div nz-col nzSpan="11" nzOffset="1">
                 <nz-card [nzBordered]="false" [nzSize]="'small'" nzTitle="插件" [nzExtra]="pluginsExtraTemplate">
                     <ng-template #pluginsExtraTemplate>
-                        <button nz-button nzType="primary" nzShape="circle" nz-tooltip nzTitle="添加" (click)="openPluginsWin(null)">
+                        <button *ngIf="state !== 0" nz-button nzType="primary" nzShape="circle" nz-tooltip nzTitle="添加" (click)="openPluginsWin(null)">
                             <i nz-icon nzType="file-add"></i>
                         </button>
                     </ng-template>
@@ -175,7 +175,7 @@
                             <th nzWidth="120px">插件名称</th>
                             <th nzWidth="100px">是否启用</th>
                             <th nzWidth="150px">创建时间</th>
-                            <th nzWidth="100px" nzAlign="center">操作</th>
+                            <th *ngIf="state !== 0" nzWidth="100px" nzAlign="center">操作</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -183,7 +183,7 @@
                             <td>{{ item?.name }}</td>
                             <td>{{ item?.enabled }}</td>
                             <td>{{ item?.createdAt }}</td>
-                            <td nzAlign="center">
+                            <td *ngIf="state !== 0" nzAlign="center">
                                 <button nz-button nzType="primary">
                                     <i nz-icon nzType="form"></i>
                                 </button>&nbsp;
