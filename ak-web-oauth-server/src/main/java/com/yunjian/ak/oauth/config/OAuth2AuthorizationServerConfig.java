@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
@@ -30,7 +30,7 @@ import java.util.Arrays;
  * @Version 1.0
  */
 @Configuration
-@EnableAuthorizationServer
+@EnableAuthorizationServer // 有了这个注解，当前应用就是一个标准的OAuth2认证服务器
 public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
@@ -44,6 +44,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         clients.withClientDetails(jdbcClientDetailsService());
     }
 
+    // 配置使用JWT生产令牌
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
@@ -53,6 +54,14 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         endpoints.tokenStore(tokenStore())
                 .tokenEnhancer(tokenEnhancerChain)
                 .authenticationManager(authenticationManager);
+    }
+
+    // 认证服务器的安全配置，配置的 isAuthenticated() 是SpringSecurity的授权表达式，默认是 denyAll()，拒绝所有访问
+    // 它的意思是访问访问认证服务器的tokenKey的时候，需要进行认证
+    // tokenKey 就是对 JWT进行签名的key
+    @Override
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        security.tokenKeyAccess("isAuthenticated()");
     }
 
     public ClientDetailsService jdbcClientDetailsService() {

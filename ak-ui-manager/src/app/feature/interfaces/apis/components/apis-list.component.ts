@@ -143,8 +143,8 @@ export class ApisListComponent extends BaseComponent implements OnInit, AfterVie
         return str.replace('{', '').replace('}', '');
     }
 
-    openWin(bean: any = null) {
-        console.log(this.scrollY);
+    openWin(bean: any) {
+        window.open("http://192.168.0.103:8081/v1/swagger/index.html?id=" + bean.id, "_blank");
     }
 
     changeClassify(classifyId: string) {

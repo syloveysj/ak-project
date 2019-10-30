@@ -19,7 +19,7 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/duodian/swagger/**").addResourceLocations("classpath:/swagger/dist/");
+        registry.addResourceHandler("/v1/swagger/**").addResourceLocations("classpath:/swagger/dist/");
     }
 
 }

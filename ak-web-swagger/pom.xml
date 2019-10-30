@@ -13,8 +13,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.yunjian.ak</groupId>
+            <artifactId>ak-lib-runtime</artifactId>
+            <version>${ak.base.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>

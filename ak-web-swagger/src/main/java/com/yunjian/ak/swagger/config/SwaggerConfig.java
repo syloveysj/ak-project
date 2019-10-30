@@ -20,26 +20,24 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @EnableSwagger2
 @Configuration
-@PropertySource("classpath:swagger.properties") // 新增对swagger.properties 的引入
 public class SwaggerConfig extends WebMvcConfigurerAdapter {
-    @Profile({"test","dev"})
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com"))
+                .apis(RequestHandlerSelectors.basePackage("com.yunjian"))
                 .build()
                 .apiInfo(apiInfo());
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("多点优惠")
-                .description("多点优惠开发文档")
+                .title("Api Documentation")
+                .description("Api Documentation")
                 .version("1.0.0")
-                .termsOfServiceUrl("http://test.dangqugame.cn/")
-                .license("dangqugame")
-                .licenseUrl("http://test.dangqugame.cn/")
+                .termsOfServiceUrl("urn:tos")
+                .license("Apache 2.0")
+                .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .build();
     }
 }
