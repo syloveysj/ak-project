@@ -327,6 +327,7 @@
         <module>ak-lib-kong</module>
         <module>ak-service-gateway</module>
         <module>ak-lib-service</module>
+        <module>ak-web-swagger</module>
         <module>ak-web-oauth-server</module>
         <!--应用-->
     </modules>
