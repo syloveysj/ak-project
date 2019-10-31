@@ -1,0 +1,52 @@
+.app-wrapper {
+    min-width: 1300px;
+}
+
+.head-fix {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.wrapper {
+    width: 100%;
+    background: #fafafa;
+}
+
+.sidebar {
+    position: fixed;
+    top: 64px;
+    bottom: 0;
+    left: 0;
+    padding: 0;
+    box-shadow: 6px 0 6px rgba(0, 0, 0, .1);
+}
+
+.mat-drawer {
+    display: block;
+    position: absolute;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.content-userinfo-wrapper {
+    margin-left: 200px;
+    padding: 30px 20px;
+}
+
+:host ::ng-deep #tab-nav .ant-tabs-bar {
+    padding: 0 20px;
+}
+:host ::ng-deep #tab-nav .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {
+    line-height: 30px;
+}
+
+:host ::ng-deep #tab-nav .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
+    height: 30px;
+}
+
+:host ::ng-deep #tab-nav .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-nav-container {
+    height: 30px;
+}

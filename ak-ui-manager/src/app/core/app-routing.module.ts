@@ -4,6 +4,10 @@ import {ErrorComponent} from './component/error.component';
 
 const routes: Routes = [
     {
+        path: '',
+        loadChildren: '@feature/auth/auth.module#AuthModule',
+    },
+    {
         path: 'index',
         loadChildren: '@feature/home/home.module#HomeModule',
         data: {module: '/index', preload: true},
