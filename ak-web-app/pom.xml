@@ -9,31 +9,27 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ak-web-oauth-server</artifactId>
+    <artifactId>ak-web-app</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.yunjian.ak</groupId>
-            <artifactId>ak-lib-runtime</artifactId>
+            <artifactId>ak-lib-service</artifactId>
             <version>${ak.base.version}</version>
         </dependency>
         <dependency>
             <groupId>com.yunjian.ak</groupId>
-            <artifactId>ak-lib-dao</artifactId>
+            <artifactId>ak-lib-resource-server</artifactId>
             <version>${ak.base.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-jwt</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

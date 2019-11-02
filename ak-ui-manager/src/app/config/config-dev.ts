@@ -4,6 +4,11 @@ import {Config} from './config';
  * @description 开发环境转发的地址
  */
 export class ConfigDev extends Config {
+    public auth = {
+        addr: 'http://127.0.0.1:8081/oauth/token',
+        clientId: 'fooClientIdPassword',
+        secret: 'secret'
+    };
     public apiAddr = 'http://127.0.0.1:8080';
     public menus = [
         {

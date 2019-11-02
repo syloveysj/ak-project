@@ -14,6 +14,7 @@ import {NzMessageService} from 'ng-zorro-antd';
 import {ToolService} from '@core/utils/tool.service';
 import {environment} from '@environments/environment';
 import {isNotEmpty} from "@core/utils/string.util";
+import {Cookie} from "ng2-cookies";
 
 /**
  * @description 全局http拦截器, 对http请求进行处理。
@@ -31,7 +32,16 @@ export class CredentialInterceptor implements HttpInterceptor {
         request = request.clone({
             withCredentials: false
         });
-        return next.handle(request).pipe(
+
+        const accessToken = Cookie.get('access_token');
+        let useRequest = request;
+        if (accessToken && !request.headers.has('Authorization')) {
+            useRequest = request.clone({
+                headers: request.headers.set("Authorization", "Bearer " + accessToken)
+            });
+        }
+
+        return next.handle(useRequest).pipe(
             tap(
                 event => {
                     if (event instanceof HttpResponse) {

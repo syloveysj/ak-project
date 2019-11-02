@@ -34,7 +34,21 @@ public class OAuth2SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin().and().authorizeRequests().anyRequest().authenticated();
+        // @formatter:off
+//        http.authorizeRequests().antMatchers("/login").permitAll()
+//                .antMatchers("/oauth/token/revokeById/**").permitAll()
+//                .antMatchers("/tokens/**").permitAll()
+//                .anyRequest().authenticated()
+//                .and().formLogin().permitAll()
+//                .and().csrf().disable();
+        // @formatter:on
+        http.authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/.well-known/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().permitAll()
+                .and().csrf().disable();
     }
 
 }

@@ -329,6 +329,8 @@
         <module>ak-lib-service</module>
         <module>ak-web-swagger</module>
         <module>ak-web-oauth-server</module>
+        <module>ak-web-app</module>
+        <module>ak-lib-resource-server</module>
         <!--应用-->
     </modules>
 </project>

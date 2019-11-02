@@ -1,5 +1,6 @@
-package com.yunjian.ak.oauth.config;
+package com.yunjian.ak.oauth.server;
 
+import com.yunjian.ak.utils.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -8,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Description:
@@ -19,6 +22,9 @@ import org.springframework.stereotype.Component;
 public class AkUserDetailsService implements UserDetailsService {
 
     @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     /** (non-Javadoc)
@@ -26,6 +32,8 @@ public class AkUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println(CommonUtil.urlToDomain(request.getHeader("Origin")));
+
         return new User(username, passwordEncoder.encode("123456"),
                 AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
     }

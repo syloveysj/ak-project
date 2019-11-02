@@ -3,7 +3,8 @@ import {Config} from '@config/config';
 import {Subject} from "rxjs";
 import {Store} from "@ngrx/store";
 import * as fromRoot from "@store/reducers";
-import * as ConstantsActions from "@store/actions/constants.actions";
+import {Oauth2Service} from "@service/http/oauth2.service";
+import {ConstantsActions} from "@store/actions";
 
 @Component({
     selector: 'app-head-bar',
@@ -20,6 +21,7 @@ export class HeadBarComponent implements OnInit, OnChanges, AfterViewInit, OnDes
 
     public constructor(private config: Config,
                        private store$: Store<fromRoot.State>,
+                       private oauth2Service: Oauth2Service,
                        private cdr: ChangeDetectorRef) {
         this.store$.dispatch(new ConstantsActions.LoadApplicationTypes());
         this.store$.dispatch(new ConstantsActions.LoadServices());
@@ -30,6 +32,14 @@ export class HeadBarComponent implements OnInit, OnChanges, AfterViewInit, OnDes
     }
 
     changeLang() {
+    }
+
+    testApi() {
+        this.oauth2Service.getResource("http://127.0.0.1:8082/foos/123").subscribe(data => console.log(data));
+    }
+
+    logout() {
+        this.oauth2Service.logout();
     }
 
     ngOnChanges(): void {

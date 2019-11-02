@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ak-web-oauth-server</artifactId>
+    <artifactId>ak-lib-resource-server</artifactId>
 
     <dependencies>
         <dependency>
@@ -17,16 +17,7 @@
             <artifactId>ak-lib-runtime</artifactId>
             <version>${ak.base.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.yunjian.ak</groupId>
-            <artifactId>ak-lib-dao</artifactId>
-            <version>${ak.base.version}</version>
-        </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
@@ -35,5 +26,22 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-jwt</artifactId>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
     </dependencies>
+
+    <build>
+        <!-- 确保通过Spring Boot Maven插件将我们的JKS文件添加到应用程序类路径中 -->
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <addResources>true</addResources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

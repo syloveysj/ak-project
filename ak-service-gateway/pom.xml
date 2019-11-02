@@ -14,11 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>com.yunjian.ak</groupId>
-            <artifactId>ak-lib-runtime</artifactId>
-            <version>${ak.base.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.yunjian.ak</groupId>
             <artifactId>ak-lib-dao</artifactId>
             <version>${ak.base.version}</version>
         </dependency>

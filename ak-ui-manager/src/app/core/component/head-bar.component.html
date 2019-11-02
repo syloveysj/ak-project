@@ -50,8 +50,8 @@
                 {{(userInfo$ | async)?.name}}
             </div>
             <ul nz-menu style="margin-top: -10px;">
-                <li nz-menu-item>
-                    <a>查看数据权限</a>
+                <li nz-menu-item (click)="testApi()">
+                    <a>资源调用</a>
                 </li>
                 <li nz-menu-item>
                     <a>修改密码</a>
@@ -59,7 +59,7 @@
                 <li nz-menu-item>
                     <a href="http://help.gerpgo.com/web/#/1" target="_blank" >帮助文档</a>
                 </li>
-                <li nz-menu-item>
+                <li nz-menu-item (click)="logout()">
                     <a class="logout">退出</a>
                 </li>
             </ul>

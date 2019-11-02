@@ -7,6 +7,7 @@ import {BaseService} from '@service/http/base.service';
 import {Store} from '@ngrx/store';
 import {ToolService} from "@core/utils/tool.service";
 import * as fromRoot from "@store/reducers";
+import {Oauth2Service} from "@service/http/oauth2.service";
 
 @Component({
     selector: 'app-login',
@@ -122,11 +123,11 @@ export class LoginComponent implements OnInit {
                 public nzMessageService: NzMessageService,
                 public toolService: ToolService,
                 public baseService: BaseService,
+                private oauth2Service: Oauth2Service,
                 private store$: Store<fromRoot.State>) {
     }
 
     ngOnInit(): void {
-
         if (environment.production) {
             this.username = '';
             this.pwd = '';
@@ -146,8 +147,7 @@ export class LoginComponent implements OnInit {
             this.form.controls[i].markAsDirty();
             this.form.controls[i].updateValueAndValidity();
         }
-        console.log(this.form.value);
-        this.router.navigate(['/index']);
+        this.oauth2Service.obtainAccessToken(this.form.value);
     }
 
 }
