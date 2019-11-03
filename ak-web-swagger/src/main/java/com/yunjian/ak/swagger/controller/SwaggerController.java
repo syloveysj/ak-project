@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 public class SwaggerController {
     @GetMapping("/index")
     public String test(HttpServletRequest request, @RequestParam(value = "id", required = true) String id){
-        System.out.println(id);
         request.setAttribute("id", id);
         return "index";
     }

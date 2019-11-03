@@ -39,13 +39,14 @@ public class SwaggerDocController {
     )})
     public void getDoc(@PathVariable("id") String id, HttpServletResponse response) {
         String result = "{}";
-        String url = ConfigManager.getInstance().getConfig("kong_apis_url") + "/v1/mgr/gateway/swagger/" + id;
+        String url = ConfigManager.getInstance().getConfig("ak_gateway_apis_url") + "/v1/mgr/gateway/swagger/" + id;
         RestTemplate template = RestUtils.createRestTemplate();
         ResponseEntity<Map> responseEntity = template.getForEntity(url, Map.class);
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             Map map = responseEntity.getBody();
             Map data = MapUtils.getMap(map, "data", null);
             result = MapUtils.getString(data, "content", "{}");
+            result = result.replace("!!host!!", ConfigManager.getInstance().getConfig("swagger_host"));
         }
 
         try{

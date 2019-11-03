@@ -459,7 +459,8 @@ public class ApisController {
         info.put("license", license);
         doc.put("info", info);
 
-        doc.put("host", ConfigManager.getInstance().getConfig("kong_apis_url"));
+//        doc.put("host", ConfigManager.getInstance().getConfig("kong_apis_url"));
+        doc.put("host", "!!host!!");
         doc.put("basePath", "/");
         doc.put("schemes", Arrays.asList("http", "https"));
 
