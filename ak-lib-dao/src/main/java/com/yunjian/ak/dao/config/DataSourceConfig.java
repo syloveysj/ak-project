@@ -15,6 +15,8 @@ import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
@@ -36,6 +38,7 @@ import java.util.Properties;
 @Configuration
 @ImportResource("classpath:transaction.xml")
 public class DataSourceConfig {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceConfig.class);
 
     @Bean
     public DynamicDataSource dynamicDataSource() {
@@ -88,6 +91,8 @@ public class DataSourceConfig {
                 sysPageInterceptor,
                 complexQueryInterceptor
             };
+
+            LOGGER.info("数据库操作开启了租户模式");
         } else {
             defaultPlugins = new Interceptor[]{
                 mybatisEnhanceInterceptor,

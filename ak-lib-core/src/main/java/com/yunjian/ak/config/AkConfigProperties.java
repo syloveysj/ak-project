@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 /**
- * @Description:
+ * @Description: AK框架平台配置
  * @Author: yong.sun
  * @Date: 2019/10/5 18:30
  * @Version 1.0

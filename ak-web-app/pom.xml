@@ -19,6 +19,11 @@
         </dependency>
         <dependency>
             <groupId>com.yunjian.ak</groupId>
+            <artifactId>ak-lib-api-proxy</artifactId>
+            <version>${ak.base.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yunjian.ak</groupId>
             <artifactId>ak-lib-resource-server</artifactId>
             <version>${ak.base.version}</version>
         </dependency>

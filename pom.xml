@@ -331,6 +331,7 @@
         <module>ak-web-oauth-server</module>
         <module>ak-web-app</module>
         <module>ak-lib-resource-server</module>
+        <module>ak-lib-api-proxy</module>
         <!--应用-->
     </modules>
 </project>

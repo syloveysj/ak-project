@@ -25,31 +25,22 @@ public class ConnectionTenantScheme {
     public static void change(Connection connection) throws Exception {
         if(!OperationContextHolder.enableTenant()) return;
 
-        DatabaseMetaData metaData = connection.getMetaData();
-        String databaseType = metaData.getDatabaseProductName();
-        String databaseUrl = metaData.getURL();
-        String databaseUserName = metaData.getUserName();
-
         Map<String, Properties> databaseProperties = DynamicDataSource.getDatabaseProperties();
-        for (Map.Entry<String, Properties> entry : databaseProperties.entrySet()) {
-            Properties properties = entry.getValue();
-            if(properties.containsKey("isTenant") && Boolean.valueOf(properties.getProperty("isTenant"))) {
-                if(StringUtils.isEmpty(((AppOperationContext) OperationContextHolder.getContext()).getTenantScheme())) {
-                    LOGGER.error("租户ID为空，不能进行数据库操作！");
-                    throw new AkDaoException("当前数据源，租户ID不能为空。");
-                }
+        Properties properties = databaseProperties.get(DynamicDataSource.getDataSourceKey());
+        if(properties.containsKey("isTenant") && Boolean.valueOf(properties.getProperty("isTenant"))) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            String databaseType = metaData.getDatabaseProductName();
+            String scheme = ((AppOperationContext) OperationContextHolder.getContext()).getTenantScheme();
 
-                // 如果当前连接是存在租户配置的数据源（条件是：连接地址+用户账号 相等）
-                if (databaseUserName.equals(properties.getProperty("username")) && databaseUrl.equals(properties.getProperty("url"))) {
-                    if (StringUtils.equalsIgnoreCase(databaseType, "PostgreSQL")) {
-                        connection.createStatement().executeUpdate("SET search_path TO " + ((AppOperationContext) OperationContextHolder.getContext()).getTenantScheme());
-                    } else if (StringUtils.equalsIgnoreCase(databaseType, "MySQL")) {
-                        connection.createStatement().executeQuery("use " + ((AppOperationContext) OperationContextHolder.getContext()).getTenantScheme());
-                    } else {
-                        throw new AkDaoException(databaseType + " 暂不支持租户模式。");
-                    }
-                }
+            if (StringUtils.equalsIgnoreCase(databaseType, "PostgreSQL")) {
+                connection.createStatement().executeUpdate("SET search_path TO " + scheme);
+            } else if (StringUtils.equalsIgnoreCase(databaseType, "MySQL")) {
+                connection.createStatement().executeQuery("use " + scheme);
+            } else {
+                throw new AkDaoException(databaseType + " 暂不支持租户模式。");
             }
+
+            LOGGER.debug("数据源：{}, 切换到租户：{}", properties.getProperty("id"), scheme);
         }
     }
 }
