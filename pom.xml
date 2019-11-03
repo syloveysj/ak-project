@@ -332,6 +332,7 @@
         <module>ak-web-app</module>
         <module>ak-lib-resource-server</module>
         <module>ak-lib-api-proxy</module>
+        <module>ak-service-platform</module>
         <!--应用-->
     </modules>
 </project>

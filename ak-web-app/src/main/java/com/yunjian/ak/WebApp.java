@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
 /**
- * @Description:
+ * @Description: 与 UI 交互应用
  * @Author: yong.sun
  * @Date: 2019/11/1 19:52
  * @Version 1.0

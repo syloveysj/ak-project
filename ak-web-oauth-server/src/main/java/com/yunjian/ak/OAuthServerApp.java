@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
 /**
- * @Description:
+ * @Description: OAuth2 认证服务器应用
  * @Author: yong.sun
  * @Date: 2019/10/28 21:23
  * @Version 1.0
