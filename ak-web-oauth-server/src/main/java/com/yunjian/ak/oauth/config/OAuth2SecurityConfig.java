@@ -44,7 +44,6 @@ public class OAuth2SecurityConfig extends WebSecurityConfigurerAdapter {
         // @formatter:on
         http.authorizeRequests()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/.well-known/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().permitAll()
