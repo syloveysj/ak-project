@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunjian.ak.task.entity.JobEntityMapper">
+	<!-- 数据库中表名为:job_entity的列名 -->
+	<sql id="column_sql">
+		job_entity.id,
+		job_entity.name,
+		job_entity.job_group,
+		job_entity.cron,
+		job_entity.parameter,
+		job_entity.description,
+		job_entity.vm_param,
+		job_entity.jar_path,
+		job_entity.status
+	</sql>
+
+	<!-- 数据库中表名为:job_entity的非空where条件 -->
+	<sql id="whereClause_sql">
+		<if test="id != null">and job_entity.id = #{id}</if>
+		<if test="name != null">and job_entity.name = #{name}</if>
+		<if test="jobGroup != null">and job_entity.job_group = #{jobGroup}</if>
+		<if test="cron != null">and job_entity.cron = #{cron}</if>
+		<if test="parameter != null">and job_entity.parameter = #{parameter}</if>
+		<if test="description != null">and job_entity.description = #{description}</if>
+		<if test="vmParam != null">and job_entity.vm_param = #{vmParam}</if>
+		<if test="jarPath != null">and job_entity.jar_path = #{jarPath}</if>
+		<if test="status != null">and job_entity.status = #{status}</if>
+	</sql>
+	
+	<!-- JobEntity的resultMap,column是给数据库列起的别名,它对应property类的属性 -->
+	<resultMap id="result_JobEntity_Map" type="com.yunjian.ak.task.entity.JobEntity">
+		<id column="id" property="id" />
+		<result column="parameter" property="parameter" />
+		<result column="name" property="name" />
+		<result column="job_group" property="jobGroup" />
+		<result column="cron" property="cron" />
+		<result column="description" property="description" />
+		<result column="vm_param" property="vmParam" />
+		<result column="jar_path" property="jarPath" />
+		<result column="status" property="status" />
+	</resultMap>
+	
+	<!-- 将JobEntity中属性值不为null的数据,插入到对应数据库的表中 -->
+	<insert id="insert" parameterType="com.yunjian.ak.task.entity.JobEntity">
+		insert into job_entity
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">id,</if>
+			<if test="name != null">name,</if>
+			<if test="jobGroup != null">job_group,</if>
+			<if test="cron != null">cron,</if>
+			<if test="parameter != null">parameter,</if>
+			<if test="description != null">description,</if>
+			<if test="vmParam != null">vm_param,</if>
+			<if test="jarPath != null">jar_path,</if>
+			<if test="status != null">status,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">#{id},</if>
+			<if test="name != null">#{name},</if>
+			<if test="jobGroup != null">#{jobGroup},</if>
+			<if test="cron != null">#{cron},</if>
+			<if test="parameter != null">#{parameter},</if>
+			<if test="description != null">#{description},</if>
+			<if test="vmParam != null">#{vmParam},</if>
+			<if test="jarPath != null">#{jarPath},</if>
+			<if test="status != null">#{status},</if>
+		</trim>
+	</insert>
+
+	<!--获得类名为:JobEntity对应的数据库表满足条件的数据总行数 -->
+	<select id="count" parameterType="com.yunjian.ak.task.entity.JobEntity" resultType="int">
+		select count(*) from job_entity 
+			 <where>
+				<include refid="whereClause_sql"/>
+			</where>
+	</select>
+
+	<!-- 通过JobEntity的id将JobEntity中属性值不为null的数据更新到数据库对应的表中 -->
+	<update id="update" parameterType="com.yunjian.ak.task.entity.JobEntity">
+		update job_entity
+		<set>
+			<trim suffixOverrides=",">
+				<if test="name != null">name = #{name},</if>
+				<if test="jobGroup != null">job_group = #{jobGroup},</if>
+				<if test="cron != null">cron = #{cron},</if>
+				<if test="parameter != null">parameter = #{parameter},</if>
+				<if test="description != null">description = #{description},</if>
+				<if test="vmParam != null">vm_param = #{vmParam},</if>
+				<if test="jarPath != null">jar_path = #{jarPath},</if>
+				<if test="status != null">status = #{status},</if>
+			</trim>
+		</set>
+		<where>
+			<choose>
+				<when test="id != null">and id = #{id}</when>
+				<otherwise>and id = </otherwise>
+			</choose>
+		</where>
+	</update>
+
+	<!-- 通过JobEntity的id将JobEntity中属性值为null的数据更新到数据库对应的表中 -->
+	<update id="updateNull" parameterType="map">
+		update job_entity
+		<set>
+			<trim suffixOverrides=",">
+				<if test="name == null">name = null,</if>
+				<if test="jobGroup == null">job_group = null,</if>
+				<if test="cron == null">cron = null,</if>
+				<if test="parameter == null">parameter = null,</if>
+				<if test="description == null">description = null,</if>
+				<if test="vmParam == null">vm_param = null,</if>
+				<if test="jarPath == null">jar_path = null,</if>
+				<if test="status == null">status = null,</if>
+			</trim>
+		</set>
+		<where>
+			<choose>
+				<when test="id != null">and id = #{id}</when>
+				<otherwise>and id = </otherwise>
+			</choose>
+		</where>
+	</update>
+
+	<!-- 通过JobEntity的id将数据库表中对应的数据删除 -->
+	<delete id="delete" parameterType="com.yunjian.ak.task.entity.JobEntity">
+		delete from job_entity where 1=1 
+		<choose>
+			<when test="id != null"> and id = #{id}</when>
+			<otherwise> and id = </otherwise>
+		</choose>
+	</delete>
+
+	<!-- 获得一个JobEntity对象,以参数JobEntity对象中不为空的属性作为条件进行查询 -->
+	<select id="select" parameterType="com.yunjian.ak.task.entity.JobEntity" resultMap="result_JobEntity_Map">
+		select 
+		<include refid="column_sql"/>
+		from job_entity 
+		 <where>
+			<include refid="whereClause_sql"/>
+		</where>
+	</select>
+
+	<!-- 将列表中JobEntity对象数据,同时插入到对应数据库的表中 -->
+	<insert id="insertBatch" parameterType="list">
+		insert into job_entity 
+		<trim prefix=" (" suffix=")" suffixOverrides=",">
+			id,
+			name,
+			job_group,
+			cron,
+			parameter,
+			description,
+			vm_param,
+			jar_path,
+			status,
+		</trim>
+		VALUES
+		<foreach collection="list" item="entity" index="index" separator=",">
+		(
+			#{entity.id},
+			#{entity.name},
+			#{entity.jobGroup},
+			#{entity.cron},
+			#{entity.parameter},
+			#{entity.description},
+			#{entity.vmParam},
+			#{entity.jarPath},
+			#{entity.status}
+		)
+		</foreach>
+	</insert>
+
+	<!-- 根据列表中JobEntity对象id,同时删除数据库的表中数据 -->
+	<delete id="deleteBatch" parameterType="List">
+		delete from job_entity where id in 
+		<trim prefix=" (" suffix=")" suffixOverrides=",">
+			<foreach collection="list" item="id" separator=",">
+				#{id}
+			</foreach>
+		</trim>
+	</delete>
+
+	<!-- 查询数据库中表名为:job_entity的所有数据 -->
+	<select id="selectAll" resultMap="result_JobEntity_Map">
+		select 
+		<include refid="column_sql"/>
+		from job_entity 
+	</select>
+
+	<!-- 根据列表中JobEntity对象,进行数据库的表多条件刷选查询 -->
+	<select id="selectMany" parameterType="list" resultMap="result_JobEntity_Map">
+		select 
+		<include refid="column_sql"/> 
+		from job_entity 
+		where job_entity.id in (
+			<foreach collection="list" item="entity" separator="intersect">
+				select 
+				job_entity.id
+				from job_entity 
+				 <where>
+					<if test="entity.id != null">and job_entity.id = #{entity.id}</if>
+					<if test="entity.name != null">and job_entity.name = #{entity.name}</if>
+					<if test="entity.jobGroup != null">and job_entity.job_group = #{entity.jobGroup}</if>
+					<if test="entity.cron != null">and job_entity.cron = #{entity.cron}</if>
+					<if test="entity.parameter != null">and job_entity.parameter = #{entity.parameter}</if>
+					<if test="entity.description != null">and job_entity.description = #{entity.description}</if>
+					<if test="entity.vmParam != null">and job_entity.vm_param = #{entity.vmParam}</if>
+					<if test="entity.jarPath != null">and job_entity.jar_path = #{entity.jarPath}</if>
+					<if test="entity.status != null">and job_entity.status = #{entity.status}</if>
+				</where>
+			</foreach>
+		)
+	</select>
+
+	<!-- 根据列表中JobEntity对象,进行数据库的表多条件合并查询 -->
+	<select id="selectUnion" parameterType="list" resultMap="result_JobEntity_Map">
+		select 
+		<include refid="column_sql"/> 
+		from job_entity 
+		 INNER JOIN
+		<foreach collection="list" item="entity" separator="UNION" open="(" close=")">
+			SELECT 
+				 id
+			FROM job_entity 
+				<where>
+					<if test="entity.id != null">and job_entity.id = #{entity.id}</if>
+					<if test="entity.name != null">and job_entity.name = #{entity.name}</if>
+					<if test="entity.jobGroup != null">and job_entity.job_group = #{entity.jobGroup}</if>
+					<if test="entity.cron != null">and job_entity.cron = #{entity.cron}</if>
+					<if test="entity.parameter != null">and job_entity.parameter = #{entity.parameter}</if>
+					<if test="entity.description != null">and job_entity.description = #{entity.description}</if>
+					<if test="entity.vmParam != null">and job_entity.vm_param = #{entity.vmParam}</if>
+					<if test="entity.jarPath != null">and job_entity.jar_path = #{entity.jarPath}</if>
+					<if test="entity.status != null">and job_entity.status = #{entity.status}</if>
+				</where>
+		</foreach>
+		ak_temp_table ON job_entity.id = ak_temp_table.id
+	</select>
+
+	<!-- 通过JobEntity的id获得对应数据库中表的数据对象 -->
+	<select id="selectByID" parameterType="Integer" resultMap="result_JobEntity_Map">
+		select 
+		<include refid="column_sql"/>
+		from job_entity 
+		 where job_entity.id = #{id}
+	</select>
+
+	<!-- 获得一个JobEntity对象,以参数JobEntity对象中不为空的属性作为条件进行分页查询 -->
+	<select id="selectByPage" parameterType="com.yunjian.ak.task.entity.JobEntity" resultMap="result_JobEntity_Map">
+		select 
+		<include refid="column_sql"/>
+		from job_entity 
+		 <where>
+			<include refid="whereClause_sql"/>
+		</where>
+	</select>
+</mapper>
