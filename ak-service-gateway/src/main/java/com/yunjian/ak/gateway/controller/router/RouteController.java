@@ -8,12 +8,11 @@ import com.yunjian.ak.gateway.service.router.ServiceService;
 import com.yunjian.ak.kong.client.impl.KongClient;
 import com.yunjian.ak.kong.client.model.admin.route.Route;
 import com.yunjian.ak.kong.client.model.admin.service.Service;
+import com.yunjian.ak.web.aspect.Log;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.collections4.MapUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +30,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/mgr/gateway/routes")
 public class RouteController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UpstreamController.class);
 
     @Autowired
     private ServiceService serviceService;
@@ -49,9 +47,8 @@ public class RouteController {
             message = "添加Route成功",
             response = RouteEntity.class
     )})
+    @Log(value="添加Route")
     public RouteEntity insert(@Valid @RequestBody RouteEntity entity) {
-        LOGGER.debug("请求 RouteController 的 insert!");
-
         // 调用接口添加服务
         Service service = new Service();
         BeanUtils.copyProperties(entity.getService(), service);
@@ -79,9 +76,8 @@ public class RouteController {
             message = "更新Route成功",
             response = RouteEntity.class
     )})
+    @Log(value="更新Route")
     public RouteEntity update(@Valid @RequestBody RouteEntity entity) {
-        LOGGER.debug("请求 RouteController 的 update!");
-
         // 调用接口更新服务
         Service service = new Service();
         BeanUtils.copyProperties(entity.getService(), service);
@@ -106,9 +102,8 @@ public class RouteController {
             code = 200,
             message = "删除指定id的Route成功"
     )})
+    @Log(value="删除指定id的Route")
     public void delete(@PathVariable("id") String id, @PathVariable("serviceId") String serviceId) {
-        LOGGER.debug("请求RouteController删除指定id的Route:{}!", id);
-
         // 调用接口删除路由
         kongRouterClient.getRouteService().deleteRoute(id);
         kongRouterClient.getServiceService().deleteService(serviceId);
@@ -120,9 +115,8 @@ public class RouteController {
             code = 200,
             message = "删除指定ids的Route成功"
     )})
+    @Log(value="删除指定ids的Route")
     public void deleteList(@RequestParam String ids) {
-        LOGGER.debug("请求RouteController删除指定ids的Route!");
-
         // 调用接口删除路由
         List<Map> idList = JSON.parseObject(ids, List.class);
         for (Map id : idList) {
@@ -138,11 +132,10 @@ public class RouteController {
             message = "获取Route列表成功",
             response = Page.class
     )})
+    @Log(value="获取匹配Route列表")
     public Page<RouteEntity> getListByPage(@RequestParam("page") int page, @RequestParam("pagesize") int pagesize,
                                               @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "order", required = false) String order,
                                               @RequestParam(value = "cond", required = false) String cond) {
-        LOGGER.debug("请求RouteController获取匹配Route列表!");
-
         return this.routeService.getListByPage(page, pagesize, sort, order, cond);
     }
 }

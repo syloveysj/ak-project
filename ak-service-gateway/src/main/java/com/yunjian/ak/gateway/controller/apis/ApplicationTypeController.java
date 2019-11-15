@@ -2,11 +2,10 @@ package com.yunjian.ak.gateway.controller.apis;
 
 import com.yunjian.ak.gateway.entity.apis.ApplicationTypeEntity;
 import com.yunjian.ak.gateway.service.apis.ApplicationTypeService;
+import com.yunjian.ak.web.aspect.Log;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +22,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/mgr/gateway/application-type")
 public class ApplicationTypeController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationTypeController.class);
 
     @Autowired
     private ApplicationTypeService applicationTypeService;
@@ -36,9 +34,8 @@ public class ApplicationTypeController {
             response = ApplicationTypeEntity.class,
             responseContainer = "List"
     )})
+    @Log(value="获取所有ApplicationType")
     public List<ApplicationTypeEntity> getAll() {
-        LOGGER.debug("请求ApplicationTypeController获取所有ApplicationType!");
-
         return this.applicationTypeService.getAll();
     }
 }

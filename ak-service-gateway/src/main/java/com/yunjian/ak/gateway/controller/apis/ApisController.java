@@ -1,10 +1,8 @@
 package com.yunjian.ak.gateway.controller.apis;
 
 import com.alibaba.fastjson.JSON;
-import com.yunjian.ak.config.ConfigManager;
 import com.yunjian.ak.dao.mybatis.enhance.Page;
 import com.yunjian.ak.exception.ValidationException;
-import com.yunjian.ak.gateway.controller.router.UpstreamController;
 import com.yunjian.ak.gateway.entity.apis.*;
 import com.yunjian.ak.gateway.service.apis.ApisRouteService;
 import com.yunjian.ak.gateway.service.apis.ApisServiceService;
@@ -22,14 +20,13 @@ import com.yunjian.ak.kong.client.model.admin.target.Target;
 import com.yunjian.ak.kong.client.model.admin.target.TargetList;
 import com.yunjian.ak.kong.client.model.admin.upstream.Upstream;
 import com.yunjian.ak.utils.UUIDUtil;
+import com.yunjian.ak.web.aspect.Log;
 import com.yunjian.ak.web.utils.http.RestUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,7 +50,6 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping("/v1/mgr/gateway/apis")
 public class ApisController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UpstreamController.class);
 
     @Autowired
     private ApisServiceService apisServiceService;
@@ -77,9 +73,8 @@ public class ApisController {
             message = "添加Services成功",
             response = ServiceEntity.class
     )})
+    @Log(value="添加Services")
     public ServiceEntity insertService(@Valid @RequestBody ServiceEntity entity) {
-        LOGGER.debug("请求 ApisController 的 Services insert!");
-
         // 调用接口添加上游
         Upstream upstream = new Upstream();
         upstream.setName(UUIDUtil.createUUID());
@@ -115,9 +110,8 @@ public class ApisController {
             message = "添加Services成功",
             response = ServiceEntity.class
     )})
+    @Log(value="更新Services")
     public ServiceEntity updateService(@Valid @RequestBody ServiceEntity entity) {
-        LOGGER.debug("请求 ApisController 的 Services update!");
-
         // 调用接口添加服务
         Service service = new Service();
         BeanUtils.copyProperties(entity, service);
@@ -139,9 +133,8 @@ public class ApisController {
             code = 200,
             message = "删除指定id的Services成功"
     )})
+    @Log(value="删除指定id的Services")
     public void deleteService(@PathVariable("id") String id) {
-        LOGGER.debug("请求 ApisController 删除指定id的Services:{}!", id);
-
         ServiceEntity entity = apisServiceService.get(id);
 
         TargetList targetList = kongApisClient.getTargetService().listTargets(entity.getHost(), null, null, null, null, null);
@@ -165,9 +158,8 @@ public class ApisController {
             message = "获取指定id的Services成功",
             response = ServiceEntity.class
     )})
+    @Log(value="获取指定id的Services")
     public ServiceEntity getService(@PathVariable("id") String id) {
-        LOGGER.debug("请求 ApisController 获取指定id的Services:{}!", id);
-
         return apisServiceService.get(id);
     }
 
@@ -179,9 +171,8 @@ public class ApisController {
             response = ServiceEntity.class,
             responseContainer = "List"
     )})
+    @Log(value="获取所有Services")
     public List<ServiceEntity> getAllServices() {
-        LOGGER.debug("请求 ApisController 获取所有 Services!");
-
         return this.apisServiceService.getAll();
     }
 
@@ -192,9 +183,8 @@ public class ApisController {
             message = "添加Target成功",
             response = Target.class
     )})
+    @Log(value="添加Target")
     public Target insertTarget(@PathVariable("upstreamName") String upstreamName, @Valid @RequestBody TargetEntity entity) {
-        LOGGER.debug("请求 ApisController 的 Target insert!");
-
         // 调用接口添加目标
         Target target = new Target();
         BeanUtils.copyProperties(entity, target);
@@ -209,9 +199,8 @@ public class ApisController {
             code = 200,
             message = "删除指定id的Target成功"
     )})
+    @Log(value="删除指定id的Target")
     public void deleteTarget(@PathVariable("upstreamName") String upstreamName, @PathVariable("tid") String tid) {
-        LOGGER.debug("请求 ApisController 删除指定id的Target:{}!", tid);
-
         // 调用接口删除目标
         kongApisClient.getTargetService().deleteTarget(upstreamName, tid);
     }
@@ -222,9 +211,8 @@ public class ApisController {
             code = 200,
             message = "删除指定id的Target成功"
     )})
+    @Log(value="删除指定ids的Target")
     public void deleteTargets(@PathVariable("upstreamName") String upstreamName, @RequestParam String ids) {
-        LOGGER.debug("请求 ApisController 删除指定ids的Target!");
-
         if(StringUtils.isEmpty(ids)) return;
 
         String idList[] = ids.split(",");
@@ -242,9 +230,8 @@ public class ApisController {
             response = Target.class,
             responseContainer = "List"
     )})
+    @Log(value="获取Upstream的Target列表")
     public List<Target> getTargets(@PathVariable("upstreamName") String upstreamName) {
-        LOGGER.debug("请求 ApisController 获取Upstream的Target列表!");
-
         // 调用接口获取所有目标
         try {
             TargetList targetList = kongApisClient.getTargetService().listTargets(upstreamName, null, null, null, 100L, null);
@@ -262,9 +249,8 @@ public class ApisController {
             code = 200,
             message = "添加Routes成功"
     )})
+    @Log(value="添加Routes")
     public void insertRoutes(@Valid @RequestBody ApiPackageVo entity) {
-        LOGGER.debug("请求 ApisController 的 Routes insert!");
-
         // 调用接口添加路由
         Service service = new Service();
         service.setId(entity.getServerId());
@@ -316,9 +302,8 @@ public class ApisController {
             message = "更新Routes分类成功",
             response = Integer.class
     )})
+    @Log(value="更新Routes分类")
     public int updateRoutesClassify(@PathVariable("classifyId") String classifyId, @Valid @RequestBody List<String> ids) {
-        LOGGER.debug("请求 ApisController 的 Routes updateRoutesClassify!");
-
         // 通过数据库更新相关信息
         return apisRouteService.updateClassifyBatch(classifyId, ids);
     }
@@ -329,9 +314,8 @@ public class ApisController {
             code = 200,
             message = "删除指定id的Route成功"
     )})
+    @Log(value="删除指定id的Route")
     public void deleteRoute(@PathVariable("id") String id) {
-        LOGGER.debug("请求RouteController删除指定id的Route:{}!", id);
-
         // 调用接口删除路由
         kongApisClient.getRouteService().deleteRoute(id);
     }
@@ -342,9 +326,8 @@ public class ApisController {
             code = 200,
             message = "删除指定id的Routes成功"
     )})
+    @Log(value="删除指定ids的Routes")
     public void deleteRoutes(@RequestParam String ids) {
-        LOGGER.debug("请求 ApisController 删除指定ids的Routes!");
-
         if(StringUtils.isEmpty(ids)) return;
 
         String idList[] = ids.split(",");
@@ -361,11 +344,10 @@ public class ApisController {
             message = "获取Route列表成功",
             response = Page.class
     )})
+    @Log(value="获取匹配Route列表")
     public Page<RouteEntity> getRoutesByPage(@RequestParam("page") int page, @RequestParam("pagesize") int pagesize,
                                             @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "order", required = false) String order,
                                             @RequestParam(value = "cond", required = false) String cond) {
-        LOGGER.debug("请求 ApisController 获取匹配Route列表!");
-
         return apisRouteService.getListByPage(page, pagesize, sort, order, cond);
     }
 
@@ -376,9 +358,8 @@ public class ApisController {
             message = "解析服务成功",
             response = ApiPackageVo.class
     )})
+    @Log(value="解析服务")
     public ApiPackageVo analysis(@Valid @RequestBody ApiAnalysisVo apiAnalysisVo) {
-        System.out.println(apiAnalysisVo);
-
         ApiPackageVo apiPackageVo = new ApiPackageVo();
         apiPackageVo.setServerId(apiAnalysisVo.getServerId());
         Map swagger = null;

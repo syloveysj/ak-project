@@ -2,11 +2,10 @@ package com.yunjian.ak.gateway.controller.apis;
 
 import com.yunjian.ak.gateway.entity.apis.ApisClassifyEntity;
 import com.yunjian.ak.gateway.service.apis.ApisClassifyService;
+import com.yunjian.ak.web.aspect.Log;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/mgr/gateway/apis-classify")
 public class ApisClassifyController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApisClassifyController.class);
 
     @Autowired
     private ApisClassifyService apisClassifyService;
@@ -34,9 +32,8 @@ public class ApisClassifyController {
             message = "添加ApisClassify成功",
             response = ApisClassifyEntity.class
     )})
+    @Log(value="插入ApisClassify")
     public ApisClassifyEntity insert(@Valid @RequestBody ApisClassifyEntity entity) {
-        LOGGER.debug("请求ApisClassifyController的 insert!");
-
         return this.apisClassifyService.insert(entity);
     }
 
@@ -47,9 +44,8 @@ public class ApisClassifyController {
             message = "更新ApisClassify成功",
             response = ApisClassifyEntity.class
     )})
+    @Log(value="更新ApisClassify")
     public ApisClassifyEntity update(@Valid @RequestBody ApisClassifyEntity entity) {
-        LOGGER.debug("请求 ApisClassifyController 的 update!");
-
         return this.apisClassifyService.update(entity);
     }
 
@@ -59,9 +55,8 @@ public class ApisClassifyController {
             code = 200,
             message = "删除指定id的ApisClassify成功"
     )})
+    @Log(value="删除指定id的ApisClassify")
     public void delete(@PathVariable("id") String id) {
-        LOGGER.debug("请求ApisClassifyController删除指定id的ApisClassify:{}!", id);
-
         this.apisClassifyService.delete(id);
     }
 
@@ -72,9 +67,8 @@ public class ApisClassifyController {
             message = "获取定id的ApisClassify成功",
             response = ApisClassifyEntity.class
     )})
+    @Log(value="获取定id的ApisClassify")
     public ApisClassifyEntity get(@PathVariable("id") String id) {
-        LOGGER.debug("请求ApisClassifyController获取定id的ApisClassify:{}!", id);
-
         return this.apisClassifyService.get(id);
     }
 
@@ -86,23 +80,21 @@ public class ApisClassifyController {
             response = ApisClassifyEntity.class,
             responseContainer = "List"
     )})
+    @Log(value="获取所有ApisClassify")
     public List<ApisClassifyEntity> getLis(@RequestParam(value = "cond", required = false) String cond) {
-        LOGGER.debug("请求ApisClassifyController获取所有ApisClassify!");
-
         return this.apisClassifyService.getList(cond);
     }
 
     @GetMapping("/services/{serviceId}")
-    @ApiOperation("获取所有ApisClassify")
+    @ApiOperation("获取应用下所有ApisClassify")
     @ApiResponses({@ApiResponse(
             code = 200,
             message = "获取所有ApisClassify成功",
             response = ApisClassifyEntity.class,
             responseContainer = "List"
     )})
+    @Log(value="获取应用下所有ApisClassify")
     public List<ApisClassifyEntity> getListByServiceId(@PathVariable("serviceId") String serviceId) {
-        LOGGER.debug("请求ApisClassifyController获取所有ApisClassify!");
-
         return this.apisClassifyService.getListByServiceId(serviceId);
     }
 }

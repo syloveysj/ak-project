@@ -1,6 +1,7 @@
 package com.yunjian.ak.swagger.controller;
 
 import com.yunjian.ak.config.ConfigManager;
+import com.yunjian.ak.web.aspect.Log;
 import com.yunjian.ak.web.utils.http.RestUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStreamWriter;
 import java.util.Map;
@@ -37,6 +36,7 @@ public class SwaggerDocController {
             message = "获取指定id的Swagger文档成功",
             response = String.class
     )})
+    @Log(value="获取指定id的Swagger文档")
     public void getDoc(@PathVariable("id") String id, HttpServletResponse response) {
         String result = "{}";
         String url = ConfigManager.getInstance().getConfig("ak_gateway_apis_url") + "/v1/mgr/gateway/swagger/" + id;

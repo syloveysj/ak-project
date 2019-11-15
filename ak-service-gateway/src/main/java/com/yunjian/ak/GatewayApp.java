@@ -3,6 +3,7 @@ package com.yunjian.ak;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
@@ -13,6 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @SpringBootApplication
 @ServletComponentScan
+@EnableAspectJAutoProxy
 @EnableSwagger2
 public class GatewayApp {
     /**
