@@ -3,7 +3,6 @@ package com.yunjian.ak.task.config;
 import com.yunjian.ak.dao.core.DynamicDataSource;
 import org.quartz.spi.JobFactory;
 import org.quartz.spi.TriggerFiredBundle;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.ApplicationContext;
@@ -25,8 +24,6 @@ import java.util.Properties;
  */
 @Configuration
 public class QuartzConfig {
-    @Autowired
-    private DynamicDataSource dynamicDataSource;
 
     //配置JobFactory
     @Bean
@@ -37,17 +34,18 @@ public class QuartzConfig {
     }
 
     /**
-     * SchedulerFactoryBean这个类的真正作用提供了对org.quartz.Scheduler的创建与配置，并且会管理它的生命周期与Spring同步。
+     * SchedulerFactoryBean: 提供对org.quartz.Scheduler的创建与配置，并且管理它的生命周期与Spring同步。
      * org.quartz.Scheduler: 调度器。所有的调度都是由它控制。
      *
      * @param jobFactory 为SchedulerFactory配置JobFactory
      */
     @Bean
-    public SchedulerFactoryBean schedulerFactoryBean(JobFactory jobFactory) throws IOException {
+    public SchedulerFactoryBean schedulerFactoryBean(DynamicDataSource dynamicDataSource, JobFactory jobFactory) throws IOException {
         SchedulerFactoryBean factory = new SchedulerFactoryBean();
         //可选,QuartzScheduler启动时更新己存在的Job,这样就不用每次修改targetObject后删除qrtz_job_details表对应记录
         factory.setOverwriteExistingJobs(true);
-        factory.setAutoStartup(true); //设置自行启动
+        //设置自行启动
+        factory.setAutoStartup(true);
         factory.setDataSource(dynamicDataSource);
         factory.setJobFactory(jobFactory);
         factory.setQuartzProperties(quartzProperties());

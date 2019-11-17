@@ -31,13 +31,20 @@ export class ConfigDev extends Config {
             iconCls: 'icon-company',
             text: '租户管理',
             children: [
-                {iconCls: 'icon-company', text: '租户信息', uri: '/gateway/authorize'}]
+                {iconCls: 'icon-company', text: '租户信息', uri: '/tenant/center'}]
         },
         {
             iconCls: 'icon-company',
             text: '监控中心',
             children: [
-                {iconCls: 'icon-company', text: '异常监控', uri: '/gateway/authorize'}]
+                {iconCls: 'icon-company', text: '异常监控', uri: '/monitor/center'}]
+        },
+        {
+            iconCls: 'icon-company',
+            text: '定时任务',
+            children: [
+                {iconCls: 'icon-company', text: '任务列表', uri: '/task/scheduleJob'},
+                {iconCls: 'icon-company', text: '租户任务', uri: '/task/tenantJob'}]
         }
     ];
 }

@@ -23,8 +23,8 @@ export class HeadBarComponent implements OnInit, OnChanges, AfterViewInit, OnDes
                        private store$: Store<fromRoot.State>,
                        private oauth2Service: Oauth2Service,
                        private cdr: ChangeDetectorRef) {
-        this.store$.dispatch(new ConstantsActions.LoadApplicationTypes());
-        this.store$.dispatch(new ConstantsActions.LoadServices());
+        // this.store$.dispatch(new ConstantsActions.LoadApplicationTypes());
+        // this.store$.dispatch(new ConstantsActions.LoadServices());
     }
 
     ngOnInit(): void {

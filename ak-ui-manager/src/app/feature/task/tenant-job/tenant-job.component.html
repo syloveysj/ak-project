@@ -1,0 +1,152 @@
+<div class="clearFix breadcrumb-wrapper shadow">
+    <div class="breadcrumb fl">
+        <nz-breadcrumb>
+            <span class="font">当前位置：</span>
+            <nz-breadcrumb-item>
+                <span class="font">定时任务</span>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                租户任务
+            </nz-breadcrumb-item>
+        </nz-breadcrumb>
+    </div>
+    <div class="filter-tags fl">
+        <app-tag-close
+            mode="groupSearch"
+            [dynamicKey]="selfQueryParams?.dynamicKey"
+            [keyword]="selfQueryParams?.keyword"
+            [data]="dynamicKeys"
+            (tagClose)="onKeywordTagClose()">
+        </app-tag-close>
+    </div>
+    <div class="update-times fr">
+        <app-reset-filters (resetFilters)="resetFilters()"></app-reset-filters>
+    </div>
+</div>
+
+<div class="list-page-wrapper">
+    <!--普通搜索 -->
+    <div class="filters padding-right">
+        <div nz-row [nzGutter]="toolService.nzGutter" nzType="flex">
+            <div nz-col class="gutter-row search-group font12">
+                <nz-input-group nzCompact>
+                    <nz-select [(ngModel)]="selfQueryParams.dynamicKey" style="width: 30%;"
+                               nzDropdownClassName="font12">
+                        <nz-option *ngFor="let item of dynamicKeys" [nzValue]="item.id"
+                                   [nzLabel]="item.text"></nz-option>
+                    </nz-select>
+                    <app-input-group-wrapper style="width: 70%;">
+                        <input type="search" nz-input placeholder="请输入内容"
+                               class="input-group-right font12"
+                               [(ngModel)]="selfQueryParams.keyword"
+                               (keyup)="keywordChange()"
+                               (search)="keywordChange()">
+                    </app-input-group-wrapper>
+                </nz-input-group>
+            </div>
+
+            <div class="filter-search-buttons">
+                <app-height-search-labels
+                    question questionHref="https://docs.konghq.com/1.3.x/admin-api/"
+                >
+                </app-height-search-labels>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="tab" appCalcTableScrolly (scrollY)="scrollY = $event">
+        <nz-table
+            #pT nzBordered
+            appCalcThWidth
+            (scrollXWidth)="scrollXWidth = $event"
+            [nzScroll]="{x: scrollXWidth + 'px', y: scrollY + 'px'}"
+            [nzFrontPagination]="false"
+            [nzShowPagination]="false"
+            [nzData]="data?.rows || []"
+            [nzLoading]="loading"
+            [(nzPageIndex)]="selfQueryParams.page"
+            [nzTotal]="data?.total"
+            [nzPageSize]="data?.pagesize"
+            [nzSize]="'middle'"
+            (nzCurrentPageDataChange)="currentPageDataChange($event)">
+            <thead (nzSortChange)="sortChange($event)" nzSingleSort>
+            <tr>
+                <th nzWidth="40px" nzShowCheckbox
+                    [(nzChecked)]="allChecked"
+                    [nzIndeterminate]="indeterminate"
+                    [nzDisabled]="!displayData.length"
+                    (nzCheckedChange)="checkAll($event)">
+                </th>
+                <th nzWidth="80px">JobGroup</th>
+                <th nzWidth="120px">JobName</th>
+                <th nzWidth="100px">Type</th>
+                <th nzWidth="100px">Delay</th>
+                <th nzWidth="120px">Expression</th>
+                <th nzWidth="80px">Disabled</th>
+                <th nzWidth="200px">Memo</th>
+                <th nzWidth="120px">创建时间</th>
+                <th nzWidth="90px" nzAlign="center">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of pT.data">
+                <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshStatus()"></td>
+                <td>{{item?.a}}</td>
+                <td>{{item?.a}}</td>
+                <td>{{item?.a}}</td>
+                <td>{{item?.a}}</td>
+                <td>{{item?.a}}</td>
+                <td>{{item?.a}}</td>
+                <td>{{item?.a}}</td>
+                <td>{{item?.a}}</td>
+                <td nzAlign="center">
+                    <div>
+                        <a #btnDelete nz-popconfirm nzPlacement="left" nzTitle="您确认要删除【{{item?.a}}】吗?"
+                           (nzOnConfirm)="deleteCertificate(item)"></a>
+                        <nz-dropdown-button (nzClick)="openWin(item)" nzTrigger="click">
+                            <i nz-icon nzType="plus" nz-tooltip nzTitle="添加凭证"></i>
+                            <ul nz-menu>
+                                <li nz-menu-item (click)="btnDelete.click()">
+                                    删除凭证
+                                </li>
+                            </ul>
+                        </nz-dropdown-button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </nz-table>
+        <div class="list-page-pagination-wrapper shadow clearFix" *ngIf="pT.data.length">
+            <div class="list-page-buttons fl">
+                <label class="check-box"
+                       nz-checkbox
+                       [(ngModel)]="allChecked"
+                       [nzIndeterminate]="indeterminate"
+                       [(nzChecked)]="allChecked"
+                       [nzDisabled]="!displayData.length"
+                       (nzCheckedChange)="checkAll($event)">
+                </label>
+                <button (click)="openWin(null)" [disabled]="checkedNumber<1" style="margin-left: 10px;" nzType="primary" nz-button><span>添加凭证</span></button>
+            </div>
+            <div class="bottom-pagination fr" style="margin-right: 10px;">
+                <nz-pagination
+                    nzSize="small"
+                    nzShowSizeChanger
+                    nzShowQuickJumper
+                    [nzShowTotal]="rangeTemplate"
+                    (nzPageIndexChange)="pageChange($event)"
+                    [nzPageSizeOptions]="toolService.nzPageSizeOptions"
+                    (nzPageSizeChange)="pageSizeChange($event)"
+                    [(nzPageIndex)]="selfQueryParams.page"
+                    [nzPageSize]="selfQueryParams.pagesize"
+                    [nzTotal]="data?.total">
+                </nz-pagination>
+            </div>
+        </div>
+        <ng-template #rangeTemplate let-range="range" let-total>
+            <app-table-pagination-info [range]="range" [total]="total"></app-table-pagination-info>
+        </ng-template>
+    </div>
+
+</div>

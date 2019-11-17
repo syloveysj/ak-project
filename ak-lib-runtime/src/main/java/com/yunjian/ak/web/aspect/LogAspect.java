@@ -2,6 +2,7 @@ package com.yunjian.ak.web.aspect;
 
 import com.yunjian.ak.utils.IPUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.utils.DateUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -14,9 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -30,7 +29,7 @@ import java.util.Date;
 @Component
 @Slf4j
 public class LogAspect {
-    //设置切入点：这里直接拦截被@RestController注解的类
+    //设置切入点：拦截被@RestController注解的类
     @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
     public void pointcut() {
     }
@@ -49,7 +48,7 @@ public class LogAspect {
         //利用RequestContextHolder获取requst对象
         ServletRequestAttributes requestAttr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         String uri = requestAttr.getRequest().getRequestURI();
-        log.info("开始计时: {}  URI: {}", new Date(), uri);
+        log.info("开始计时: {}  URI: {}", DateUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"), uri);
 
         //访问目标方法的参数 可动态改变参数值
         Object[] args = joinPoint.getArgs();
@@ -81,7 +80,7 @@ public class LogAspect {
             log.info("log注解描述：{}", logAnno.desc());
         }
         long endTime = System.currentTimeMillis();
-        log.info("结束计时: {},  URI: {},耗时：{}", new Date(), uri, endTime - beginTime);
+        log.info("结束计时: {},  URI: {},耗时：{}ms", DateUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"), uri, endTime - beginTime);
 
         //模拟异常
         //System.out.println(1/0);

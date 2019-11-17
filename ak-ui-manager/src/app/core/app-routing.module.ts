@@ -20,6 +20,18 @@ const routes: Routes = [
         loadChildren: '@feature/interfaces/interfaces.module#InterfacesModule',
         data: {module: '/interfaces', preload: true},
     }, {
+        path: 'tenant',
+        loadChildren: '@feature/tenant/tenant.module#TenantModule',
+        data: {module: '/tenant', preload: true},
+    }, {
+        path: 'monitor',
+        loadChildren: '@feature/monitor/monitor.module#MonitorModule',
+        data: {module: '/monitor', preload: true},
+    }, {
+        path: 'task',
+        loadChildren: '@feature/task/task.module#TaskModule',
+        data: {module: '/task', preload: true},
+    }, {
         path: '**', component: ErrorComponent,
         data: {title: '404', componentName: 'ErrorComponent', module: '/404', keepAlive: true}
     }

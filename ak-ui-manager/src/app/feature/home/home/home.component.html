@@ -1,1 +1,5 @@
-<nz-empty></nz-empty>
+<div class="data-common-wrapper">
+    <div appCalcTableScrolly (scrollY)="scrollY = $event">
+        <div id="flowView" [ngStyle]="{'width':'100%', 'height':getHeight()}"></div>
+    </div>
+</div>
