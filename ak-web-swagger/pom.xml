@@ -34,7 +34,7 @@
     <build>
         <defaultGoal>compile</defaultGoal>
         <sourceDirectory>src</sourceDirectory>
-        <finalName>ak-web-oauth-server</finalName>
+        <finalName>ak-web-swagger</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
