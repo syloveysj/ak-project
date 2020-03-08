@@ -29,9 +29,9 @@ export class HomeComponent extends BaseComponent implements OnInit, AfterViewIni
   }
 
   ngAfterViewInit() {
-      setTimeout(() => {
-          this.initFlow();
-      }, 100);
+      // setTimeout(() => {
+      //     this.initFlow();
+      // }, 100);
   }
 
   getHeight(): string {

@@ -5,11 +5,11 @@ import {Config} from './config';
  */
 export class ConfigProd extends Config {
     public auth = {
-        addr: 'http://127.0.0.1:8081/oauth/token',
+        addr: 'http://192.168.2.156:8081/oauth/token',
         clientId: 'fooClientIdPassword',
         secret: 'secret'
     };
-    public apiAddr = 'http://127.0.0.1:8080';
+    public apiAddr = 'http://192.168.2.156:8080';
     public menus = [
         {
             iconCls: 'icon-company',
@@ -31,13 +31,23 @@ export class ConfigProd extends Config {
             iconCls: 'icon-company',
             text: '租户管理',
             children: [
-                {iconCls: 'icon-company', text: '租户信息', uri: '/gateway/authorize'}]
+                {iconCls: 'icon-company', text: '租户信息', uri: '/tenant/center'}]
         },
         {
             iconCls: 'icon-company',
             text: '监控中心',
             children: [
-                {iconCls: 'icon-company', text: '异常监控', uri: '/gateway/authorize'}]
+                {iconCls: 'icon-company', text: '异常预警', uri: '/monitor/center'},
+                {iconCls: 'icon-company', text: '操作日志', uri: '/monitor/center'},
+                {iconCls: 'icon-company', text: '链路分析', uri: '/monitor/center'},
+                {iconCls: 'icon-company', text: '接口调用分析', uri: '/monitor/center'}]
+        },
+        {
+            iconCls: 'icon-company',
+            text: '定时任务',
+            children: [
+                {iconCls: 'icon-company', text: '任务列表', uri: '/task/scheduleJob'},
+                {iconCls: 'icon-company', text: '租户任务', uri: '/task/tenantJob'}]
         }
     ];
 }

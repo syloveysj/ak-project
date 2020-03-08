@@ -5,11 +5,11 @@ import {Config} from './config';
  */
 export class ConfigDev extends Config {
     public auth = {
-        addr: 'http://127.0.0.1:8081/oauth/token',
+        addr: 'http://192.168.2.156:8081/oauth/token',
         clientId: 'fooClientIdPassword',
         secret: 'secret'
     };
-    public apiAddr = 'http://127.0.0.1:8080';
+    public apiAddr = 'http://192.168.2.156:8080';
     public menus = [
         {
             iconCls: 'icon-company',
@@ -37,7 +37,10 @@ export class ConfigDev extends Config {
             iconCls: 'icon-company',
             text: '监控中心',
             children: [
-                {iconCls: 'icon-company', text: '异常监控', uri: '/monitor/center'}]
+                {iconCls: 'icon-company', text: '异常预警', uri: '/monitor/center'},
+                {iconCls: 'icon-company', text: '操作日志', uri: '/monitor/center'},
+                {iconCls: 'icon-company', text: '链路分析', uri: '/monitor/center'},
+                {iconCls: 'icon-company', text: '接口调用分析', uri: '/monitor/center'}]
         },
         {
             iconCls: 'icon-company',

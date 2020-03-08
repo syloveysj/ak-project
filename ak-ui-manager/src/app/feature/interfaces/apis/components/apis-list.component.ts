@@ -144,7 +144,7 @@ export class ApisListComponent extends BaseComponent implements OnInit, AfterVie
     }
 
     openWin(bean: any) {
-        window.open("http://192.168.0.103:8081/v1/swagger/index.html?id=" + bean.id, "_blank");
+        window.open("http://192.168.2.156:8083/v1/swagger/index.html?id=" + bean.id, "_blank");
     }
 
     changeClassify(classifyId: string) {

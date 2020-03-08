@@ -267,7 +267,7 @@ public class ApisController {
             route.setHosts(Arrays.asList());
             route.setPaths(Arrays.asList(row.getUri()));
             route.setProtocols(Arrays.asList("http", "https"));
-            route.setStripPath(true);
+            route.setStripPath(false);
             route.setPreserveHost(false);
             if(row.getState() == 0) { // 添加
                 route = kongApisClient.getRouteService().createRoute(route);
