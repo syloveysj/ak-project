@@ -358,17 +358,22 @@
         <module>ak-lib-dao</module>
         <module>ak-lib-identity</module>
         <module>ak-lib-runtime</module>
+        <module>ak-lib-api-proxy</module>
         <module>ak-lib-kong</module>
-        <module>ak-service-gateway</module>
         <module>ak-lib-service</module>
+        <module>ak-lib-resource-server</module>
+
+        <!--服务-->
+        <module>ak-service-gateway</module>
+        <module>ak-service-platform</module>
+        <module>ak-service-task</module>
+
+        <!--应用-->
         <module>ak-web-swagger</module>
         <module>ak-web-oauth-server</module>
+
+        <!--测试-->
         <module>ak-web-app</module>
-        <module>ak-lib-resource-server</module>
-        <module>ak-lib-api-proxy</module>
-        <module>ak-service-platform</module>
         <module>ak-test-demo</module>
-        <module>ak-service-task</module>
-        <!--应用-->
     </modules>
 </project>
