@@ -5,11 +5,11 @@ import {Config} from './config';
  */
 export class ConfigProd extends Config {
     public auth = {
-        addr: 'http://192.168.2.156:8081/oauth/token',
+        addr: 'http://192.168.2.154:8092/oauth/token',
         clientId: 'fooClientIdPassword',
         secret: 'secret'
     };
-    public apiAddr = 'http://192.168.2.156:8080';
+    public apiAddr = 'http://192.168.2.154:8093';
     public menus = [
         {
             iconCls: 'icon-company',
