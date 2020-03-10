@@ -1,5 +1,5 @@
 # AK云平台
-> 框架结构图![Image](http://www.1990tu.com/i/20200310134522kfu.png)
+> 框架结构图 ![Framework](http://www.1990tu.com/i/20200310134522kfu.png)
 ## 目录  
 * [背景介绍](#背景介绍)  
 * [部署说明](#部署说明)  
@@ -183,20 +183,20 @@ IP  | 端口  |  映射公网端口  | 描述
     用户名：admin<br/>
     密码：123456
 2. 在集群管理下添加云平台管理前端应用的集群
-    ![Image](http://www.1990tu.com/i/202003102010402el.png)
-    ![Image](http://www.1990tu.com/i/202003102013072re.png)  
+    ![setp1-1](http://www.1990tu.com/i/202003102010402el.png)
+    ![setp1-2](http://www.1990tu.com/i/202003102013072re.png)  
 3. 在路由管理或者高级路由管理中添加云平台UI的路由（域名可以先在hosts中设置）
-    ![Image](http://www.1990tu.com/i/202003102016163wq.png)
-    ![Image](http://www.1990tu.com/i/20200310201648q8s.png)
-    ![Image](http://www.1990tu.com/i/20200310201708ogk.png)
+    ![setp2-1](http://www.1990tu.com/i/202003102016163wq.png)
+    ![setp2-2](http://www.1990tu.com/i/20200310201648q8s.png)
+    ![setp2-3](http://www.1990tu.com/i/20200310201708ogk.png)
 4. 在APIs服务中添加服务分类，并导入服务
-    ![Image](http://www.1990tu.com/i/20200310201949geq.png)
-    ![Image](http://www.1990tu.com/i/20200310202010ki2.png)
-    ![Image](http://www.1990tu.com/i/20200310202028dwu.png)
-    ![Image](http://www.1990tu.com/i/20200310202041cr5.png)
-    ![Image](http://www.1990tu.com/i/20200310202056qdx.png)
+    ![setp3-1](http://www.1990tu.com/i/20200310201949geq.png)
+    ![setp3-2](http://www.1990tu.com/i/20200310202010ki2.png)
+    ![setp3-3](http://www.1990tu.com/i/20200310202028dwu.png)
+    ![setp3-4](http://www.1990tu.com/i/20200310202041cr5.png)
+    ![setp3-5](http://www.1990tu.com/i/20200310202056qdx.png)
 5. 检查服务接口文档，点击服务列表中服务的试运行，将出来如下界面
-    ![Image](http://www.1990tu.com/i/20200310202251w6k.png)
+    ![setp4-1](http://www.1990tu.com/i/20200310202251w6k.png)
 6. 如上设置，其它应用和服务都如此操作添加，这样路由、网关、服务、应用就都集成起来了。
     > [http://192.168.1.100:80](http://192.168.1.100) 即为所有应用的入口<br/>
       [http://192.168.1.101:8000](http://192.168.1.101:8000) 即为所有服务API的入口<br/>
