@@ -47,7 +47,7 @@ IP  | 端口  |  映射公网端口  | 描述
 192.168.1.101  | 8000、8443、8001、8444、5432、3306、8091、8092 |   |  网关、基础数据库、路由/网关服务、用户管理服务
 
 1. *web路由* 的部署，在192.168.1.100上：
-    ``` 
+    ``` dockerfile
     # 路由数据库
     docker run -d --name postgres \
         -e "POSTGRES_DB=kong" \
@@ -78,7 +78,7 @@ IP  | 端口  |  映射公网端口  | 描述
         kong:1.3.0
     ``` 
 2. *api网关* 的部署，在192.168.1.101上：
-    ``` 
+    ``` dockerfile
     # 网关数据库
     docker run -d --name postgres \
         -e "POSTGRES_DB=kong" \
@@ -109,7 +109,7 @@ IP  | 端口  |  映射公网端口  | 描述
         kong:1.3.0
     ``` 
 3. 基础数据库，在192.168.1.101上：
-    ``` 
+    ``` dockerfile
     # 基础数据库
     docker run -d --name mysql \
         -v "/data/mysql/conf:/etc/mysql" \
@@ -120,7 +120,7 @@ IP  | 端口  |  映射公网端口  | 描述
         mysql:5.7.29
     ``` 
 4. 路由/网关服务，在192.168.1.101上：
-    ``` 
+    ``` dockerfile
     # 路由/网关服务
     docker run -d --name ak-service-gateway \
         -e router_db_url=jdbc:postgresql://192.168.1.100:5432/kong \
@@ -135,7 +135,7 @@ IP  | 端口  |  映射公网端口  | 描述
         ak-service-gateway:1.0.0
     ``` 
 5. 用户管理服务，在192.168.1.101上：
-    ``` 
+    ``` dockerfile
     # 用户管理服务
     docker run -d --name ak-service-platform \
         -e sys_db_url=jdbc:mysql://192.168.1.101:3306/platform?useUnicode=yes&characterEncoding=UTF-8 \
@@ -146,7 +146,7 @@ IP  | 端口  |  映射公网端口  | 描述
         ak-service-platform:1.0.0
     ``` 
 6. 认证授权应用，在192.168.1.100上：
-    ``` 
+    ``` dockerfile
     # 认证授权应用
     docker run -d --name ak-web-oauth \
         -e ak_gateway_apis_url=http://192.168.1.101:8000 \
@@ -154,7 +154,7 @@ IP  | 端口  |  映射公网端口  | 描述
         ak-web-oauth:1.0.0
     ``` 
 7. 统一后端应用，在192.168.1.100上：
-    ``` 
+    ``` dockerfile
     # 统一后端应用
     docker run -d --name ak-web-app \
         -e ak_gateway_apis_url=http://192.168.1.101:8000 \
@@ -162,7 +162,7 @@ IP  | 端口  |  映射公网端口  | 描述
         ak-web-oauth:1.0.0
     ``` 
 8. 接口文档和调试应用，在192.168.1.100上：
-    ``` 
+    ``` dockerfile
     # 接口文档和调试应用
     docker run -d --name ak-web-swagger \
         -e ak_gateway_apis_url=http://192.168.1.101:8000 \
@@ -204,7 +204,7 @@ IP  | 端口  |  映射公网端口  | 描述
 <a name="开发样例"></a>  
 ## 开发样例
 1. 应用服务开发
-    * pom.xml 中加入依赖
+    * *pom.xml* 中加入依赖
     ```xml
     <dependency>
         <groupId>com.yunjian.ak</groupId>
@@ -216,6 +216,177 @@ IP  | 端口  |  映射公网端口  | 描述
         <artifactId>ak-lib-service</artifactId>
         <version>${ak.base.version}</version>
     </dependency>
+    <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger2</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger-ui</artifactId>
+    </dependency>
     ```
-
+    * *datasorce.xml* 数据源配置,可配置多个 *datasource* 节点：
+    ```xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <DataSources xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default="">
+      <!--
+           default: 是否是缺省操作的库（未切换数据源时操作的库）
+           isEncrypt：是否进行数据库密码加密的配置（开启后，下面密码处填密文，代码中会解密）
+           isTenant：是否开启租户模式，开启后当前数据源将根据租户自动切换PostgreSql的schema 或 MySql的db（目前租户模式只支持PostgreSql和MySql）
+       -->
+      <datasource xsi:type="DBCPDataSource" default="true" isEncrypt="false" isTenant="false" id="router" name="router" sys="false" type="CustomDB">
+        <poolAttribute key="defaultAutoCommit" value="true" desc="自动提交"/>
+        <poolAttribute key="maxActive" value="${db_maxActive}" desc="最大连接数"/>
+        <poolAttribute key="initialSize" value="${db_initialSize}" desc="初始连接数"/>
+        <poolAttribute key="poolPreparedStatements" value="false" desc="启用预编译"/>
+        <poolAttribute key="maxOpenPreparedStatements" value="${db_maxOpenPreparedStatements}" desc="预编译缓存数"/>
+        <poolAttribute key="maxIdle" value="${db_maxIdle}" desc="最大空闲数"/>
+        <poolAttribute key="minIdle" value="${db_minIdle}" desc="最小空闲数"/>
+        <poolAttribute key="maxWait" value="60000" desc="从池中取连接的最大等待时间,单位ms，-1无限制"/>
+        <poolAttribute key="validationQueryTimeout" value="1" desc="验证查询超时时间"/>
+        <poolAttribute key="testOnBorrow" value="false" desc="获取时验证"/>
+        <poolAttribute key="testOnReturn" value="false" desc="返回时验证"/>
+        <poolAttribute key="testWhileIdle" value="true" desc="空闲验证"/>
+        <poolAttribute key="timeBetweenEvictionRunsMillis" value="${db_timeBetweenEvictionRunsMillis}" desc="空闲连接超时检测间隔"/>
+        <poolAttribute key="numTestsPerEvictionRun" value="${db_numTestsPerEvictionRun}" desc="检测空闲连接超时数(每次)"/>
+        <poolAttribute key="minEvictableIdleTimeMillis" value="${db_minEvictableIdleTimeMillis}" desc="空闲连接超时时间(毫秒)"/>
+        <poolAttribute key="removeAbandoned" value="true" desc="移除弃用连接"/>
+        <poolAttribute key="removeAbandonedTimeout" value="${db_removeAbandonedTimeout}" desc="弃用连接超时时间(毫秒)"/>
+        <poolAttribute key="logAbandoned" value="false" desc="记录弃用连接日志"/>
+        <driverClassName>org.postgresql.Driver</driverClassName>
+        <url>jdbc:postgresql://192.168.1.100:5432/kong</url>
+        <username>kong</username>
+        <password>kong</password>
+        <dataSourceFactory>com.yunjian.ak.dao.datasource.impl.DBCPDataSourceFactory</dataSourceFactory>
+      </datasource>
+      <datasource xsi:type="DBCPDataSource" default="false" isEncrypt="false" isTenant="false" id="apis" name="apis" sys="false" type="CustomDB">
+        <poolAttribute key="defaultAutoCommit" value="true" desc="自动提交"/>
+        <poolAttribute key="maxActive" value="${db_maxActive}" desc="最大连接数"/>
+        <poolAttribute key="initialSize" value="${db_initialSize}" desc="初始连接数"/>
+        <poolAttribute key="poolPreparedStatements" value="false" desc="启用预编译"/>
+        <poolAttribute key="maxOpenPreparedStatements" value="${db_maxOpenPreparedStatements}" desc="预编译缓存数"/>
+        <poolAttribute key="maxIdle" value="${db_maxIdle}" desc="最大空闲数"/>
+        <poolAttribute key="minIdle" value="${db_minIdle}" desc="最小空闲数"/>
+        <poolAttribute key="maxWait" value="60000" desc="从池中取连接的最大等待时间,单位ms，-1无限制"/>
+        <poolAttribute key="validationQueryTimeout" value="1" desc="验证查询超时时间"/>
+        <poolAttribute key="testOnBorrow" value="false" desc="获取时验证"/>
+        <poolAttribute key="testOnReturn" value="false" desc="返回时验证"/>
+        <poolAttribute key="testWhileIdle" value="true" desc="空闲验证"/>
+        <poolAttribute key="timeBetweenEvictionRunsMillis" value="${db_timeBetweenEvictionRunsMillis}" desc="空闲连接超时检测间隔"/>
+        <poolAttribute key="numTestsPerEvictionRun" value="${db_numTestsPerEvictionRun}" desc="检测空闲连接超时数(每次)"/>
+        <poolAttribute key="minEvictableIdleTimeMillis" value="${db_minEvictableIdleTimeMillis}" desc="空闲连接超时时间(毫秒)"/>
+        <poolAttribute key="removeAbandoned" value="true" desc="移除弃用连接"/>
+        <poolAttribute key="removeAbandonedTimeout" value="${db_removeAbandonedTimeout}" desc="弃用连接超时时间(毫秒)"/>
+        <poolAttribute key="logAbandoned" value="false" desc="记录弃用连接日志"/>
+        <driverClassName>${apis_db_driver}</driverClassName>
+        <url>${apis_db_url}</url>
+        <username>${apis_db_username}</username>
+        <password>${apis_db_password}</password>
+        <dataSourceFactory>com.yunjian.ak.dao.datasource.impl.DBCPDataSourceFactory</dataSourceFactory>
+      </datasource>
+    </DataSources>
+    ```
+    * *ak-config.properties* 进行插件参数配置
+    * *ak-local-config.properties* 进行本地参数配置
+    ``` properties
+    mybatis.mapper-locations=classpath*:mapper/**/*.xml
+    
+    # 数据库连接参数
+    db_maxActive=5
+    db_initialSize=2
+    db_maxIdle=5
+    db_minIdle=3
+    db_maxOpenPreparedStatements=50
+    db_numTestsPerEvictionRun=50
+    db_minEvictableIdleTimeMillis=60000
+    db_timeBetweenEvictionRunsMillis=5000
+    # 关系异常后的阻塞(秒)
+    db_removeAbandonedTimeout=300
+    
+    # 数据库配置文件扫描路径和连接信息
+    apis_db_driver=org.postgresql.Driver
+    apis_db_url=jdbc:postgresql://192.168.1.101:5432/kong
+    apis_db_username=kong
+    apis_db_password=kong
+    
+    # 是否启用租户(全局开关)
+    ak_dao_enable_tenant_mode=false
+    ```
+    * 应用入库添加注解
+    ```java
+    @SpringBootApplication
+    @ServletComponentScan
+    @EnableSwagger2
+    public class PlatformApp {
+        public static void main(String[] args) {
+            SpringApplication.run(PlatformApp.class, args);
+        }
+    }
+    ```
+    * 代码生成工具使用（Spring-Generator，里面的模版已调整）
+    > 工具放在 *assets/tools* 文件夹
+    ![setp5-1](http://www.1990tu.com/i/202003102244475zk.png)
+    ![setp5-2](http://www.1990tu.com/i/202003102245023e3.png)
+    * 数据库实体类示例
+    ```java
+    @Entity(
+            // id 与对应的 Mapper.xml 文件中 namespace 对应
+            // 用于关联对应的 Mapper.xml 文件
+            id = "entity:com.yunjian.ak.gateway.entity.router.TargetEntity",
+            // table 对应数据库中的表
+            table = "targets",
+            // ds 对应数据源的 id，即这个实体类的操作默认切换到这个数据源执行SQL
+            ds = "router",
+            // cache 是否开启缓存
+            cache = false
+    )
+    @Data
+    public class TargetEntity {
+        // 映射的数据库字段
+        @Column( id = "id", type = ColumnType.custom )
+        // Swagger的描述，用于接口文档的生成
+        @ApiModelProperty(value = "ID")
+        private String id;
+    
+        @Column( id = "target" )
+        @ApiModelProperty(value = "目标地址")
+        @NotBlank(message = "目标地址不能为空")
+        private String target;
+    
+        @Column( id = "weight" )
+        @ApiModelProperty(value = "权重")
+        private Integer weight;
+    
+        @ApiModelProperty(value = "标签")
+        private List<String> tags;
+    }
+    ```
+    * 数据库操作示例
+    ```java
+    @Service
+    public class TargetService {
+        // 数据库查询
+        // DaoFactory 进行动态数据源的切换
+        // DaoFactory.create(Class<T> entityClass) 数据源为实体类中的设置
+        // DaoFactory.create(Class<T> entityClass, String datasourceid) 数据源为指定
+        public List<TargetEntity> getAll() {
+            return DaoFactory.create(TargetEntity.class).selectAll();
+        }
+    
+        // 开启事务
+        // datasourceID 为Sql执行的数据源
+        @AkTransactional(datasourceID = "router")
+        public void deletBatch(List<String> ids) {
+            DaoFactory.create(TargetEntity.class).deleteBatch(ids);
+        }
+        
+        // 分页处理
+        public Page<TargetEntity> getListByPage(int page, int pagesize, String sort, String order, String cond) {
+            Pageable pageable = new Pageable(page, pagesize);
+            Sortable sortable = SortableUtil.getSortable(sort, order);
+            TargetEntity entity = StringUtils.isNotBlank(cond) ? JSON.parseObject(cond, TargetEntity.class) : new TargetEntity();
+            return DaoFactory.create(TargetEntity.class).selectByPage(entity, pageable, sortable, true);
+        }
+    }
+    ```
 
