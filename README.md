@@ -1,8 +1,7 @@
 # AK云平台
-> 框架结构图![框架结构图](https://github.com/syloveysj/ak-project/blob/master/assets/images/ak-frame.png?raw=true)
+> 框架结构图![框架结构图](http://www.1990tu.com/i/20200310134522kfu.png)
 ## 目录  
 * [背景介绍](#背景介绍)  
-* [项目结构](#项目结构)  
 * [部署说明](#部署说明)  
 * [开发样例](#开发样例)  
 
@@ -29,16 +28,152 @@
 * *基础应用* 是工程中 **ak-service** 开头的服务项目、 **ak-web** 开头的web项目 和 **ak-ui** 开头的前端项目：
     * *ak-web-oauth-server* 基于Spring Security Aauth2开发的认证授权应用，主要用于整合应用。
     * *ak-service-gateway* 针对 *web路由* 和 *api网关* 操作提供的服务。
+    * *ak-service-platform* 用户管理服务。
     * *ak-web-swagger* 针对 *api网关* 中注册的服务提供的 文档 和 调试 应用。
-    * *ak-ui-manager* 针对AK云平台提供的管理前端项目。
-
-<a name="项目结构"></a>  
-## 项目结构
-
+    * *ak-ui-manager* 针对AK云平台提供的管理前端应用。
+    * *ak-web-app* 统一后端应用，提供登录认证检测、授权的代理请求等。
 
 <a name="部署说明"></a>  
 ## 部署说明
+部署我将结合Docker来介绍（请根据各自的情况进行调整）：
 
+演示2台服务器的应用部署：
+
+IP  | 端口  |  映射公网端口  | 描述
+---- | ----- | ----- |  ------  
+192.168.1.100  | 80、8443、8001、8444、5432、8080、8081、8082、8083 | 80  |  路由
+192.168.1.101  | 8000、8443、8001、8444、5432、3306、8091、8092 |   |  网关、基础数据库
+
+1. *web路由* 的部署，在192.168.1.100上：
+    ``` 
+    # 路由数据库
+    docker run -d --name postgres \
+        -e "POSTGRES_DB=kong" \
+        -e "POSTGRES_USER=kong" \
+        -e "POSTGRES_PASSWORD=kong" \
+        -v "/data/postgresql/data:/var/lib/postgresql/data" \
+        -p 5432:5432 \
+        postgres:9.6.14
+    
+    # 路由
+    docker run -d --name kong \
+        --link postgres:postgres \
+        -e "KONG_DATABASE=postgres" \
+        -e "KONG_PG_HOST=postgres" \
+        -e "KONG_PG_DATABASE=kong" \
+        -e "KONG_PG_USER=kong"  \
+        -e "KONG_PG_PASSWORD=kong"  \
+        -e "KONG_CASSANDRA_CONTACT_POINTS=postgres" \
+        -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" \
+        -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" \
+        -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
+        -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
+        -e "KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl" \
+        -p 80:8000 \
+        -p 8443:8443 \
+        -p 8001:8001 \
+        -p 8444:8444 \
+        kong:1.3.0
+    ``` 
+2. *api网关* 的部署，在192.168.1.101上：
+    ``` 
+    # 网关数据库
+    docker run -d --name postgres \
+        -e "POSTGRES_DB=kong" \
+        -e "POSTGRES_USER=kong" \
+        -e "POSTGRES_PASSWORD=kong" \
+        -v "/data/postgresql/data:/var/lib/postgresql/data" \
+        -p 5432:5432 \
+        postgres:9.6.14
+    
+    # 网关
+    docker run -d --name kong \
+        --link postgres:postgres \
+        -e "KONG_DATABASE=postgres" \
+        -e "KONG_PG_HOST=postgres" \
+        -e "KONG_PG_DATABASE=kong" \
+        -e "KONG_PG_USER=kong"  \
+        -e "KONG_PG_PASSWORD=kong"  \
+        -e "KONG_CASSANDRA_CONTACT_POINTS=postgres" \
+        -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" \
+        -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" \
+        -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
+        -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
+        -e "KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl" \
+        -p 8000:8000 \
+        -p 8443:8443 \
+        -p 8001:8001 \
+        -p 8444:8444 \
+        kong:1.3.0
+    ``` 
+3. 基础数据库，在192.168.1.101上：
+    ``` 
+    # 基础数据库
+    docker run -d --name mysql \
+        -v "/data/mysql/conf:/etc/mysql" \
+        -v "/data/mysql/logs:/var/log/mysql" \
+        -v "/data/mysql/data:/var/lib/mysql" \
+        -e MYSQL_ROOT_PASSWORD=123456 \
+        -p 3306:3306 \
+        mysql:5.7.29
+    ``` 
+4. 路由/网关服务，在192.168.1.101上：
+    ``` 
+    # 路由/网关服务
+    docker run -d --name ak-service-gateway \
+        -e router_db_url=jdbc:postgresql://192.168.1.100:5432/kong \
+        -e router_db_username=kong \
+        -e router_db_password=kong \
+        -e apis_db_url=jdbc:postgresql://192.168.1.101:5432/kong \
+        -e apis_db_username=kong \
+        -e apis_db_password=kong \
+        -e kong_router_admin_url=http://192.168.1.100:8001 \
+        -e kong_apis_admin_url=http://192.168.1.101:8001 \
+        -p 8091:8080 \
+        ak-service-gateway:1.0.0
+    ``` 
+5. 用户管理服务，在192.168.1.101上：
+    ``` 
+    # 用户管理服务
+    docker run -d --name ak-service-platform \
+        -e sys_db_url=jdbc:mysql://192.168.1.101:3306/platform?useUnicode=yes&characterEncoding=UTF-8 \
+        -e sys_db_username=platform \
+        -e sys_db_password=123456 \
+        -e ak_gateway_apis_url=http://192.168.1.101:8000 \
+        -p 8092:8080 \
+        ak-service-platform:1.0.0
+    ``` 
+6. 认证授权应用，在192.168.1.100上：
+    ``` 
+    # 认证授权应用
+    docker run -d --name ak-web-oauth \
+        -e ak_gateway_apis_url=http://192.168.1.101:8000 \
+        -p 8080:8080 \
+        ak-web-oauth:1.0.0
+    ``` 
+7. 统一后端应用，在192.168.1.100上：
+    ``` 
+    # 统一后端应用
+    docker run -d --name ak-web-app \
+        -e ak_gateway_apis_url=http://192.168.1.101:8000 \
+        -p 8081:8080 \
+        ak-web-oauth:1.0.0
+    ``` 
+8. 接口文档和调试应用，在192.168.1.100上：
+    ``` 
+    # 接口文档和调试应用
+    docker run -d --name ak-web-swagger \
+        -e ak_gateway_apis_url=http://192.168.1.101:8000 \
+        -p 8082:8080 \
+        ak-web-swagger:1.0.0
+    ``` 
+9. 云平台管理前端应用，在192.168.1.100上：
+    ``` 
+    # 云平台管理前端应用
+    docker run -d --name ak-ui-manager \
+        -p 8083:8080 \
+        ak-ui-manager:1.0.0
+    ``` 
 
 <a name="开发样例"></a>  
 ## 开发样例
