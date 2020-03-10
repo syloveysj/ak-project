@@ -170,7 +170,7 @@ IP  | 端口  |  映射公网端口  | 描述
         ak-web-swagger:1.0.0
     ``` 
 9. 云平台管理前端应用，在192.168.1.100上：
-    ``` 
+    ``` dockerfile
     # 云平台管理前端应用
     docker run -d --name ak-ui-manager \
         -p 8083:8080 \
