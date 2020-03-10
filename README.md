@@ -203,4 +203,19 @@ IP  | 端口  |  映射公网端口  | 描述
 
 <a name="开发样例"></a>  
 ## 开发样例
+1. 应用服务开发
+    * pom.xml 中加入依赖
+    ```xml
+    <dependency>
+        <groupId>com.yunjian.ak</groupId>
+        <artifactId>ak-lib-dao</artifactId>
+        <version>${ak.base.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.yunjian.ak</groupId>
+        <artifactId>ak-lib-service</artifactId>
+        <version>${ak.base.version}</version>
+    </dependency>
+    ```
+
 
