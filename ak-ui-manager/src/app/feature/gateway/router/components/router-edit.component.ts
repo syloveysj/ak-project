@@ -115,7 +115,7 @@ export class RouterEditComponent implements OnInit {
                 paths: isEmpty(values.paths) ? [] : [values.paths],
                 protocols: values.onlyHttps ? ['https'] : ['http', 'https'],
                 stripPath: this.bean != null ? this.bean.stripPath : true,
-                preserveHost: this.bean != null ? this.bean.preserveHost : false,
+                preserveHost: this.bean != null ? this.bean.preserveHost : true,
                 service: {
                     name: this.bean != null ? this.bean.service.name : name,
                     alias: this.bean != null ? this.bean.service.alias : name,

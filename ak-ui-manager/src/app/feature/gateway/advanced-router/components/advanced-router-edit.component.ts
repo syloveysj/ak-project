@@ -140,7 +140,7 @@ export class AdvancedRouterEditComponent implements OnInit {
             paths: this.getValuesArray(this.pathsValues),
             protocols: values.onlyHttps ? ['https'] : ['http', 'https'],
             stripPath: values.stripPath,
-            preserveHost: this.bean != null ? this.bean.preserveHost : false,
+            preserveHost: this.bean != null ? this.bean.preserveHost : true,
             service: {
                 name: this.bean != null ? this.bean.service.name : name,
                 alias: this.bean != null ? this.bean.service.alias : name,
