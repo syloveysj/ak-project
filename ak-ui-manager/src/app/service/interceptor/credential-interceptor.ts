@@ -64,14 +64,16 @@ export class CredentialInterceptor implements HttpInterceptor {
                 console.log('CredentialInterceptor => ', res);
                 if (status === 401) {
                     if (res.url.indexOf('/account/current-username') > -1) {
-                        this.router.navigate(['/auth/login']);
+                        // this.router.navigate(['/auth/login']);
+                        this.router.navigate(['/index']);
                     } else {
                         this.nzMessageService.error(errHandle(res));
                     }
                     return throwError(res); // 将错误信息抛给下个拦截器或者请求调用方
                 } else if (status === 0) {
                     // session 超时的情况
-                    this.router.navigate(['/auth/login']);
+                    // this.router.navigate(['/auth/login']);
+                    this.router.navigate(['/index']);
                 } else {
                     this.nzMessageService.error(errHandle(res));
                 }
