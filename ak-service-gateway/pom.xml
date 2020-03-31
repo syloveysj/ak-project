@@ -50,7 +50,7 @@
         </dependency>
 
         <!-- powermock 的依赖 -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
             <scope>test</scope>
@@ -69,7 +69,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
 
         <!-- springboot 热部署 -->
         <!--<dependency>-->

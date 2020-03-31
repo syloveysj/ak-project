@@ -3,9 +3,14 @@ import {RouterModule, Routes} from '@angular/router';
 import {ErrorComponent} from './component/error.component';
 
 const routes: Routes = [
-    {
+    /*{
         path: '',
         loadChildren: '@feature/auth/auth.module#AuthModule',
+    },*/
+    {
+        path: '',
+        redirectTo: 'index',
+        pathMatch: 'full'
     },
     {
         path: 'index',
