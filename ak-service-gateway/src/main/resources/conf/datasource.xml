@@ -20,7 +20,7 @@
     <poolAttribute key="removeAbandonedTimeout" value="${db_removeAbandonedTimeout}" desc="弃用连接超时时间(毫秒)"/>
     <poolAttribute key="logAbandoned" value="false" desc="记录弃用连接日志"/>
     <driverClassName>${sys_db_driver}</driverClassName>
-    <url>jdbc:postgresql://192.168.2.154:5432/kong1</url>
+    <url>${sys_db_url}</url>
     <username>${sys_db_username}</username>
     <password>${sys_db_password}</password>
     <dataSourceFactory>com.yunjian.ak.dao.datasource.impl.DBCPDataSourceFactory</dataSourceFactory>
@@ -45,7 +45,7 @@
     <poolAttribute key="removeAbandonedTimeout" value="${db_removeAbandonedTimeout}" desc="弃用连接超时时间(毫秒)"/>
     <poolAttribute key="logAbandoned" value="false" desc="记录弃用连接日志"/>
     <driverClassName>${sys_db_driver}</driverClassName>
-    <url>jdbc:postgresql://192.168.2.154:5432/kong2</url>
+    <url>${sys_db_url}</url>
     <username>${sys_db_username}</username>
     <password>${sys_db_password}</password>
     <dataSourceFactory>com.yunjian.ak.dao.datasource.impl.DBCPDataSourceFactory</dataSourceFactory>
