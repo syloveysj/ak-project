@@ -24,7 +24,7 @@
         <commons.logging.api.version>1.1</commons.logging.api.version>
         <c3p0.version>0.9.1.1</c3p0.version>
         <httpclient.version>4.5.6</httpclient.version>
-        <mysql.connector.java.version>5.1.41</mysql.connector.java.version>
+        <mysql.connector.java.version>8.0.16</mysql.connector.java.version>
         <mybatis.version>3.4.6</mybatis.version>
         <postgresql.version>9.4.1207.jre6</postgresql.version>
         <quartz.version>2.2.3</quartz.version>
