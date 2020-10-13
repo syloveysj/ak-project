@@ -38,7 +38,7 @@
         <jtds.version>1.2.2</jtds.version>
         <s3.version>1.11.592</s3.version>
         <javax.servlet.api.version>4.0.1</javax.servlet.api.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
 
         <!-- activiti -->
         <activiti.version>5.22.0</activiti.version>
