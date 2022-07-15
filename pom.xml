@@ -36,7 +36,7 @@
         <springfox.swagger.ui.version>2.7.0</springfox.swagger.ui.version>
         <jjwt.version>0.9.1</jjwt.version>
         <jtds.version>1.2.2</jtds.version>
-        <s3.version>1.11.592</s3.version>
+        <s3.version>1.12.261</s3.version>
         <javax.servlet.api.version>4.0.1</javax.servlet.api.version>
         <junit.version>4.12</junit.version>
 
